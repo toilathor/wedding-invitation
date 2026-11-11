@@ -1,0 +1,21 @@
+# Build output, caches, dependencies
+node_modules/
+dist/
+.angular/
+.tmp/
+out-tsc/
+.codegraph/
+graphify-out/
+
+# Binary assets (fonts, images, music) — no code/semantic value
+src/assets/
+
+# Lockfile and generated config noise
+package-lock.json
+.DS_Store
+.cursor/
+
+# Agent tooling / skills (not project code)
+.agents/
+.claude/
+skills-lock.json
