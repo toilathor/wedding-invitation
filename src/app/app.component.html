@@ -2,6 +2,12 @@
   #pageContainer
   class="pageview-container bg-[#FBF7F5] selection:bg-[#A12F0C] selection:text-white">
 
+  <app-cover
+    *ngIf="isCoverVisible"
+    [data]="weddingData.banner"
+    (opened)="onCoverOpened()"
+    (finished)="onCoverFinished()"></app-cover>
+
   <!-- Toast Notification System -->
   <app-toast></app-toast>
 

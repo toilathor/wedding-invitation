@@ -10,6 +10,7 @@ import {
 } from "@angular/core";
 import { AlbumComponent } from "./components/album/album.component";
 import { BankGiftComponent } from "./components/bank-gift/bank-gift.component";
+import { CoverComponent } from "./components/cover/cover.component";
 import { BannerComponent } from "./components/banner/banner.component";
 import { EventsComponent } from "./components/events/events.component";
 import { GuestbookComponent } from "./components/guestbook/guestbook.component";
@@ -22,6 +23,7 @@ import { StoryComponent } from "./components/story/story.component";
 import { TimelineComponent } from "./components/timeline/timeline.component";
 import { ToastComponent } from "./components/toast/toast.component";
 import { WEDDING_DATA } from "./core/wedding-data";
+import { AudioService } from "./services/audio.service";
 import { PageViewService } from "./services/pageview.service";
 
 export interface PageInfo {
@@ -34,6 +36,7 @@ export interface PageInfo {
   standalone: true,
   imports: [
     CommonModule,
+    CoverComponent,
     BannerComponent,
     InvitationComponent,
     IntroductionComponent,
@@ -54,7 +57,9 @@ export interface PageInfo {
 export class AppComponent implements AfterViewInit, OnDestroy {
   weddingData = WEDDING_DATA;
   pageViewService = inject(PageViewService);
+  audioService = inject(AudioService);
   isRsvpOpen = false;
+  isCoverVisible = true;
   private previousBodyOverflow = "";
 
   @ViewChild("pageContainer") pageContainerRef?: ElementRef<HTMLDivElement>;
@@ -76,6 +81,19 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   private scrollHintTimers = new Map<string, ReturnType<typeof setTimeout>>();
   private visibleScrollHints = new Set<string>();
   private scrollFrame: number | null = null;
+
+  onCoverOpened() {
+    this.audioService.play();
+  }
+
+  onCoverFinished() {
+    this.isCoverVisible = false;
+    this.pageViewService.setLocked(false);
+    if (typeof document !== "undefined") {
+      document.body.style.overflow = this.previousBodyOverflow;
+    }
+    if (typeof window !== "undefined") window.scrollTo(0, 0);
+  }
 
   openRsvp() {
     this.isRsvpOpen = true;
@@ -130,6 +148,11 @@ export class AppComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     if (typeof window === "undefined") return;
+
+    // Khoá cuộn trang cho tới khi khách mở thiệp
+    this.previousBodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    this.pageViewService.setLocked(true);
 
     const container = this.pageContainerRef?.nativeElement;
     if (container) {
