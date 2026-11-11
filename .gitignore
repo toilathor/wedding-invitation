@@ -50,3 +50,4 @@ ui-debug.log*
 # Graphify local cache
 graphify-out/cache/
 graphify-out/cost.json
+.codegraph/daemon.pid
