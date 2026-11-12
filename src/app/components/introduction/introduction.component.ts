@@ -1,11 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IntroData } from '../../models/wedding-data.model';
+import { ImgFadeDirective } from "../../shared/img-fade.directive";
+
 
 @Component({
   selector: 'app-introduction',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ImgFadeDirective],
   styles: [`
     .edge-watermark {
       --watermark-size: 2.625rem;
@@ -61,6 +63,7 @@ import { IntroData } from '../../models/wedding-data.model';
             <!-- Arched Photo Frame -->
             <div class="relative border border-[#A12F0C] rounded-t-[300px] block w-full h-full overflow-hidden bg-white shadow-xl">
               <img
+                appImgFade
                 [src]="data.imageGroom"
                 alt="Chú rể"
                 class="w-full h-full object-cover"
@@ -92,6 +95,7 @@ import { IntroData } from '../../models/wedding-data.model';
             <!-- Arched Photo Frame -->
             <div class="relative border border-[#A12F0C] rounded-t-[300px] block w-full h-full overflow-hidden bg-white shadow-xl">
               <img
+                appImgFade
                 [src]="data.imageBride"
                 alt="Cô dâu"
                 class="w-full h-full object-cover"

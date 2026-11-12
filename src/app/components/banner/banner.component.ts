@@ -1,11 +1,13 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input } from "@angular/core";
 import { BannerData } from "../../models/wedding-data.model";
+import { ImgFadeDirective } from "../../shared/img-fade.directive";
+
 
 @Component({
   selector: "app-banner",
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ImgFadeDirective],
   styles: [`
     :host {
       display: block;
@@ -156,6 +158,7 @@ import { BannerData } from "../../models/wedding-data.model";
                 class="absolute bottom-0 w-full h-full z-20 p-0 rounded-t-full border-[1px] lg:border-[1.5px] border-b-0 border-[#A12F0C] overflow-hidden bg-white shadow-none"
               >
                 <img
+                  appImgFade
                   [src]="data.image1"
                   alt="Ảnh cưới"
                   class="w-full h-full object-cover"
@@ -177,6 +180,7 @@ import { BannerData } from "../../models/wedding-data.model";
                 class="absolute bottom-0 w-full h-full z-20 rounded-t-full border-[2px] border-b-0 border-[#A12F0C] p-0 overflow-hidden bg-white shadow-none"
               >
                 <img
+                  appImgFade
                   [src]="data.image2"
                   alt="Ảnh cưới"
                   class="w-full h-full object-cover"

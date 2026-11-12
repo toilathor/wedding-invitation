@@ -1,11 +1,13 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input } from "@angular/core";
 import { StoryData } from "../../models/wedding-data.model";
+import { ImgFadeDirective } from "../../shared/img-fade.directive";
+
 
 @Component({
   selector: "app-story",
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ImgFadeDirective],
   styles: [`
     .story-edge-watermark {
       --watermark-size: 2.625rem;
@@ -72,6 +74,7 @@ import { StoryData } from "../../models/wedding-data.model";
             class="z-30 absolute bottom-0 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-3 w-full h-full max-w-[300px] sm:max-w-[400px] md:max-w-none border border-b-0 border-[#A12F0C] rounded-tl-[160px] rounded-tr-[160px] md:rounded-tl-[320px] md:rounded-tr-[320px] overflow-hidden bg-white shadow-xl"
           >
             <img
+              appImgFade
               [src]="data.image"
               alt="Chuyện chúng mình"
               class="w-full h-full object-cover"

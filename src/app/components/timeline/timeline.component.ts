@@ -1,11 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TimelineData } from '../../models/wedding-data.model';
+import { ImgFadeDirective } from "../../shared/img-fade.directive";
+
 
 @Component({
   selector: 'app-timeline',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ImgFadeDirective],
   template: `
     <section class="relative bg-white overflow-hidden pt-8 sm:pt-12 md:pt-16 lg:pt-20 xl:pt-24 pb-4 sm:pb-6 md:pb-8 reveal">
       <div class="max-w-[1443px] mx-auto w-full px-4 sm:px-6 md:px-8 lg:px-12">
@@ -30,6 +32,7 @@ import { TimelineData } from '../../models/wedding-data.model';
             <!-- Top Arched Image -->
             <div class="w-full relative h-[260px] sm:h-[300px] md:h-[260px] lg:h-[340px] xl:h-[380px] overflow-hidden bg-stone-50">
               <img
+                appImgFade
                 [src]="item.picture"
                 [alt]="item.title"
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"

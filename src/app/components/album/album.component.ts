@@ -11,11 +11,13 @@ import {
 } from "@angular/core";
 import { AlbumData } from "../../models/wedding-data.model";
 import { PageViewService } from "../../services/pageview.service";
+import { ImgFadeDirective } from "../../shared/img-fade.directive";
+
 
 @Component({
   selector: "app-album",
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ImgFadeDirective],
   template: `
     <!-- 1. Page Gallery Section -->
     <section
@@ -38,6 +40,7 @@ import { PageViewService } from "../../services/pageview.service";
           class="group relative aspect-[3/4] md:aspect-[4/5] max-h-none md:max-h-[32vh] rounded-xl sm:rounded-2xl md:rounded-[20px] overflow-hidden shadow-sm hover:shadow-2xl cursor-pointer transition-all duration-300 bg-stone-100 mx-auto w-full"
         >
           <img
+            appImgFade
             [src]="thumbOf(img)"
             [alt]="'Ảnh cưới ' + (idx + 1)"
             class="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
@@ -107,6 +110,7 @@ import { PageViewService } from "../../services/pageview.service";
               [style.transition-delay]="showAll ? i * 40 + 'ms' : '0ms'"
             >
               <img
+                appImgFade
                 [src]="thumbOf(img)"
                 [alt]="'Ảnh cưới ' + (initialCount + i + 1)"
                 class="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
@@ -382,9 +386,13 @@ import { PageViewService } from "../../services/pageview.service";
             [ngClass]="outgoingDir === 'next' ? 'lb-out-next' : 'lb-out-prev'"
             draggable="false"
           />
+          <!-- Skeleton giữ chỗ cho ảnh chính (dùng chung với appImgFade) -->
+          <div class="img-skeleton img-skeleton-box" [class.img-skeleton-done]="mainLoaded" aria-hidden="true"></div>
           <!-- *ngFor với một phần tử: tạo lại thẻ mỗi khi đổi ảnh để hiệu ứng chạy lại từ đầu -->
           <img
             *ngFor="let idx of [currentIndex]"
+            appImgFade="none"
+            (imgLoaded)="mainLoaded = true"
             [src]="data.albums[idx]"
             [alt]="'Ảnh cưới ' + (idx + 1)"
             class="max-w-[92vw] sm:max-w-[85vw] md:max-w-5xl max-h-[64vh] sm:max-h-[70vh] md:max-h-[74vh] w-auto h-auto object-contain rounded-xl sm:rounded-2xl md:rounded-3xl shadow-2xl"
@@ -456,6 +464,7 @@ import { PageViewService } from "../../services/pageview.service";
             }"
           >
             <img
+              appImgFade
               [src]="thumbOf(full)"
               [alt]="'Thumbnail ' + (idx + 1)"
               class="w-full h-full object-cover"
@@ -486,6 +495,8 @@ export class AlbumComponent implements OnDestroy {
   currentIndex = 0;
   isSlideshow = false;
   isZoomed = false;
+  /** false trong lúc ảnh chính của lightbox còn đang tải → hiện khối skeleton giữ chỗ */
+  mainLoaded = false;
   changing = false;
   slideDirection: "next" | "prev" = "next";
   readonly slideshowMs = 4000;
@@ -521,6 +532,7 @@ export class AlbumComponent implements OnDestroy {
 
   openLightbox(index: number) {
     this.currentIndex = index;
+    this.mainLoaded = false;
     this.lightboxOpen = true;
     this.zs = 1; this.ztx = 0; this.zty = 0; this.isZoomed = false;
     this.pageViewService.setLocked(true);
@@ -609,6 +621,7 @@ export class AlbumComponent implements OnDestroy {
     this.slideDirection = direction;
     this.changing = true;
     const leaving = this.currentIndex;
+    this.mainLoaded = false;
     action();
     if (this.currentIndex !== leaving) {
       // Ảnh cũ ở lại và trượt ra phía đối diện trong lúc ảnh mới trượt vào

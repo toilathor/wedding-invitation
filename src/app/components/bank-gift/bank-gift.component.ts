@@ -2,11 +2,13 @@ import { CommonModule } from "@angular/common";
 import { Component, Input, inject } from "@angular/core";
 import { BankData } from "../../models/wedding-data.model";
 import { PageViewService } from "../../services/pageview.service";
+import { ImgFadeDirective } from "../../shared/img-fade.directive";
+
 
 @Component({
   selector: "app-bank-gift",
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ImgFadeDirective],
   template: `
     <!-- Container chính có nền be #FBF7F5 -->
     <div
@@ -19,6 +21,7 @@ import { PageViewService } from "../../services/pageview.service";
           class="rounded-t-full border border-b-0 border-[#A12F0C] w-[240px] h-[310px] sm:w-[280px] sm:h-[360px] overflow-hidden shadow-none mx-auto bg-white"
         >
           <img
+            appImgFade
             [src]="data.coverImage"
             alt="Ảnh cưới"
             class="w-full h-full object-cover"
@@ -75,6 +78,7 @@ import { PageViewService } from "../../services/pageview.service";
                   (click)="openQrModal(data.imageBankGroom)"
                 >
                   <img
+                    appImgFade
                     [src]="data.imageBankGroom"
                     alt="QR Chú rể"
                     class="w-[85px] h-[85px] lg:w-[95px] lg:h-[95px] object-cover border border-[#F4DBCE] rounded-lg shadow-sm hover:scale-105 transition-transform"
@@ -91,6 +95,7 @@ import { PageViewService } from "../../services/pageview.service";
                 class="absolute bottom-0 rounded-t-full border border-b-0 border-[#A12F0C] md:w-[300px] md:h-[390px] lg:w-[360px] lg:h-[460px] overflow-hidden shadow-none mx-auto bg-white"
               >
                 <img
+                  appImgFade
                   [src]="data.coverImage"
                   alt="Ảnh cưới"
                   class="w-full h-full object-cover"
@@ -120,6 +125,7 @@ import { PageViewService } from "../../services/pageview.service";
                   (click)="openQrModal(data.imageBankBride)"
                 >
                   <img
+                    appImgFade
                     [src]="data.imageBankBride"
                     alt="QR Cô dâu"
                     class="w-[85px] h-[85px] lg:w-[95px] lg:h-[95px] object-cover border border-[#F4DBCE] rounded-lg shadow-sm hover:scale-105 transition-transform"
@@ -159,6 +165,7 @@ import { PageViewService } from "../../services/pageview.service";
                     (click)="openQrModal(data.imageBankGroom)"
                   >
                     <img
+                      appImgFade
                       [src]="data.imageBankGroom"
                       alt="QR Chú rể"
                       class="w-[80px] h-[80px] sm:w-[90px] sm:h-[90px] object-cover border border-[#F4DBCE] rounded-xl shadow-xs"
@@ -194,6 +201,7 @@ import { PageViewService } from "../../services/pageview.service";
                     (click)="openQrModal(data.imageBankBride)"
                   >
                     <img
+                      appImgFade
                       [src]="data.imageBankBride"
                       alt="QR Cô dâu"
                       class="w-[80px] h-[80px] sm:w-[90px] sm:h-[90px] object-cover border border-[#F4DBCE] rounded-xl shadow-xs"

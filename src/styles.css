@@ -650,3 +650,44 @@ select:focus-visible {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+
+/* ===== Image skeleton (appImgFade): placeholder + "materialize" reveal =====
+   Chỉ transform / opacity / filter. Ảnh ẩn tới khi tải xong; skeleton mờ đi chồng lên lúc ảnh hiện ra. */
+.img-fade { opacity: 0; }
+
+.img-skeleton {
+  position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none;
+  background: linear-gradient(135deg, #f4e4db 0%, #fbf4ef 55%, #f6e8e0 100%);
+  transition: opacity 550ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.img-skeleton::after {
+  content: ""; position: absolute; inset: 0; will-change: transform;
+  background: linear-gradient(100deg, transparent 0%, transparent 32%, rgba(255, 255, 255, 0.72) 50%, transparent 68%, transparent 100%);
+  transform: translateX(-100%);
+  animation: imgSkeletonSweep 1.7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+.img-skeleton-done { opacity: 0; }
+/* Khối giữ chỗ độc lập (không bọc ảnh): dùng khi ảnh chưa có kích thước, ví dụ lightbox */
+.img-skeleton-box {
+  inset: auto; left: 50%; top: 50%; translate: -50% -50%;
+  width: min(78vw, 520px); aspect-ratio: 3 / 4; max-height: 64vh; border-radius: 1rem;
+}
+.img-skeleton-done::after, .img-skeleton-error::after { animation: none; }
+
+@keyframes imgSkeletonSweep { to { transform: translateX(100%); } }
+
+/* Hiện ảnh: từ mờ + hơi phóng to → nét. Dùng animation (fill backwards) để không khóa transform của hover/utility khác. */
+@keyframes imgReveal {
+  from { opacity: 0; filter: blur(14px); transform: scale(1.05); }
+  to { opacity: 1; filter: blur(0); transform: scale(1); }
+}
+@keyframes imgRevealLite { from { opacity: 0; } to { opacity: 1; } }
+
+.img-loaded.img-fade-blur { animation: imgReveal 800ms cubic-bezier(0.23, 1, 0.32, 1) backwards; }
+.img-loaded.img-fade-lite { animation: imgRevealLite 450ms ease-out backwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .img-skeleton::after { animation: none; }
+  .img-loaded.img-fade-blur, .img-loaded.img-fade-lite { animation: imgRevealLite 200ms ease-out backwards; }
+}
