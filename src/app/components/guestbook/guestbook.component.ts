@@ -9,11 +9,13 @@ import confetti from "canvas-confetti";
 import { GuestMessage } from "../../models/wedding-data.model";
 import { GuestbookService } from "../../services/guestbook.service";
 import { ToastService } from "../../services/toast.service";
+import { GuestService } from "../../services/guest.service";
+import { PersonalizePipe } from "../../shared/personalize.pipe";
 
 @Component({
   selector: "app-guestbook",
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PersonalizePipe],
   template: `
     <section
       id="sangtrong-message-id"
@@ -86,7 +88,7 @@ import { ToastService } from "../../services/toast.service";
                   (ngModelChange)="name = $event ? $event.toUpperCase() : ''"
                   name="name"
                   [disabled]="guestbookService.isLimitReached() || isSubmitting"
-                  placeholder="Tên của bạn (tối đa 160 ký tự) *"
+                  [placeholder]="'Tên của {youOne} (tối đa 160 ký tự) *' | personalize"
                   required
                   class="w-full h-10 sm:h-10 px-3.5 sm:px-3.5 rounded-xl border border-stone-300 placeholder-stone-400 text-stone-800 text-[16px] sm:text-sm uppercase focus:outline-none focus:border-[#A12F0C] focus:ring-1 focus:ring-[#A12F0C] transition-all bg-stone-50/50 focus:bg-white shadow-inner disabled:bg-stone-100 disabled:text-stone-400 disabled:cursor-not-allowed"
                 />
@@ -101,8 +103,8 @@ import { ToastService } from "../../services/toast.service";
                   [disabled]="guestbookService.isLimitReached() || isSubmitting"
                   [placeholder]="
                     guestbookService.isLimitReached()
-                      ? 'Bạn đã gửi tối đa 5 lời chúc từ thiết bị này. Cảm ơn tình cảm của bạn! 💕'
-                      : 'Nhập lời chúc của bạn (tối đa 3000 ký tự) *'
+                      ? ('{YouOne} đã gửi tối đa 5 lời chúc từ thiết bị này. Cảm ơn tình cảm của {youOne}! 💕' | personalize)
+                      : ('Nhập lời chúc của {youOne} (tối đa 3000 ký tự) *' | personalize)
                   "
                   required
                   class="w-full h-[130px] sm:h-[155px] md:h-[175px] p-3 sm:p-3.5 pr-10 pb-9 rounded-2xl border border-stone-300 resize-none placeholder-stone-400 text-stone-800 text-[16px] sm:text-sm focus:outline-none focus:border-[#A12F0C] focus:ring-1 focus:ring-[#A12F0C] transition-all bg-stone-50/50 focus:bg-white shadow-inner leading-relaxed disabled:bg-stone-100 disabled:text-stone-400 disabled:cursor-not-allowed"
@@ -258,7 +260,7 @@ import { ToastService } from "../../services/toast.service";
             >
               <div class="flex items-center justify-between mb-1.5">
                 <h4 class="font-bold text-xs sm:text-sm font-prata text-[#A12F0C] uppercase tracking-wide">
-                  {{ myLatestWish.name }} • Bạn
+                  {{ myLatestWish.name }} • {{ '{YouOne}' | personalize }}
                 </h4>
                 <span class="text-[10px] sm:text-[11px] text-stone-400 font-light font-beVietnamPro">
                   {{ myLatestWish.createdAt || "Mới đây" }}
@@ -300,19 +302,25 @@ import { ToastService } from "../../services/toast.service";
 export class GuestbookComponent {
   guestbookService = inject(GuestbookService);
   toastService = inject(ToastService);
+  guestService = inject(GuestService);
 
   name = "";
   content = "";
   isSubmitting = false;
   isSuggestionsOpen = false;
 
-  wishSuggestions: string[] = [
-    "Chúc mừng hạnh phúc! Chúc hai bạn trăm năm hòa hợp, vẹn tròn yêu thương! 💕",
+  private readonly wishTemplates: string[] = [
+    "Chúc mừng hạnh phúc! Chúc {couple} trăm năm hòa hợp, vẹn tròn yêu thương! 💕",
     "Chúc mừng ngày trọng đại! Hạnh phúc bền lâu, trọn vẹn và an yên nhé! 🌸",
-    "Chúc hai bạn bên nhau đầu bạc răng long, sớm đón thiên thần nhỏ đáng yêu! 👶",
-    "Trăm năm tình viên mãn, bạc đầu nghĩa phu thê! Chúc hai bạn mãi ngọt ngào! 🥂",
+    "Chúc {couple} bên nhau đầu bạc răng long, sớm đón thiên thần nhỏ đáng yêu! 👶",
+    "Trăm năm tình viên mãn, bạc đầu nghĩa phu thê! Chúc {couple} mãi ngọt ngào! 🥂",
     "Mừng ngày chung đôi! Chúc tổ ấm nhỏ luôn ngập tràn tiếng cười và hạnh phúc! 💐",
   ];
+
+  /** Gợi ý lời chúc, gọi hai bạn theo xưng hô của khách ({couple}). */
+  get wishSuggestions(): string[] {
+    return this.wishTemplates.map((t) => this.guestService.fmt(t));
+  }
 
   @HostListener("document:click")
   onDocumentClick() {
@@ -353,7 +361,7 @@ export class GuestbookComponent {
 
     if (this.guestbookService.isLimitReached()) {
       this.toastService.show(
-        "Bạn đã gửi tối đa 5 lời chúc từ thiết bị này. Cảm ơn tình cảm của bạn! 💕",
+        this.guestService.fmt("{YouOne} đã gửi tối đa 5 lời chúc từ thiết bị này. Cảm ơn tình cảm của {youOne}! 💕"),
         "info",
       );
       return;
@@ -371,7 +379,7 @@ export class GuestbookComponent {
       });
 
       this.toastService.show(
-        "Cảm ơn bạn đã gửi lời chúc mừng đến dâu rể! 💕",
+        this.guestService.fmt("Cảm ơn {you} đã gửi lời chúc mừng đến dâu rể! 💕"),
         "success",
       );
 

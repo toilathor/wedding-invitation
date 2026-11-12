@@ -33,9 +33,9 @@ export const WEDDING_DATA: WeddingData = {
     month: "11",
     year: "2026",
     location: "Thiết Trụ, Mễ Sở, Hưng Yên",
-    subDescription: "Sự hiện diện của bạn là niềm vinh dự của chúng mình!",
+    subDescription: "Sự hiện diện của {you} là niềm vinh dự của {we}!",
     descriptionHtml:
-      "Hành trình yêu thương của chúng mình sẽ càng ý nghĩa hơn khi có sự chứng kiến và chúc phúc từ những người thân yêu.<br>Cảm ơn bạn đã dành thời gian để cùng chúng mình lưu giữ khoảnh khắc đặc biệt này. 💍✨",
+      "Hành trình yêu thương của {we} sẽ càng ý nghĩa hơn khi có sự chứng kiến và chúc phúc từ những người thân yêu.<br>Cảm ơn {you} đã dành thời gian để cùng {we} lưu giữ khoảnh khắc đặc biệt này. 💍✨",
     countdownDate: "2026-11-28T06:30:00.000Z", // 13:30 UTC+7 (28/11/2026)
   },
 
@@ -46,11 +46,11 @@ export const WEDDING_DATA: WeddingData = {
     imageGroom: "assets/images/couple/groom.webp",
     imageBride: "assets/images/couple/bride.webp",
     contentGroom:
-      "Mỗi lời chúc phúc và sự hiện diện của bạn trong ngày đặc biệt này chính là món quà vô giá với chúng tôi. Hãy cùng chúng tôi tận hưởng niềm vui, tiếng cười và sự ấm áp trong ngày hạnh phúc nhất này!",
+      "Mỗi lời chúc phúc và sự hiện diện của {you} trong ngày đặc biệt này chính là món quà vô giá với {weFormal}. Hãy cùng {weFormal} tận hưởng niềm vui, tiếng cười và sự ấm áp trong ngày hạnh phúc nhất này!",
     contentBride:
-      "Chúng tôi rất vui mừng được chia sẻ khoảnh khắc quan trọng nhất của cuộc đời mình với gia đình, bạn bè và những người thân yêu. Ngày cưới không chỉ là sự khởi đầu của hành trình mới mà còn là dịp để chúng tôi cùng các bạn tạo nên những kỷ niệm đáng nhớ.",
+      "{WeFormal} rất vui mừng được chia sẻ khoảnh khắc quan trọng nhất của cuộc đời mình với gia đình, bạn bè và những người thân yêu. Ngày cưới không chỉ là sự khởi đầu của hành trình mới mà còn là dịp để {weFormal} cùng {youPl} tạo nên những kỷ niệm đáng nhớ.",
     description:
-      "Thật vui vì được gặp và đón tiếp các bạn trong một dịp đặc biệt - Ngày cưới của chúng mình . Chúng mình muốn gửi đến bạn những lời cảm ơn sâu sắc nhất và để bạn biết rằng chúng mình rất hạnh phúc khi thấy bạn ở đó. Cảm ơn các bạn rất nhiều vì sự hiện diện cùng những lời chúc tốt đẹp mà bạn đã dành cho chúng mình nha!",
+      "Thật vui vì được gặp và đón tiếp {youPl} trong một dịp đặc biệt - Ngày cưới của {we} . {We} muốn gửi đến {you} những lời cảm ơn sâu sắc nhất và để {you} biết rằng {we} rất hạnh phúc khi thấy {you} ở đó. Cảm ơn {youPl} rất nhiều vì sự hiện diện cùng những lời chúc tốt đẹp mà {you} đã dành cho {we} {nha}!",
   },
 
   story: <StoryData>{
@@ -185,7 +185,7 @@ export const WEDDING_DATA: WeddingData = {
     bankNameBride: "Vietcombank",
     imageBankBride: "assets/images/bank/qr_bride.webp",
     description:
-      "Nếu có thể, bạn hãy tới tham dự Đám cưới, chung vui và Mừng cưới trực tiếp cho chúng mình nhé ^^. Cảm ơn bạn rất nhiều!",
+      "Nếu có thể, {we} rất mong {you} tới tham dự Đám cưới, chung vui và Mừng cưới trực tiếp {nhe}{smile}. Cảm ơn {you} rất nhiều!",
     coverImage: "assets/images/couple/bank_cover.webp",
   },
 };

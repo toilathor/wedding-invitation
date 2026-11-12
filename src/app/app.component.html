@@ -5,6 +5,7 @@
   <app-cover
     *ngIf="isCoverVisible"
     [data]="weddingData.banner"
+    [guest]="guestService.guest()"
     (opened)="onCoverOpened()"
     (finished)="onCoverFinished()"></app-cover>
 

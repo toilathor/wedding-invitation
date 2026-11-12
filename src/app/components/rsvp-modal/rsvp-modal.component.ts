@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ToastService } from '../../services/toast.service';
 import { RsvpService } from '../../services/rsvp.service';
+import { GuestService } from '../../services/guest.service';
+import { PersonalizePipe } from '../../shared/personalize.pipe';
 import confetti from 'canvas-confetti';
 
 interface GuestOption {
@@ -14,7 +16,7 @@ interface GuestOption {
 @Component({
   selector: 'app-rsvp-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PersonalizePipe],
   template: `
     <div
       role="dialog"
@@ -60,7 +62,7 @@ interface GuestOption {
               Xác nhận tham dự
             </h3>
             <p class="text-stone-600 text-xs md:text-sm font-beVietnamPro italic mt-1 max-w-xs mx-auto">
-              Sự hiện diện của bạn là niềm vinh hạnh to lớn của Quang Thọ &amp; Thúy Hiền
+              {{ 'Sự hiện diện của {you} là niềm vinh hạnh to lớn của Quang Thọ & Thúy Hiền' | personalize }}
             </p>
             <div class="w-16 h-[1.5px] bg-[#A12F0C]/30 mx-auto mt-3"></div>
           </div>
@@ -99,13 +101,13 @@ interface GuestOption {
             <!-- Name Input -->
             <div>
               <label class="block text-[11px] font-semibold uppercase tracking-wider text-stone-700 mb-1 font-prata">
-                Tên của bạn <span class="text-[#A12F0C]">*</span>
+                {{ 'Tên của {youOne}' | personalize }} <span class="text-[#A12F0C]">*</span>
               </label>
               <input
                 type="text"
                 [(ngModel)]="name"
                 name="rsvpName"
-                placeholder="Nhập họ và tên của bạn..."
+                [placeholder]="'Nhập họ và tên của {youOne}...' | personalize"
                 required
                 class="w-full px-4 py-2.5 rounded-xl bg-white border border-[#F4DBCE] text-stone-800 text-[16px] sm:text-sm focus:outline-none focus:border-[#A12F0C] focus:ring-1 focus:ring-[#A12F0C] transition-all shadow-inner font-beVietnamPro"
               />
@@ -152,7 +154,7 @@ interface GuestOption {
                 <!-- Event Selection Cards -->
                 <div>
                   <label class="block text-[11px] font-semibold uppercase tracking-wider text-stone-700 mb-2 font-prata">
-                    Sự kiện bạn sẽ tham dự
+                    {{ 'Sự kiện {you} sẽ tham dự' | personalize }}
                   </label>
                   <div class="grid grid-cols-1 gap-2">
                     <label
@@ -268,7 +270,7 @@ interface GuestOption {
                 [(ngModel)]="note"
                 name="rsvpNote"
                 rows="2"
-                [placeholder]="isAttending ? 'Nhập lời nhắn hoặc lưu ý...' : 'Gửi lời chúc mừng hạnh phúc đến hai bạn...'"
+                [placeholder]="isAttending ? 'Nhập lời nhắn hoặc lưu ý...' : ('Gửi lời chúc mừng hạnh phúc đến {couple}...' | personalize)"
                 class="w-full px-4 py-2.5 rounded-xl bg-white border border-[#F4DBCE] text-stone-800 text-[16px] sm:text-sm focus:outline-none focus:border-[#A12F0C] focus:ring-1 focus:ring-[#A12F0C] transition-all resize-none shadow-inner font-beVietnamPro"></textarea>
             </div>
 
@@ -322,6 +324,7 @@ export class RsvpModalComponent {
   @ViewChild("guestDropdownTrigger") guestDropdownTrigger?: ElementRef<HTMLElement>;
   private toastService = inject(ToastService);
   private rsvpService = inject(RsvpService);
+  guestService = inject(GuestService);
 
   isAttending = true;
   name = '';
@@ -503,9 +506,9 @@ export class RsvpModalComponent {
           origin: { y: 0.6 },
           colors: ['#A12F0C', '#F4DBCE', '#D4AF37']
         });
-        this.toastService.show(`Cảm ơn ${this.name.trim()}! Chúng mình rất mong chờ được đón tiếp bạn. 💕`, 'success', 4000);
+        this.toastService.show(`Cảm ơn ${this.name.trim()}! ${this.guestService.fmt('{We} rất mong chờ được đón tiếp {you}. 💕')}`, 'success', 4000);
       } else {
-        this.toastService.show(`Cảm ơn ${this.name.trim()} đã gửi lời chúc tốt đẹp đến hai đứa mình! 💌`, 'info', 4000);
+        this.toastService.show(`Cảm ơn ${this.name.trim()} đã gửi lời chúc tốt đẹp đến ${this.guestService.fmt('{we}')}! 💌`, 'info', 4000);
       }
 
       setTimeout(() => {

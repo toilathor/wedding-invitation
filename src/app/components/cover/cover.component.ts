@@ -9,10 +9,11 @@ import {
   Output,
   ViewChild,
 } from "@angular/core";
-import { NgFor } from "@angular/common";
+import { NgFor, NgIf } from "@angular/common";
 import confetti from "canvas-confetti";
 import { BannerData } from "../../models/wedding-data.model";
 import { BannerComponent } from "../banner/banner.component";
+import { DEFAULT_GUEST, Guest } from "../../core/guest-rules";
 
 /**
  * Màn mở thiệp: phong bì giấy màu đào (theme.secondary) với mực đỏ đất (theme.primary)
@@ -22,9 +23,18 @@ import { BannerComponent } from "../banner/banner.component";
 @Component({
   selector: "app-cover",
   standalone: true,
-  imports: [NgFor, BannerComponent],
+  imports: [NgFor, NgIf, BannerComponent],
   template: `
-    <div #root class="cover" role="dialog" aria-label="Mở thiệp cưới">
+    <div
+      #root
+      class="cover"
+      role="dialog"
+      aria-label="Mở thiệp cưới"
+      (pointerdown)="onPointerDown($event)"
+      (pointermove)="onPointerMove($event)"
+      (pointerup)="onPointerUp($event)"
+      (pointercancel)="onPointerUp($event)"
+    >
       <!-- Cùng hoa trang trí với banner để lúc chuyển cảnh liền mạch -->
       <img
         src="assets/images/templates/sangtrong/7.png"
@@ -47,10 +57,6 @@ import { BannerComponent } from "../banner/banner.component";
       <button
         type="button"
         class="envelope-btn"
-        (pointerdown)="onPointerDown($event)"
-        (pointermove)="onPointerMove($event)"
-        (pointerup)="onPointerUp($event)"
-        (pointercancel)="onPointerUp($event)"
         (click)="onClick($event)"
         aria-label="Chạm hoặc vuốt lên để mở thiệp"
       >
@@ -79,7 +85,9 @@ import { BannerComponent } from "../banner/banner.component";
               <path d="M10 0 H330 Q340 0 340 10 V12 H0 V10 Q0 0 10 0 Z" fill="url(#cv-throat)" />
               <text x="206" y="172" text-anchor="middle" font-family="Prata, PlayfairDisplay, serif" font-size="13" letter-spacing="6" fill="#A12F0C">THIỆP MỜI</text>
               <text x="34" y="205" font-family="BeVietnamPro, sans-serif" font-size="6.6" letter-spacing=".6" fill="#2A1810" opacity=".85">TRÂN TRỌNG KÍNH MỜI:</text>
-              <path d="M128 205.5 H306" stroke="#A12F0C" stroke-width="1.1" stroke-linecap="round" stroke-dasharray="0 4.2" opacity=".75" />
+              <path *ngIf="!guest.display" d="M128 205.5 H306" stroke="#A12F0C" stroke-width="1.1" stroke-linecap="round" stroke-dasharray="0 4.2" opacity=".75" />
+              <path *ngIf="guest.display" d="M128 207 H306" stroke="#A12F0C" stroke-width=".7" stroke-linecap="round" opacity=".35" />
+              <text data-guest="1" *ngIf="guest.display" x="128" y="204.5" font-family="PinyonScript, 'Pinyon Script', cursive" font-size="17" fill="#A12F0C">{{ guest.display }}</text>
               <rect x=".5" y=".5" width="339" height="229" rx="9.5" fill="none" stroke="#A12F0C" stroke-opacity=".12" />
             </svg>
 
@@ -162,7 +170,7 @@ import { BannerComponent } from "../banner/banner.component";
     .cover {
       position: fixed; inset: 0; z-index: 10000; overflow: hidden;
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; padding: 1.5rem;
-      color: #2A1810;
+      color: #2A1810; touch-action: none; cursor: pointer; user-select: none; -webkit-user-select: none;
       background:
         radial-gradient(ellipse at 85% 92%, rgba(244, 219, 206, .95) 0%, rgba(244, 219, 206, 0) 55%),
         radial-gradient(ellipse at 8% 60%, rgba(244, 219, 206, .6) 0%, rgba(244, 219, 206, 0) 45%),
@@ -236,7 +244,7 @@ import { BannerComponent } from "../banner/banner.component";
       position: relative; font-family: 'PinyonScript', cursive; font-size: clamp(13px, 4.4vw, 20px); line-height: .82; text-align: center;
       color: #7a5212; transform: rotate(-14deg); text-shadow: 0 1px 0 rgba(255, 236, 180, .7), 0 -1px 0 rgba(70, 40, 0, .35);
     }
-    .envelope-btn:active .seal-disc { transform: scale(.93); }
+    .cover:active .seal-disc { transform: scale(.93); }
     .seal-ring { position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid rgba(161, 47, 12, .45); animation: ring 2.2s cubic-bezier(.23, 1, .32, 1) infinite; }
     @keyframes ring { 0% { transform: scale(1); opacity: .7; } 80%, 100% { transform: scale(1.9); opacity: 0; } }
 
@@ -252,6 +260,8 @@ import { BannerComponent } from "../banner/banner.component";
 })
 export class CoverComponent implements AfterViewInit, OnDestroy {
   @Input({ required: true }) data!: BannerData;
+  /** Khách của link cá nhân hoá; `display` rỗng thì phong bì để trống dòng mời như trước. */
+  @Input() guest: Guest = DEFAULT_GUEST;
   @Output() opened = new EventEmitter<void>();
   @Output() finished = new EventEmitter<void>();
 
@@ -311,7 +321,23 @@ export class CoverComponent implements AfterViewInit, OnDestroy {
     this.cardRef.nativeElement
       .querySelectorAll(".reveal, .reveal-left, .reveal-right")
       .forEach((el) => el.classList.add("revealed"));
+    this.fitGuestName();
+    // Font chữ viết tay tải xong thì đo lại (độ rộng chữ thay đổi theo font)
+    document.fonts?.ready.then(() => this.fitGuestName());
     this.render();
+  }
+
+  /** Thu nhỏ chữ nếu tên dài hơn đoạn kẻ chấm trên phong bì (rộng 178 đơn vị SVG). */
+  private fitGuestName() {
+    const el = this.rootRef.nativeElement.querySelector<SVGTextElement>("text[data-guest]");
+    if (!el || !this.guest.display) return;
+    const max = 176;
+    let size = 17;
+    el.setAttribute("font-size", String(size));
+    for (let i = 0; i < 12 && el.getComputedTextLength() > max && size > 8; i++) {
+      size -= 1;
+      el.setAttribute("font-size", String(size));
+    }
   }
 
   @HostListener("window:resize")

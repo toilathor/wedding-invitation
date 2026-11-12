@@ -24,6 +24,7 @@ import { TimelineComponent } from "./components/timeline/timeline.component";
 import { ToastComponent } from "./components/toast/toast.component";
 import { WEDDING_DATA } from "./core/wedding-data";
 import { AudioService } from "./services/audio.service";
+import { GuestService } from "./services/guest.service";
 import { PageViewService } from "./services/pageview.service";
 
 export interface PageInfo {
@@ -55,7 +56,9 @@ export interface PageInfo {
   styleUrls: ["./app.component.css"],
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
-  weddingData = WEDDING_DATA;
+  guestService = inject(GuestService);
+  /** Dữ liệu thiệp đã thay token xưng hô ({you}, {we}...) theo khách của link; không có link cá nhân thì giữ nguyên văn như cũ. */
+  weddingData = this.guestService.personalize(WEDDING_DATA);
   pageViewService = inject(PageViewService);
   audioService = inject(AudioService);
   isRsvpOpen = false;

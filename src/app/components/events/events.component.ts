@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
-import { Component, HostListener, Input } from "@angular/core";
+import { GuestService } from "../../services/guest.service";
+import { Component, HostListener, Input, inject } from "@angular/core";
 import { WeddingEventItem } from "../../models/wedding-data.model";
 
 @Component({
@@ -202,6 +203,7 @@ import { WeddingEventItem } from "../../models/wedding-data.model";
   `,
 })
 export class EventsComponent {
+  guestService = inject(GuestService);
   @Input({ required: true }) events!: WeddingEventItem[];
 
   openCalendarIndex: number | null = null;
@@ -233,7 +235,7 @@ export class EventsComponent {
 
   getGoogleCalendarUrl(item: WeddingEventItem): string {
     const title = `${item.title} - Đám Cưới Quang Thọ & Thúy Hiền`;
-    const details = `Trân trọng kính mời bạn đến tham dự ${item.title} của Quang Thọ & Thúy Hiền.\nĐịa điểm: ${item.address}`;
+    const details = `Trân trọng kính mời ${this.guestService.fmt('{you}')} đến tham dự ${item.title} của Quang Thọ & Thúy Hiền.\nĐịa điểm: ${item.address}`;
     const location = item.address;
 
     const startDate = new Date(item.dateTime);
@@ -251,7 +253,7 @@ export class EventsComponent {
     this.openCalendarIndex = null;
 
     const title = `${item.title} - Đám Cưới Quang Thọ & Thúy Hiền`;
-    const description = `Trân trọng kính mời bạn đến tham dự ${item.title} của Quang Thọ & Thúy Hiền.\nĐịa điểm: ${item.address}`;
+    const description = `Trân trọng kính mời ${this.guestService.fmt('{you}')} đến tham dự ${item.title} của Quang Thọ & Thúy Hiền.\nĐịa điểm: ${item.address}`;
     const location = item.address;
 
     const startDate = new Date(item.dateTime);
