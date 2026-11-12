@@ -6,57 +6,50 @@ import { AudioService } from '../../services/audio.service';
   selector: 'app-music-player',
   standalone: true,
   imports: [CommonModule],
+  styles: [`
+    .player {
+      position: fixed;
+      left: 12px;
+      bottom: calc(12px + env(safe-area-inset-bottom));
+      z-index: 9999;
+      width: 44px;
+      height: 44px;
+      border: 0;
+      border-radius: 9999px;
+      display: grid;
+      place-items: center;
+      color: var(--green);
+      cursor: pointer;
+      transition: transform 220ms var(--ease-out);
+    }
+    .player:active { transform: scale(0.92); transition-duration: 90ms; }
+    @media (min-width: 768px) { .player { left: 24px; bottom: 24px; } }
+
+    /* Ba vạch âm lượng chỉ chuyển động khi nhạc đang phát */
+    .bars { display: flex; align-items: center; gap: 3px; height: 16px; }
+    .bars i { width: 3px; height: 100%; border-radius: 2px; background: currentColor; transform-origin: 50% 50%; transform: scaleY(0.25); }
+    .playing .bars i { animation: bar 900ms ease-in-out infinite; }
+    .playing .bars i:nth-child(2) { animation-delay: -300ms; }
+    .playing .bars i:nth-child(3) { animation-delay: -600ms; }
+    @keyframes bar { 0%, 100% { transform: scaleY(0.3); } 50% { transform: scaleY(1); } }
+
+    .player:not(.playing) { color: var(--text-3); }
+    @media (prefers-reduced-motion: reduce) {
+      .playing .bars i { animation: none; transform: scaleY(0.7); }
+    }
+  `],
   template: `
-    <div
-      class="bii-player"
-      [class.is-playing]="audioService.isPlaying()"
-      [style.--theme-color]="'#A12F0C'"
-      [style.--pulse-color]="'#A12F0C4D'"
+    <button
+      type="button"
+      class="player glass"
+      [class.playing]="audioService.isPlaying()"
+      (click)="audioService.toggle()"
+      [attr.aria-pressed]="audioService.isPlaying()"
+      [attr.aria-label]="audioService.isPlaying() ? 'Tắt nhạc nền' : 'Bật nhạc nền'"
+      [title]="audioService.isPlaying() ? 'Tắt nhạc' : 'Bật nhạc'"
     >
-      <!-- Floating Musical Notes when Playing -->
-      <div
-        *ngIf="audioService.isPlaying()"
-        class="absolute inset-0 pointer-events-none overflow-visible z-0"
-      >
-        <span class="floating-note floating-note-1 text-[#A12F0C] select-none">♪</span>
-        <span class="floating-note floating-note-2 text-[#C04A26] select-none">♫</span>
-        <span class="floating-note floating-note-3 text-[#A12F0C] select-none">♬</span>
-        <span class="floating-note floating-note-4 text-[#D4AF37] select-none">♩</span>
-      </div>
-
-      <button
-        type="button"
-        class="playerIcon"
-        (click)="audioService.toggle()"
-        [attr.aria-label]="
-          audioService.isPlaying() ? 'Tắt nhạc nền' : 'Bật nhạc nền'
-        "
-        [title]="audioService.isPlaying() ? 'Tắt nhạc' : 'Bật nhạc'"
-      >
-        <!-- Spinning Musical Note Icon -->
-        <div
-          class="flex items-center justify-center text-white"
-          [class.animate-spin-music]="audioService.isPlaying()"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-5 h-5 sm:w-6 sm:h-6 text-white drop-shadow-xs"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <path
-              d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"
-            />
-          </svg>
-        </div>
-
-        <!-- Diagonal mute indicator bar when paused -->
-        <div
-          *ngIf="!audioService.isPlaying()"
-          class="absolute w-6 sm:w-7 h-[2px] bg-white/90 rotate-45 rounded-full shadow-xs pointer-events-none"
-        ></div>
-      </button>
-    </div>
+      <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>
+    </button>
   `
 })
 export class MusicPlayerComponent {

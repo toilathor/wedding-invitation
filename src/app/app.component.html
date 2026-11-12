@@ -1,6 +1,6 @@
 <div
   #pageContainer
-  class="pageview-container bg-[#FBF7F5] selection:bg-[#A12F0C] selection:text-white">
+  class="pageview-container bg-ivory">
 
   <app-cover
     *ngIf="isCoverVisible"
@@ -57,19 +57,13 @@
     <app-bank-gift [data]="weddingData.bank"></app-bank-gift>
 
     <!-- Footer -->
-    <footer class="bg-[#2A1810] text-[#F4DBCE] pt-8 pb-10 sm:pt-10 sm:pb-12 px-6 sm:px-12 text-center border-t border-[#F4DBCE]/20 mt-0 relative z-10">
-      <div class="max-w-md mx-auto space-y-2">
-        <h3 class="text-2xl sm:text-3xl md:text-4xl font-pinyon text-white">
-          Quang Thọ &amp; Thúy Hiền
-        </h3>
-        <p class="text-[11px] sm:text-xs md:text-sm font-light text-[#F4DBCE]/80 tracking-widest uppercase">
-          28 . 11 . 2026 • Thank you for celebrating with us!
-        </p>
-        <div class="w-12 h-[1px] bg-[#F4DBCE]/30 mx-auto my-2"></div>
-        <p class="text-[10px] sm:text-[11px] text-stone-400">
-          Thiệp cưới số • Made with love &amp; happiness ❤️
-        </p>
-      </div>
+    <footer class="bg-garden-900 text-white text-center px-6 pt-16 pb-28 sm:pt-20 sm:pb-24">
+      <p class="eyebrow !text-white/60">Thank you</p>
+      <h3 class="font-pinyon text-5xl sm:text-6xl leading-[1.1] mt-3">
+        Quang Thọ &amp; Thúy Hiền
+      </h3>
+      <p class="mt-4 font-prata text-sm tracking-[0.3em] text-white/75 tabular-nums">28 · 11 · 2026</p>
+      <p class="mt-10 text-xs text-white/40">Thiệp cưới số · Made with love</p>
     </footer>
   </div>
 
@@ -92,11 +86,9 @@
   class="scroll-content-hint"
   aria-label="Còn nội dung bên dưới"
   >
-    <svg class="scroll-content-icon" viewBox="0 0 24 24" aria-hidden="true">
-      <rect x="6.5" y="2.5" width="11" height="19" rx="5.5" />
-      <path d="M12 6v4" />
-      <path d="M9.5 17l2.5 2.5 2.5-2.5" />
-    </svg>
+    <span class="scroll-content-chip glass-dark">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+    </span>
   </div>
 
   <!-- Floating Audio Player (Bottom-Left) -->

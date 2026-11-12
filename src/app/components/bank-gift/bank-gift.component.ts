@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input, inject } from "@angular/core";
+import { Component, Input, OnInit, inject } from "@angular/core";
 import { BankData } from "../../models/wedding-data.model";
 import { PageViewService } from "../../services/pageview.service";
 import { ImgFadeDirective } from "../../shared/img-fade.directive";
@@ -9,295 +9,127 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
   selector: "app-bank-gift",
   standalone: true,
   imports: [CommonModule, ImgFadeDirective],
+  styles: [`
+    .gift-row { border: 0; background: none; font: inherit; color: inherit; text-align: left; transition: background-color 160ms ease; }
+    .gift-row:active { background: rgba(23, 36, 27, 0.05); }
+    @media (hover: hover) { .gift-row:hover { background: rgba(23, 36, 27, 0.03); } }
+    .gift-row:active .gift-qr { transform: scale(0.96); }
+    .gift-qr { transition: transform 220ms var(--ease-out); }
+  `],
   template: `
-    <!-- Container chính có nền be #FBF7F5 -->
-    <div
-      id="bank-gift-section"
-      class="w-full relative bg-[#FBF7F5] overflow-visible pt-8 sm:pt-10 md:pt-48 lg:pt-64 pb-0 mb-0 flex flex-col justify-end"
-    >
-      <!-- Khung ảnh vòm trên Mobile: Nằm tự nhiên ở nền be #FBF7F5 phía trên, không nằm trong dải trắng -->
-      <div class="block md:hidden mx-auto overflow-visible reveal delay-200 z-30 pb-0 flex justify-center">
-        <div
-          class="rounded-t-full border border-b-0 border-[#A12F0C] w-[240px] h-[310px] sm:w-[280px] sm:h-[360px] overflow-hidden shadow-none mx-auto bg-white"
-        >
-          <img
-            appImgFade
-            [src]="data.coverImage"
-            alt="Ảnh cưới"
-            class="w-full h-full object-cover"
-            style="object-position: 50% 39.62%;"
-          />
-        </div>
-      </div>
+    <section id="bank-gift-section" class="section bg-ivory">
+      <div class="section-inner">
+        <header class="section-head reveal">
+          <p class="eyebrow">Gửi trao yêu thương</p>
+          <h2 class="script-title">Mừng cưới</h2>
+          <p class="lead mt-2">{{ data.description }}</p>
+        </header>
 
-      <!-- DẢI MÀU TRẮNG ÔM KHÍT (Chỉ cao đúng bằng khối nội dung Mừng cưới QR/STK) -->
-      <div
-        class="w-full relative bg-white z-10 pt-4 sm:pt-5 md:pt-4 pb-4 md:pb-0 mb-0"
-      >
-        <!-- Side Flora Ornaments bám sát theo baseline đáy của dải trắng này -->
-        <img
-          src="assets/images/templates/sangtrong/9.png"
-          alt="Decor Left"
-          class="absolute bottom-0 -left-2 md:w-[160px] lg:w-[210px] xl:w-[250px] h-auto hidden md:block pointer-events-none z-20"
-        />
-        <img
-          src="assets/images/templates/sangtrong/8.png"
-          alt="Decor Right"
-          class="absolute bottom-0 -right-2 md:w-[160px] lg:w-[210px] xl:w-[250px] h-auto hidden md:block pointer-events-none z-20"
-        />
+        <!-- Một thẻ duy nhất: ảnh ở trên (bên trái trên màn rộng), hai dòng mừng cưới ở dưới -->
+        <div class="card overflow-hidden max-w-md md:max-w-3xl mx-auto md:grid md:grid-cols-[5fr_6fr] reveal delay-100">
+          <div class="relative aspect-[4/3] md:aspect-auto md:min-h-[400px] bg-garden-50">
+            <img
+              appImgFade
+              [src]="data.coverImage"
+              alt="Ảnh cưới"
+              class="absolute inset-0 w-full h-full object-cover"
+              style="object-position: 50% 36%;"
+            />
+          </div>
 
-        <div class="max-w-[1443px] mx-auto px-4 sm:px-[15px]">
-          <!-- 3 KHỐI BẰNG FLEXBOX (Desktop): Căn đáy items-end, tâm giữa và không bao giờ bị lệch hay vỡ -->
-          <div
-            class="flex flex-col md:flex-row items-center md:items-end justify-center md:gap-4 lg:gap-8 max-w-5xl mx-auto pb-0 mb-0"
-          >
-            <!-- 1. Mừng cưới đến chú rể (Desktop: Bên trái - CĂN PHẢI) -->
-            <div
-              class="hidden md:flex flex-1 flex-col items-end text-right pt-8 sm:pt-10 md:pt-12 pb-12 sm:pb-14 md:pb-16 mb-0 px-2 reveal-left delay-100"
-            >
-              <h3
-                class="z-20 text-lg md:text-xl lg:text-2xl font-prata mb-4 w-full text-right text-[#A12F0C] leading-none"
+          <div class="flex flex-col justify-center md:py-3">
+            <ng-container *ngFor="let who of people; let last = last">
+              <button
+                type="button"
+                (click)="openQrModal(who)"
+                class="gift-row w-full flex items-center gap-4 px-5 py-4 sm:px-7 sm:py-5 cursor-pointer"
+                [attr.aria-label]="'Mở mã QR mừng cưới ' + who.label + ' ' + who.name"
               >
-                Mừng cưới đến chú rể
-              </h3>
-              <div
-                class="w-full flex flex-row items-center justify-end gap-3 lg:gap-4"
-              >
-                <div class="flex flex-col items-end text-right gap-1">
-                  <p class="font-prata font-semibold text-stone-800 text-xs">
-                    {{ data.bankNameGroom }}
-                  </p>
-                  <p
-                    class="font-prata font-bold text-sm lg:text-base text-[#A12F0C]"
-                  >
-                    {{ data.nameGroom }}
-                  </p>
-                </div>
-                <div
-                  class="flex-shrink-0 cursor-pointer"
-                  (click)="openQrModal(data.imageBankGroom)"
-                >
-                  <img
-                    appImgFade
-                    [src]="data.imageBankGroom"
-                    alt="QR Chú rể"
-                    class="w-[85px] h-[85px] lg:w-[95px] lg:h-[95px] object-cover border border-[#F4DBCE] rounded-lg shadow-sm hover:scale-105 transition-transform"
-                  />
-                </div>
-              </div>
-            </div>
+                <!-- Ảnh VietQR là thẻ dọc 17:22, hiện trọn vẹn chứ không cắt -->
+                <span class="gift-qr relative shrink-0 w-[68px] sm:w-20 aspect-[17/22] rounded-xl overflow-hidden bg-white ring-1 ring-garden-900/10">
+                  <img appImgFade="fade" [src]="who.qr" alt="" class="w-full h-full object-contain" />
+                </span>
 
-            <!-- 2. Khung ảnh vòm ĐỨNG GIỮA (Chỉ hiển thị trên Desktop: absolute nhô cao chạm sát đáy dải trắng) -->
-            <div
-              class="hidden md:flex relative flex-shrink-0 mx-auto overflow-visible reveal delay-200 pb-0 mb-0 z-30 justify-center items-end"
-            >
-              <div
-                class="absolute bottom-0 rounded-t-full border border-b-0 border-[#A12F0C] md:w-[300px] md:h-[390px] lg:w-[360px] lg:h-[460px] overflow-hidden shadow-none mx-auto bg-white"
-              >
-                <img
-                  appImgFade
-                  [src]="data.coverImage"
-                  alt="Ảnh cưới"
-                  class="w-full h-full object-cover"
-                  style="object-position: 50% 39.62%;"
-                />
-              </div>
-              <!-- Placeholder desktop để giữ chiều rộng -->
-              <div
-                class="w-[240px] sm:w-[280px] md:w-[300px] lg:w-[360px] h-0 pointer-events-none"
-              ></div>
-            </div>
+                <span class="min-w-0 flex-1 flex flex-col">
+                  <span class="eyebrow">{{ who.label }}</span>
+                  <span class="mt-1 text-[1.0625rem] font-semibold text-garden-900 leading-snug tracking-[-0.01em]">{{ who.name }}</span>
+                  <span class="mt-0.5 text-[0.875rem] text-garden-900/60">{{ who.bank }}</span>
+                </span>
 
-            <!-- 3. Mừng cưới đến cô dâu (Desktop: Bên phải - CĂN TRÁI) -->
-            <div
-              class="hidden md:flex flex-1 flex-col items-start text-left pt-8 sm:pt-10 md:pt-12 pb-12 sm:pb-14 md:pb-16 mb-0 px-2 reveal-right delay-300"
-            >
-              <h3
-                class="z-20 text-lg md:text-xl lg:text-2xl font-prata mb-4 w-full text-left text-[#A12F0C] leading-none"
-              >
-                Mừng cưới đến cô dâu
-              </h3>
-              <div
-                class="w-full flex flex-row items-center justify-start gap-3 lg:gap-4"
-              >
-                <div
-                  class="flex-shrink-0 cursor-pointer"
-                  (click)="openQrModal(data.imageBankBride)"
-                >
-                  <img
-                    appImgFade
-                    [src]="data.imageBankBride"
-                    alt="QR Cô dâu"
-                    class="w-[85px] h-[85px] lg:w-[95px] lg:h-[95px] object-cover border border-[#F4DBCE] rounded-lg shadow-sm hover:scale-105 transition-transform"
-                  />
-                </div>
-                <div class="flex flex-col items-start text-left gap-1">
-                  <p class="font-prata font-semibold text-stone-800 text-xs">
-                    {{ data.bankNameBride }}
-                  </p>
-                  <p
-                    class="font-prata font-bold text-sm lg:text-base text-[#A12F0C]"
-                  >
-                    {{ data.nameBride }}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Mobile Bank Cards (Groom & Bride - Centered, Beautiful Symmetry) -->
-            <div
-              class="w-full flex flex-col items-center gap-6 py-6 px-4 md:hidden"
-            >
-              <!-- Mobile Groom Bank -->
-              <div
-                class="w-full max-w-sm flex flex-col items-center text-center reveal delay-100"
-              >
-                <h3
-                  class="z-20 text-base sm:text-lg font-prata mb-3 w-full text-center text-[#A12F0C]"
-                >
-                  Mừng cưới đến chú rể
-                </h3>
-                <div
-                  class="w-full flex flex-row items-center justify-center gap-3.5 sm:gap-4 bg-[#FBF7F5]/70 p-3.5 rounded-2xl border border-[#F4DBCE]/60 shadow-xs"
-                >
-                  <div
-                    class="flex-shrink-0 cursor-pointer"
-                    (click)="openQrModal(data.imageBankGroom)"
-                  >
-                    <img
-                      appImgFade
-                      [src]="data.imageBankGroom"
-                      alt="QR Chú rể"
-                      class="w-[80px] h-[80px] sm:w-[90px] sm:h-[90px] object-cover border border-[#F4DBCE] rounded-xl shadow-xs"
-                    />
-                  </div>
-                  <div class="flex flex-col items-start text-left gap-0.5">
-                    <p class="font-prata font-semibold text-stone-800 text-xs">
-                      {{ data.bankNameGroom }}
-                    </p>
-                    <p
-                      class="font-prata font-bold text-sm sm:text-base text-[#A12F0C]"
-                    >
-                      {{ data.nameGroom }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Mobile Bride Bank -->
-              <div
-                class="w-full max-w-sm flex flex-col items-center text-center reveal delay-200"
-              >
-                <h3
-                  class="z-20 text-base sm:text-lg font-prata mb-3 w-full text-center text-[#A12F0C]"
-                >
-                  Mừng cưới đến cô dâu
-                </h3>
-                <div
-                  class="w-full flex flex-row items-center justify-center gap-3.5 sm:gap-4 bg-[#FBF7F5]/70 p-3.5 rounded-2xl border border-[#F4DBCE]/60 shadow-xs"
-                >
-                  <div
-                    class="flex-shrink-0 cursor-pointer"
-                    (click)="openQrModal(data.imageBankBride)"
-                  >
-                    <img
-                      appImgFade
-                      [src]="data.imageBankBride"
-                      alt="QR Cô dâu"
-                      class="w-[80px] h-[80px] sm:w-[90px] sm:h-[90px] object-cover border border-[#F4DBCE] rounded-xl shadow-xs"
-                    />
-                  </div>
-                  <div class="flex flex-col items-start text-left gap-0.5">
-                    <p class="font-prata font-semibold text-stone-800 text-xs">
-                      {{ data.bankNameBride }}
-                    </p>
-                    <p
-                      class="font-prata font-bold text-sm sm:text-base text-[#A12F0C]"
-                    >
-                      {{ data.nameBride }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+                <span class="shrink-0 inline-flex items-center gap-1 rounded-full bg-garden-700/10 text-garden-700 text-[0.8125rem] font-medium pl-3 pr-2 py-1.5">
+                  Mở mã
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+                </span>
+              </button>
+              <div *ngIf="!last" class="h-px bg-garden-900/10 ml-[108px] sm:ml-[136px] mr-5 sm:mr-7"></div>
+            </ng-container>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- LAYOUT RIÊNG BIỆT: Tiêu đề & Lời chúc Mừng cưới (Nền #FBF7F5, độ cao x1.5: py-10 sm:py-14 md:py-16) -->
+    <!-- QR phóng to: nền mờ để tập trung, chạm ra ngoài để đóng -->
     <div
-      class="w-full bg-[#FBF7F5] py-10 sm:py-14 md:py-16 text-center px-4 sm:px-[15px] reveal"
-    >
-      <h2
-        class="text-[46px] sm:text-[56px] md:text-[64px] lg:text-[70px] font-pinyonScript italic text-[#A12F0C] leading-tight"
-      >
-        Mừng cưới
-      </h2>
-      <div
-        class="mt-2.5 max-w-xl mx-auto text-center text-stone-600 font-light font-beVietnamPro text-sm sm:text-base leading-relaxed px-4"
-      >
-        <p>{{ data.description }}</p>
-      </div>
-    </div>
-
-    <!-- QR Zoom Modal -->
-    <div
-      *ngIf="selectedQr"
+      *ngIf="selected as who"
       (click)="closeQrModal()"
-      class="fixed inset-0 z-[99999] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="'Mã QR mừng cưới ' + who.label"
+      class="fixed inset-0 z-[99999] bg-garden-950/55 backdrop-blur-md flex items-center justify-center p-5 rsvp-backdrop-in"
     >
       <div
-        class="bg-white rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl relative"
+        class="sheet-in bg-white rounded-[32px] p-5 max-w-[340px] w-full shadow-float relative"
         (click)="$event.stopPropagation()"
       >
-        <button
-          (click)="closeQrModal()"
-          class="absolute top-4 right-4 p-2 rounded-full text-stone-400 hover:text-stone-700"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-6 h-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+        <div class="flex items-start justify-between gap-3 mb-4 pl-1">
+          <div class="min-w-0">
+            <p class="eyebrow">Mừng cưới {{ who.label }}</p>
+            <h4 class="mt-1 text-[1.0625rem] font-semibold text-garden-900 tracking-[-0.01em] leading-snug">{{ who.name }}</h4>
+            <p class="text-[0.875rem] text-garden-900/60">{{ who.bank }}</p>
+          </div>
+          <button
+            type="button"
+            (click)="closeQrModal()"
+            aria-label="Đóng"
+            class="shrink-0 w-9 h-9 rounded-full bg-garden-900/[0.06] text-garden-900/60 flex items-center justify-center active:scale-90 transition-transform"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
-        <h4 class="font-playfair font-bold text-xl text-[#A12F0C] mb-4">
-          Mã QR Chuyển Khoản
-        </h4>
-        <img
-          [src]="selectedQr"
-          alt="Mã QR"
-          class="w-full h-auto rounded-xl mb-4"
-        />
-        <p class="text-xs text-stone-500">
-          Quét mã QR qua ứng dụng ngân hàng bất kỳ
-        </p>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <img [src]="who.qr" [alt]="'Mã QR ' + who.label" class="w-full h-auto max-h-[62svh] object-contain rounded-2xl ring-1 ring-garden-900/10" />
+        <p class="mt-3.5 text-center text-[0.8125rem] text-garden-900/60">Quét mã bằng ứng dụng ngân hàng bất kỳ</p>
       </div>
     </div>
   `,
 })
-export class BankGiftComponent {
+export class BankGiftComponent implements OnInit {
   @Input({ required: true }) data!: BankData;
   private pageViewService = inject(PageViewService);
 
-  selectedQr: string | null = null;
+  selected: { label: string; bank: string; name: string; qr: string } | null = null;
 
-  openQrModal(qrUrl: string) {
-    this.selectedQr = qrUrl;
+  // Tạo một lần duy nhất: nếu trả mảng mới ở mỗi lần render, *ngFor sẽ dựng lại thẻ <img>,
+  // ảnh tải lại → kích hoạt render → lặp vô hạn và treo trang.
+  people: { label: string; bank: string; name: string; qr: string }[] = [];
+
+  ngOnInit() {
+    this.people = [
+      { label: "Chú rể", bank: this.data.bankNameGroom, name: this.data.nameGroom, qr: this.data.imageBankGroom },
+      { label: "Cô dâu", bank: this.data.bankNameBride, name: this.data.nameBride, qr: this.data.imageBankBride },
+    ];
+  }
+
+  openQrModal(who: { label: string; bank: string; name: string; qr: string }) {
+    this.selected = who;
     this.pageViewService.setLocked(true);
   }
 
   closeQrModal() {
-    this.selectedQr = null;
+    this.selected = null;
     this.pageViewService.setLocked(false);
   }
 }

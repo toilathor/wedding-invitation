@@ -35,13 +35,6 @@ import { DEFAULT_GUEST, Guest } from "../../core/guest-rules";
       (pointerup)="onPointerUp($event)"
       (pointercancel)="onPointerUp($event)"
     >
-      <!-- Cùng hoa trang trí với banner để lúc chuyển cảnh liền mạch -->
-      <img
-        src="assets/images/templates/sangtrong/7.png"
-        alt=""
-        class="absolute top-0 left-0 w-[140px] sm:w-[200px] md:w-[240px] lg:w-[300px] xl:w-[400px] h-auto pointer-events-none opacity-85 sm:opacity-95"
-      />
-
       <div class="petals" aria-hidden="true">
         <span
           *ngFor="let p of petals"
@@ -66,7 +59,7 @@ import { DEFAULT_GUEST, Guest } from "../../core/guest-rules";
 
             <!-- Mặt sau phong bì -->
             <svg class="layer env-part back" viewBox="0 0 340 230" aria-hidden="true">
-              <rect width="340" height="230" rx="10" fill="#E6C6B4" />
+              <rect width="340" height="230" rx="10" fill="#C5D1B8" />
               <rect width="340" height="230" rx="10" filter="url(#cv-paper)" opacity=".5" />
             </svg>
 
@@ -83,12 +76,12 @@ import { DEFAULT_GUEST, Guest } from "../../core/guest-rules";
               <rect width="340" height="230" rx="10" fill="url(#cv-paper-front)" />
               <rect width="340" height="230" rx="10" filter="url(#cv-paper)" opacity=".55" />
               <path d="M10 0 H330 Q340 0 340 10 V12 H0 V10 Q0 0 10 0 Z" fill="url(#cv-throat)" />
-              <text x="206" y="172" text-anchor="middle" font-family="Prata, PlayfairDisplay, serif" font-size="13" letter-spacing="6" fill="#A12F0C">THIỆP MỜI</text>
-              <text x="34" y="205" font-family="BeVietnamPro, sans-serif" font-size="6.6" letter-spacing=".6" fill="#2A1810" opacity=".85">TRÂN TRỌNG KÍNH MỜI:</text>
-              <path *ngIf="!guest.display" d="M128 205.5 H306" stroke="#A12F0C" stroke-width="1.1" stroke-linecap="round" stroke-dasharray="0 4.2" opacity=".75" />
-              <path *ngIf="guest.display" d="M128 207 H306" stroke="#A12F0C" stroke-width=".7" stroke-linecap="round" opacity=".35" />
-              <text data-guest="1" *ngIf="guest.display" x="128" y="204.5" font-family="PinyonScript, 'Pinyon Script', cursive" font-size="17" fill="#A12F0C">{{ guest.display }}</text>
-              <rect x=".5" y=".5" width="339" height="229" rx="9.5" fill="none" stroke="#A12F0C" stroke-opacity=".12" />
+              <text x="206" y="172" text-anchor="middle" font-family="Prata, PlayfairDisplay, serif" font-size="13" letter-spacing="6" fill="#2F4A38">THIỆP MỜI</text>
+              <text x="34" y="205" font-family="BeVietnamPro, sans-serif" font-size="6.6" letter-spacing=".6" fill="#17241B" opacity=".85">TRÂN TRỌNG KÍNH MỜI:</text>
+              <path *ngIf="!guest.display" d="M128 205.5 H306" stroke="#2F4A38" stroke-width="1.1" stroke-linecap="round" stroke-dasharray="0 4.2" opacity=".75" />
+              <path *ngIf="guest.display" d="M128 207 H306" stroke="#2F4A38" stroke-width=".7" stroke-linecap="round" opacity=".35" />
+              <text data-guest="1" *ngIf="guest.display" x="128" y="204.5" font-family="PinyonScript, 'Pinyon Script', cursive" font-size="17" fill="#2F4A38">{{ guest.display }}</text>
+              <rect x=".5" y=".5" width="339" height="229" rx="9.5" fill="none" stroke="#2F4A38" stroke-opacity=".12" />
             </svg>
 
             <!-- Nắp phong bì: cạnh vát chéo như mẫu -->
@@ -98,27 +91,27 @@ import { DEFAULT_GUEST, Guest } from "../../core/guest-rules";
                 <path d="M10 0 H330 Q340 0 340 10 V86 Q340 92.5 333 94 Q170 121 7 140.5 Q0 141.5 0 134 V10 Q0 0 10 0 Z" fill="url(#cv-paper-flap)" />
                 <path d="M10 0 H330 Q340 0 340 10 V86 Q340 92.5 333 94 Q170 121 7 140.5 Q0 141.5 0 134 V10 Q0 0 10 0 Z" filter="url(#cv-paper)" opacity=".5" clip-path="url(#cv-flap-clip)" />
                 <path d="M7 140.5 Q170 121 333 94" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="1.1" stroke-linecap="round" />
-                <path d="M10 .6 H330" stroke="#7A3A1E" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round" />
+                <path d="M10 .6 H330" stroke="#1E3324" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round" />
                 <!-- Monogram -->
-                <ellipse cx="128" cy="78" rx="34" ry="13" fill="#A12F0C" opacity=".07" transform="rotate(-24 128 78)" />
-                <g fill="none" stroke="#A12F0C" stroke-width=".8" stroke-linecap="round" opacity=".42">
+                <ellipse cx="128" cy="78" rx="34" ry="13" fill="#2F4A38" opacity=".07" transform="rotate(-24 128 78)" />
+                <g fill="none" stroke="#2F4A38" stroke-width=".8" stroke-linecap="round" opacity=".42">
                   <path d="M94 98 C108 82 124 72 142 67" />
                   <path d="M98 100 C114 94 130 85 141 72 C128 74 110 84 98 100 Z" />
                   <path d="M94 98 C104 103 120 102 132 93 C118 92 104 94 94 98 Z" />
                   <path d="M102 88 C108 76 120 66 134 62 C124 70 112 80 102 88 Z" />
                 </g>
-                <text font-family="Prata, PlayfairDisplay, serif" font-size="6" letter-spacing="2.4" fill="#2A1810" opacity=".8">
+                <text font-family="Prata, PlayfairDisplay, serif" font-size="6" letter-spacing="2.4" fill="#17241B" opacity=".8">
                   <textPath href="#cv-arc" startOffset="50%" text-anchor="middle">SAVE THE DATE · {{ data.day }}.{{ data.month }}.{{ data.year }}</textPath>
                 </text>
-                <text x="140" y="80" text-anchor="middle" font-family="PlayfairDisplay, Prata, serif" font-style="italic" font-size="46" fill="#A12F0C">{{ initials[0] }}</text>
-                <text x="168" y="96" text-anchor="middle" font-family="PlayfairDisplay, Prata, serif" font-style="italic" font-size="46" fill="#A12F0C">{{ initials[1] }}</text>
+                <text x="140" y="80" text-anchor="middle" font-family="PlayfairDisplay, Prata, serif" font-style="italic" font-size="46" fill="#2F4A38">{{ initials[0] }}</text>
+                <text x="168" y="96" text-anchor="middle" font-family="PlayfairDisplay, Prata, serif" font-style="italic" font-size="46" fill="#2F4A38">{{ initials[1] }}</text>
               </svg>
               <svg class="layer face inner" viewBox="0 0 340 230" aria-hidden="true">
                 <!-- Cùng một đường viền với mặt trước, lật ngang để sau khi xoay Y 180° trùng khớp -->
                 <g transform="translate(340 0) scale(-1 1)">
-                  <path d="M10 0 H330 Q340 0 340 10 V86 Q340 92.5 333 94 Q170 121 7 140.5 Q0 141.5 0 134 V10 Q0 0 10 0 Z" fill="#A12F0C" />
+                  <path d="M10 0 H330 Q340 0 340 10 V86 Q340 92.5 333 94 Q170 121 7 140.5 Q0 141.5 0 134 V10 Q0 0 10 0 Z" fill="#2F4A38" />
                   <path d="M10 0 H330 Q340 0 340 10 V86 Q340 92.5 333 94 Q170 121 7 140.5 Q0 141.5 0 134 V10 Q0 0 10 0 Z" fill="url(#cv-liner)" />
-                  <path d="M18 7 H322 Q331 7 331 16 V84 Q331 88 326 89 Q170 114 14 132 Q9 133 9 128 V16 Q9 7 18 7 Z" fill="none" stroke="#F4DBCE" stroke-opacity=".55" stroke-width=".8" stroke-linejoin="round" />
+                  <path d="M18 7 H322 Q331 7 331 16 V84 Q331 88 326 89 Q170 114 14 132 Q9 133 9 128 V16 Q9 7 18 7 Z" fill="none" stroke="#DCE5D3" stroke-opacity=".55" stroke-width=".8" stroke-linejoin="round" />
                 </g>
               </svg>
             </div>
@@ -138,24 +131,24 @@ import { DEFAULT_GUEST, Guest } from "../../core/guest-rules";
       <svg width="0" height="0" style="position:absolute" aria-hidden="true">
         <defs>
           <linearGradient id="cv-paper-front" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#FAEAE1" />
-            <stop offset="1" stop-color="#F1D5C6" />
+            <stop offset="0" stop-color="#EDF1E4" />
+            <stop offset="1" stop-color="#D8E1CC" />
           </linearGradient>
           <linearGradient id="cv-paper-flap" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#FCF1EA" />
-            <stop offset="1" stop-color="#F6E0D4" />
+            <stop offset="0" stop-color="#F3F6EC" />
+            <stop offset="1" stop-color="#E2E9D8" />
           </linearGradient>
           <linearGradient id="cv-throat" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#7A3A1E" stop-opacity=".14" />
-            <stop offset="1" stop-color="#7A3A1E" stop-opacity="0" />
+            <stop offset="0" stop-color="#1E3324" stop-opacity=".14" />
+            <stop offset="1" stop-color="#1E3324" stop-opacity="0" />
           </linearGradient>
           <pattern id="cv-liner" width="16" height="16" patternUnits="userSpaceOnUse">
-            <path d="M8 1 L15 8 L8 15 L1 8 Z" fill="none" stroke="#F4DBCE" stroke-opacity=".22" stroke-width=".8" />
-            <circle cx="8" cy="8" r="1" fill="#F4DBCE" fill-opacity=".35" />
+            <path d="M8 1 L15 8 L8 15 L1 8 Z" fill="none" stroke="#DCE5D3" stroke-opacity=".22" stroke-width=".8" />
+            <circle cx="8" cy="8" r="1" fill="#DCE5D3" fill-opacity=".35" />
           </pattern>
           <filter id="cv-paper" x="0" y="0" width="100%" height="100%">
             <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch" />
-            <feColorMatrix values="0 0 0 0 .48  0 0 0 0 .23  0 0 0 0 .12  0 0 0 .13 0" />
+            <feColorMatrix values="0 0 0 0 .12  0 0 0 0 .2  0 0 0 0 .14  0 0 0 .13 0" />
           </filter>
           <filter id="cv-blur"><feGaussianBlur stdDeviation="3" /></filter>
           <clipPath id="cv-flap-clip"><path d="M10 0 H330 Q340 0 340 10 V86 Q340 92.5 333 94 Q170 121 7 140.5 Q0 141.5 0 134 V10 Q0 0 10 0 Z" /></clipPath>
@@ -170,19 +163,19 @@ import { DEFAULT_GUEST, Guest } from "../../core/guest-rules";
     .cover {
       position: fixed; inset: 0; z-index: 10000; overflow: hidden;
       display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; padding: 1.5rem;
-      color: #2A1810; touch-action: none; cursor: pointer; user-select: none; -webkit-user-select: none;
+      color: #17241B; touch-action: none; cursor: pointer; user-select: none; -webkit-user-select: none;
       background:
-        radial-gradient(ellipse at 85% 92%, rgba(244, 219, 206, .95) 0%, rgba(244, 219, 206, 0) 55%),
-        radial-gradient(ellipse at 8% 60%, rgba(244, 219, 206, .6) 0%, rgba(244, 219, 206, 0) 45%),
-        #FBF7F5;
+        radial-gradient(ellipse at 85% 92%, rgba(220, 229, 211, .95) 0%, rgba(220, 229, 211, 0) 55%),
+        radial-gradient(ellipse at 8% 60%, rgba(220, 229, 211, .6) 0%, rgba(220, 229, 211, 0) 45%),
+        #F6F4EC;
     }
 
     .names {
       font-family: 'PinyonScript', cursive; font-size: clamp(1.8rem, 8.2vw, 2.8rem); line-height: 1.1;
-      white-space: nowrap; color: #A12F0C; text-align: center;
+      white-space: nowrap; color: #2F4A38; text-align: center;
     }
     .hint {
-      margin: 0; font-size: 11px; letter-spacing: .28em; text-transform: uppercase; color: #2A1810; opacity: .6; text-align: center;
+      margin: 0; font-size: 11px; letter-spacing: .28em; text-transform: uppercase; color: #17241B; opacity: .6; text-align: center;
       animation: hint 2.4s ease-in-out infinite;
     }
     @keyframes hint { 0%, 100% { opacity: .3; } 50% { opacity: .7; } }
@@ -191,7 +184,7 @@ import { DEFAULT_GUEST, Guest } from "../../core/guest-rules";
     .petals { position: absolute; inset: 0; pointer-events: none; }
     .petal {
       position: absolute; top: -24px; left: var(--x); width: var(--size); height: calc(var(--size) * 1.25);
-      border-radius: 0 100% 0 100%; background: linear-gradient(135deg, #fbe3d8, #eeb9a3);
+      border-radius: 0 100% 0 100%; background: linear-gradient(135deg, #FFFFFF, #E6ECDD); box-shadow: 0 1px 3px rgba(23, 36, 27, .1);
       opacity: 0; animation: fall var(--dur) linear var(--delay) infinite; will-change: transform, opacity;
     }
     @keyframes fall {
@@ -206,14 +199,14 @@ import { DEFAULT_GUEST, Guest } from "../../core/guest-rules";
       background: none; border: 0; padding: 0; cursor: pointer; position: relative; border-radius: 6px;
       -webkit-tap-highlight-color: transparent; touch-action: none; user-select: none; -webkit-user-select: none;
     }
-    .envelope-btn:focus-visible { outline: 2px solid #A12F0C; outline-offset: 10px; }
+    .envelope-btn:focus-visible { outline: 2px solid #2F4A38; outline-offset: 10px; }
     .float { animation: float 3.8s ease-in-out infinite; }
     /* Chỉ tịnh tiến (không xoay) để thiệp khớp chính xác vào banner thật khi mở xong */
     @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
 
     .envelope { position: relative; width: min(82vw, 380px); aspect-ratio: 340 / 230; perspective: 1100px; }
     .layer { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-    .env-shadow { position: absolute; inset: 6% 3% 0; z-index: 0; border-radius: 10px; box-shadow: 0 22px 36px rgba(122, 58, 30, .28), 0 4px 10px rgba(122, 58, 30, .18); }
+    .env-shadow { position: absolute; inset: 6% 3% 0; z-index: 0; border-radius: 10px; box-shadow: 0 22px 36px rgba(30, 51, 36, .28), 0 4px 10px rgba(30, 51, 36, .18); }
     .back { z-index: 1; }
     .front { z-index: 3; }
 
@@ -223,8 +216,8 @@ import { DEFAULT_GUEST, Guest } from "../../core/guest-rules";
 
     /* Thiệp (banner thu nhỏ). Kích thước thật = bề rộng màn hình, thu nhỏ bằng transform */
     .card { position: absolute; left: 0; top: 0; z-index: 2; width: 100vw; transform-origin: 0 0; will-change: transform, clip-path; pointer-events: none; text-align: left; }
-    .card-inner { position: relative; background: #FBF7F5; transform-origin: 50% 30%; }
-    .card-shadow { position: absolute; inset: 0; box-shadow: 0 0 0 1px rgba(161, 47, 12, .14), 0 10px 40px rgba(122, 58, 30, .3); pointer-events: none; }
+    .card-inner { position: relative; background: #F6F4EC; transform-origin: 50% 30%; }
+    .card-shadow { position: absolute; inset: 0; box-shadow: 0 0 0 1px rgba(47, 74, 56, .14), 0 10px 40px rgba(30, 51, 36, .3); pointer-events: none; }
 
     /* Dấu sáp */
     .seal { position: absolute; z-index: 6; left: 68%; top: 47.8%; width: 21%; aspect-ratio: 1; translate: -50% -50%; will-change: transform, opacity; }
@@ -245,7 +238,7 @@ import { DEFAULT_GUEST, Guest } from "../../core/guest-rules";
       color: #7a5212; transform: rotate(-14deg); text-shadow: 0 1px 0 rgba(255, 236, 180, .7), 0 -1px 0 rgba(70, 40, 0, .35);
     }
     .cover:active .seal-disc { transform: scale(.93); }
-    .seal-ring { position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid rgba(161, 47, 12, .45); animation: ring 2.2s cubic-bezier(.23, 1, .32, 1) infinite; }
+    .seal-ring { position: absolute; inset: 0; border-radius: 50%; border: 1.5px solid rgba(47, 74, 56, .45); animation: ring 2.2s cubic-bezier(.23, 1, .32, 1) infinite; }
     @keyframes ring { 0% { transform: scale(1); opacity: .7; } 80%, 100% { transform: scale(1.9); opacity: 0; } }
 
     .cover.is-pulled .hint, .cover.is-pulled .seal-ring { animation: none; }
@@ -562,7 +555,7 @@ export class CoverComponent implements AfterViewInit, OnDestroy {
       ticks: 150,
       scalar: 0.8,
       origin: { x: 0.56, y: 0.5 },
-      colors: ["#D4AF37", "#A12F0C", "#F4DBCE", "#eeb9a3", "#ffffff"],
+      colors: ["#C8B273", "#2F4A38", "#DCE5D3", "#D9E3CC", "#ffffff"],
       zIndex: 10001,
       disableForReducedMotion: true,
     });

@@ -16,70 +16,32 @@ import { PersonalizePipe } from "../../shared/personalize.pipe";
   selector: "app-guestbook",
   standalone: true,
   imports: [CommonModule, FormsModule, PersonalizePipe],
+  styles: [`
+    /* Mép mờ thay cho đường kẻ cứng ở nơi danh sách cuộn */
+    .wish-list {
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 14px, #000 calc(100% - 22px), transparent 100%);
+      mask-image: linear-gradient(to bottom, transparent 0, #000 14px, #000 calc(100% - 22px), transparent 100%);
+    }
+  `],
   template: `
-    <section
-      id="sangtrong-message-id"
-      class="relative bg-white overflow-hidden min-h-[100lvh] lg:h-screen flex items-center py-8 sm:py-12 md:py-16 px-4 sm:px-6 md:px-10 reveal"
-    >
-      <!-- Top Left Floral Decor -->
-      <img
-        src="assets/images/templates/sangtrong/decor.png"
-        alt="Floral Decor Top Left"
-        class="absolute top-0 left-0 w-[140px] md:w-[210px] lg:w-[260px] xl:w-[320px] h-auto pointer-events-none opacity-80"
-      />
-      <!-- Bottom Right Floral Decor -->
-      <img
-        src="assets/images/templates/sangtrong/flower-decor-bottom.png"
-        alt="Floral Decor Bottom Right"
-        class="absolute bottom-0 right-0 w-[140px] md:w-[210px] lg:w-[260px] xl:w-[320px] h-auto pointer-events-none opacity-80"
-      />
+    <section id="sangtrong-message-id" class="section bg-white">
+      <div class="section-inner">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start">
+          <!-- Cột trái: tiêu đề, đứng yên khi danh sách lời chúc cuộn -->
+          <header class="md:col-span-5 md:sticky md:top-24 flex flex-col items-center md:items-start text-center md:text-left gap-2 reveal">
+            <p class="eyebrow">Lời chúc</p>
+            <h2 class="script-title">Sổ lưu bút</h2>
+            <p class="lead mt-1 max-w-sm">
+              Gửi những lời chúc mừng và nhắn nhủ yêu thương đến Quang Thọ
+              &amp; Thúy Hiền
+            </p>
+          </header>
 
-      <div
-        class="z-10 relative max-w-6xl w-full mx-auto h-full flex flex-col justify-center"
-      >
-        <!-- 2-Column Responsive Layout: Left (LOVE Ladder Illustration) & Right (Guestbook Form & Wishes) -->
-        <div
-          class="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 md:gap-8 lg:gap-10 items-center h-full max-h-none md:max-h-[90vh]"
-        >
-          <!-- Left Column: Romantic LOVE Ladder Illustration -->
-          <div
-            class="md:col-span-5 flex flex-col items-center justify-center text-center reveal-left delay-100"
-          >
-            <div class="relative group">
-              <img
-                src="assets/images/templates/sangtrong/love-ladder.png"
-                alt="LOVE Ladder Decoration"
-                class="w-[170px] sm:w-[210px] md:w-[280px] lg:w-[340px] xl:w-[380px] max-h-[200px] sm:max-h-[250px] md:max-h-[460px] lg:max-h-[520px] h-auto object-contain mx-auto drop-shadow-sm transition-transform duration-700 ease-out group-hover:scale-105 select-none pointer-events-none"
-              />
-            </div>
-          </div>
-
-          <!-- Right Column: Sổ lưu bút (Form & Message List with refined typography) -->
-          <div
-            class="md:col-span-7 flex flex-col justify-center max-h-none md:max-h-[85vh] reveal-right delay-200"
-          >
-            <!-- Section Header -->
-            <div class="text-center md:text-left mb-2.5 sm:mb-4 md:mb-5">
-              <h2
-                class="text-[32px] sm:text-[40px] md:text-[50px] leading-tight font-pinyonScript text-[#A12F0C]"
-              >
-                Sổ lưu bút
-              </h2>
-              <p
-                class="text-stone-500 text-[11px] sm:text-xs md:text-sm font-beVietnamPro italic mt-0.5"
-              >
-                Gửi những lời chúc mừng và nhắn nhủ yêu thương đến Quang Thọ
-                &amp; Thúy Hiền
-              </p>
-              <div
-                class="w-10 h-[1.5px] bg-[#A12F0C]/30 mt-2 mx-auto md:mx-0"
-              ></div>
-            </div>
-
+          <div class="md:col-span-7 rounded-[28px] bg-ivory p-4 sm:p-7 reveal delay-100">
             <!-- Form -->
             <form
               (ngSubmit)="submitWish()"
-              class="space-y-2.5 font-beVietnamPro"
+              class="space-y-3"
             >
               <div>
                 <input
@@ -90,7 +52,7 @@ import { PersonalizePipe } from "../../shared/personalize.pipe";
                   [disabled]="guestbookService.isLimitReached() || isSubmitting"
                   [placeholder]="'Tên của {youOne} (tối đa 160 ký tự) *' | personalize"
                   required
-                  class="w-full h-10 sm:h-10 px-3.5 sm:px-3.5 rounded-xl border border-stone-300 placeholder-stone-400 text-stone-800 text-[16px] sm:text-sm uppercase focus:outline-none focus:border-[#A12F0C] focus:ring-1 focus:ring-[#A12F0C] transition-all bg-stone-50/50 focus:bg-white shadow-inner disabled:bg-stone-100 disabled:text-stone-400 disabled:cursor-not-allowed"
+                  class="field h-12 uppercase"
                 />
               </div>
 
@@ -107,26 +69,26 @@ import { PersonalizePipe } from "../../shared/personalize.pipe";
                       : ('Nhập lời chúc của {youOne} (tối đa 3000 ký tự) *' | personalize)
                   "
                   required
-                  class="w-full h-[130px] sm:h-[155px] md:h-[175px] p-3 sm:p-3.5 pr-10 pb-9 rounded-2xl border border-stone-300 resize-none placeholder-stone-400 text-stone-800 text-[16px] sm:text-sm focus:outline-none focus:border-[#A12F0C] focus:ring-1 focus:ring-[#A12F0C] transition-all bg-stone-50/50 focus:bg-white shadow-inner leading-relaxed disabled:bg-stone-100 disabled:text-stone-400 disabled:cursor-not-allowed"
+                  class="field h-[150px] sm:h-[170px] !py-3.5 !pr-12 !pb-10 resize-none leading-relaxed"
                 >
                 </textarea>
 
                 <!-- Lightbulb Icon Button (Bottom-Right Inside Textarea) -->
                 <div
                   *ngIf="!guestbookService.isLimitReached()"
-                  class="absolute bottom-2.5 right-2.5 z-10"
+                  class="absolute bottom-3 right-2 z-10"
                 >
                   <button
                     type="button"
                     (click)="toggleSuggestions($event)"
-                    class="w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center bg-amber-50 hover:bg-amber-100 text-amber-600 hover:text-amber-700 border border-amber-200/90 shadow-2xs transition-all active:scale-90 cursor-pointer"
+                    class="w-9 h-9 rounded-full flex items-center justify-center bg-garden-700/10 text-garden-700 transition-transform active:scale-90 cursor-pointer"
                     title="Gợi ý lời chúc mẫu"
                     aria-label="Gợi ý lời chúc mẫu"
                   >
                     <!-- Glowing Lightbulb Icon -->
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-600"
+                      class="w-4 h-4"
                       viewBox="0 0 24 24"
                       fill="currentColor"
                     >
@@ -140,16 +102,16 @@ import { PersonalizePipe } from "../../shared/personalize.pipe";
                   <div
                     *ngIf="isSuggestionsOpen"
                     (click)="$event.stopPropagation()"
-                    class="absolute bottom-full right-0 mb-2 w-[85vw] max-w-[280px] sm:max-w-[340px] bg-white rounded-2xl shadow-2xl border border-[#F4DBCE] p-3 z-50 animate-photo-expand text-left"
+                    class="glass materialize absolute bottom-full right-0 mb-2 w-[85vw] max-w-[300px] sm:max-w-[340px] rounded-[20px] p-3 z-50 text-left" style="transform-origin: 100% 100%;"
                   >
                     <!-- Header with Title & Close button -->
                     <div
-                      class="flex items-center justify-between pb-2 mb-2 border-b border-[#F4DBCE]/60"
+                      class="flex items-center justify-between pb-2 mb-2 border-b border-garden-900/10"
                     >
                       <div
-                        class="flex items-center gap-1.5 text-xs font-semibold text-[#A12F0C] font-prata"
+                        class="flex items-center gap-1.5 text-[0.8125rem] font-semibold text-garden-900"
                       >
-                        <span>💡 Chọn lời chúc mẫu</span>
+                        <span>Chọn lời chúc mẫu</span>
                       </div>
                       <button
                         type="button"
@@ -181,7 +143,7 @@ import { PersonalizePipe } from "../../shared/personalize.pipe";
                         *ngFor="let suggestion of wishSuggestions"
                         type="button"
                         (click)="applySuggestion(suggestion)"
-                        class="text-left text-[11px] sm:text-xs p-2 rounded-xl hover:bg-[#F5E5DC]/60 text-stone-700 hover:text-[#A12F0C] transition-colors border border-transparent hover:border-[#F4DBCE] active:scale-98 leading-relaxed font-beVietnamPro cursor-pointer"
+                        class="text-left text-[0.8125rem] p-2.5 rounded-[14px] text-garden-900/80 hover:bg-garden-900/[0.06] active:bg-garden-900/10 transition-colors leading-relaxed cursor-pointer"
                       >
                         {{ suggestion }}
                       </button>
@@ -196,14 +158,14 @@ import { PersonalizePipe } from "../../shared/personalize.pipe";
                   class="text-[11px] font-medium"
                   [ngClass]="
                     guestbookService.isLimitReached()
-                      ? 'text-amber-700 font-semibold'
+                      ? 'text-garden-700 font-semibold'
                       : 'text-stone-400'
                   "
                 >
                   <ng-container *ngIf="guestbookService.myWishesCount() > 0">
                     {{
                       guestbookService.isLimitReached()
-                        ? '📌 Đã gửi đủ 5/5 lời chúc'
+                        ? 'Đã gửi đủ 5/5 lời chúc'
                         : 'Đã gửi ' + guestbookService.myWishesCount() + '/5 lời chúc'
                     }}
                   </ng-container>
@@ -217,7 +179,7 @@ import { PersonalizePipe } from "../../shared/personalize.pipe";
                     isSubmitting ||
                     guestbookService.isLimitReached()
                   "
-                  class="uppercase rounded-full text-white font-prata text-[11px] sm:text-xs md:text-sm tracking-wider min-w-[120px] sm:min-w-[140px] py-2 sm:py-2.5 px-5 sm:px-6 bg-[#A12F0C] hover:bg-[#852509] disabled:opacity-50 transition-all shadow-sm hover:shadow-md active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer disabled:cursor-not-allowed"
+                  class="btn btn-primary"
                 >
                   <svg
                     *ngIf="!isSubmitting"
@@ -242,12 +204,12 @@ import { PersonalizePipe } from "../../shared/personalize.pipe";
             </form>
 
             <!-- Divider -->
-            <div class="my-3 sm:my-4 w-full h-[1px] bg-stone-200"></div>
+            <div class="my-5 w-full h-px bg-garden-900/10"></div>
 
             <!-- Empty state when no wishes yet -->
             <div
               *ngIf="guestbookService.messages().length === 0"
-              class="py-6 text-center text-stone-400 text-xs sm:text-sm font-beVietnamPro italic"
+              class="py-6 text-center text-garden-900/50 text-[0.875rem]"
             >
               Chưa có lời chúc nào. Hãy là người đầu tiên gửi lời chúc mừng đến
               cô dâu &amp; chú rể nhé! 💕
@@ -256,17 +218,17 @@ import { PersonalizePipe } from "../../shared/personalize.pipe";
             <!-- 1. Fixed Pinned Latest Wish from this Device (Stays stationary, gentle warm highlight without icon/badge) -->
             <div
               *ngIf="myLatestWish"
-              class="bg-[#FBF5F2]/80 -mx-1 px-2.5 py-2.5 rounded-xl border border-amber-300/60 mb-3 shrink-0"
+              class="bg-white px-4 py-3.5 rounded-[18px] mb-3 shrink-0"
             >
               <div class="flex items-center justify-between mb-1.5">
-                <h4 class="font-bold text-xs sm:text-sm font-prata text-[#A12F0C] uppercase tracking-wide">
+                <h4 class="text-[0.8125rem] font-semibold text-garden-700 uppercase tracking-[0.04em]">
                   {{ myLatestWish.name }} • {{ '{YouOne}' | personalize }}
                 </h4>
                 <span class="text-[10px] sm:text-[11px] text-stone-400 font-light font-beVietnamPro">
                   {{ myLatestWish.createdAt || "Mới đây" }}
                 </span>
               </div>
-              <p class="text-stone-700 text-xs sm:text-[13px] leading-relaxed font-beVietnamPro">
+              <p class="text-garden-900/75 text-[0.875rem] leading-relaxed">
                 {{ myLatestWish.content }}
               </p>
             </div>
@@ -274,21 +236,21 @@ import { PersonalizePipe } from "../../shared/personalize.pipe";
             <!-- 2. Readable Messages List (only this area scrolls) -->
             <div
               *ngIf="otherMessages.length > 0"
-              class="max-h-[220px] sm:max-h-[260px] md:max-h-[36vh] lg:max-h-[40vh] overflow-y-auto overscroll-contain pr-1 text-start flex flex-col gap-3 font-beVietnamPro select-text"
+              class="wish-list max-h-[320px] md:max-h-[44vh] overflow-y-auto overscroll-contain text-start flex flex-col gap-3.5 px-1 py-2 select-text"
             >
               <article
                 *ngFor="let msg of otherMessages; trackBy: trackByMessageId"
-                class="border-b border-dashed border-stone-300 pb-3.5 last:border-b-0"
+                class="border-b border-garden-900/10 pb-3.5 last:border-b-0"
               >
                 <div class="flex items-center justify-between gap-3 mb-1.5">
-                  <h4 class="font-bold text-xs sm:text-sm font-prata text-[#2A1810] uppercase tracking-wide truncate">
+                  <h4 class="text-[0.8125rem] font-semibold text-garden-900 uppercase tracking-[0.04em] truncate">
                     {{ msg.name }}
                   </h4>
                   <time class="text-[10px] sm:text-[11px] text-stone-400 font-light font-beVietnamPro shrink-0">
                     {{ msg.createdAt || "Mới đây" }}
                   </time>
                 </div>
-                <p class="text-stone-700 text-xs sm:text-[13px] leading-relaxed font-beVietnamPro break-words">
+                <p class="text-garden-900/75 text-[0.875rem] leading-relaxed break-words">
                   {{ msg.content }}
                 </p>
               </article>
@@ -375,7 +337,7 @@ export class GuestbookComponent {
         particleCount: 50,
         spread: 60,
         origin: { y: 0.7 },
-        colors: ["#A12F0C", "#F4DBCE", "#D4AF37"],
+        colors: ["#2F4A38", "#DCE5D3", "#C8B273"],
       });
 
       this.toastService.show(

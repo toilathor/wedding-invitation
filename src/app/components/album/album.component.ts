@@ -18,26 +18,29 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
   selector: "app-album",
   standalone: true,
   imports: [CommonModule, ImgFadeDirective],
+  styles: [`
+    .album-tile { transition: transform 260ms var(--ease-out); }
+    .album-tile:active { transform: scale(0.97); transition-duration: 90ms; }
+  `],
   template: `
     <!-- 1. Page Gallery Section -->
     <section
       id="wedding-album-section"
-      class="relative max-w-[1443px] w-full mx-auto min-h-[100lvh] lg:min-h-screen flex flex-col justify-center py-6 sm:py-8 md:py-10 lg:py-12 px-4 sm:px-6 md:px-8 reveal"
+      class="section bg-white reveal"
     >
-      <!-- Title -->
-      <h2
-        class="text-center text-[30px] sm:text-[40px] md:text-[52px] lg:text-[60px] leading-tight font-pinyonScript text-[#A12F0C] mb-2.5 sm:mb-3 md:mb-4 lg:mb-5"
-      >
-        {{ data.title }}
-      </h2>
+      <div class="section-inner">
+      <header class="section-head">
+        <p class="eyebrow">Khoảnh khắc</p>
+        <h2 class="script-title">{{ data.title }}</h2>
+      </header>
 
       <!-- Gallery Grid: Initial Photos (4 on Mobile, 8 on Desktop when collapsed) -->
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-3.5 lg:gap-4 py-1">
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3 md:gap-4">
         <div
           *ngFor="let img of initialAlbums; let idx = index"
           (click)="openLightbox(idx)"
           [ngClass]="idx >= 4 ? (showAll ? 'block' : 'hidden md:block') : 'block'"
-          class="group relative aspect-[3/4] md:aspect-[4/5] max-h-none md:max-h-[32vh] rounded-xl sm:rounded-2xl md:rounded-[20px] overflow-hidden shadow-sm hover:shadow-2xl cursor-pointer transition-all duration-300 bg-stone-100 mx-auto w-full"
+          class="group relative album-tile aspect-[3/4] rounded-[20px] md:rounded-[24px] overflow-hidden cursor-pointer bg-garden-50 w-full"
         >
           <img
             appImgFade
@@ -58,11 +61,11 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
               class="flex items-center justify-between text-white transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"
             >
               <span
-                class="text-[11px] sm:text-xs md:text-sm font-prata tracking-wider uppercase"
+                class="text-[11px] sm:text-xs md:text-sm font-medium"
                 >Xem ảnh</span
               >
               <div
-                class="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-[#A12F0C] shadow-lg"
+                class="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-[#2F4A38] shadow-lg"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -91,17 +94,17 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
         [ngStyle]="{
           'grid-template-rows': showAll ? '1fr' : '0fr',
           opacity: showAll ? '1' : '0',
-          'margin-top': showAll ? '0.6rem' : '0px',
+          'margin-top': showAll ? '0.625rem' : '0px',
         }"
       >
         <div class="overflow-hidden min-h-0">
           <div
-            class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3 md:gap-4 lg:gap-5 pt-0 md:pt-2"
+            class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3 md:gap-4"
           >
             <div
               *ngFor="let img of extraAlbums; let i = index"
               (click)="openLightbox(initialCount + i)"
-              class="group relative aspect-[3/4] md:aspect-[4/5] rounded-xl sm:rounded-2xl md:rounded-[24px] overflow-hidden shadow-sm hover:shadow-2xl cursor-pointer transition-all duration-500 ease-out bg-stone-100 transform"
+              class="group relative album-tile aspect-[3/4] rounded-[20px] md:rounded-[24px] overflow-hidden cursor-pointer bg-garden-50"
               [style.transform]="
                 showAll
                   ? 'translateY(0) scale(1)'
@@ -128,11 +131,11 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
                   class="flex items-center justify-between text-white transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"
                 >
                   <span
-                    class="text-[11px] sm:text-xs md:text-sm font-prata tracking-wider uppercase"
+                    class="text-[11px] sm:text-xs md:text-sm font-medium"
                     >Xem ảnh</span
                   >
                   <div
-                    class="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-[#A12F0C] shadow-lg"
+                    class="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-[#2F4A38] shadow-lg"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -158,14 +161,14 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
 
       <!-- Expand / Collapse Button (Shows on mobile when > 4 photos, on desktop when > initialCount) -->
       <div
-        class="flex justify-center mt-3 sm:mt-4 md:mt-6"
+        class="flex justify-center mt-6 md:mt-8"
         *ngIf="data.albums.length > 4"
         [ngClass]="{ 'md:hidden': data.albums.length <= initialCount }"
       >
         <button
           type="button"
           (click)="toggleExpand()"
-          class="group uppercase rounded-full text-white font-prata text-[11px] sm:text-xs md:text-sm tracking-wider px-5 sm:px-7 py-2 sm:py-2.5 md:py-3 bg-[#A12F0C] hover:bg-[#852509] transition-all shadow-sm hover:shadow-lg active:scale-95 flex items-center gap-2 cursor-pointer"
+          class="btn btn-tinted"
         >
           <span>{{ showAll ? "Thu gọn album" : "Xem thêm ảnh" }}</span>
           <svg
@@ -185,12 +188,13 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
           </svg>
         </button>
       </div>
+      </div>
     </section>
 
     <!-- 2. Ultra-Smooth Lightbox Modal (Placed outside section to avoid transform/reveal container bugs) -->
     <div
       *ngIf="lightboxOpen"
-      class="fixed inset-0 z-[999999] w-screen h-[100dvh] min-h-[100svh] bg-black/95 backdrop-blur-xl flex flex-col justify-between items-center select-none overflow-hidden overscroll-contain"
+      class="fixed inset-0 z-[999999] w-screen h-[100dvh] min-h-[100svh] bg-garden-950/95 backdrop-blur-xl flex flex-col justify-between items-center select-none overflow-hidden overscroll-contain"
       style="padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom);"
       role="dialog"
       aria-modal="true"
@@ -202,7 +206,7 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
       <div *ngIf="isSlideshow" class="absolute top-0 left-0 right-0 h-[3px] z-[60] bg-white/10 pointer-events-none" style="margin-top: env(safe-area-inset-top);">
         <div
           *ngFor="let idx of [currentIndex]"
-          class="slideshow-progress h-full w-full bg-gradient-to-r from-[#F4DBCE] to-[#D4AF37]"
+          class="slideshow-progress h-full w-full bg-white/90"
           [style.--sl-dur]="slideshowMs + 'ms'"
         ></div>
       </div>
@@ -218,7 +222,7 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
             class="flex items-center gap-1.5 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/15 shadow-sm"
           >
             <span
-              class="text-xs sm:text-sm font-prata tracking-wider text-[#F4DBCE]"
+              class="text-xs sm:text-sm font-prata tracking-wider text-[#DCE5D3]"
             >
               {{ currentIndex + 1 }} / {{ data.albums.length }}
             </span>
@@ -256,7 +260,7 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
             <svg
               *ngIf="isSlideshow"
               xmlns="http://www.w3.org/2000/svg"
-              class="w-4 h-4 sm:w-5 sm:h-5 text-amber-300 animate-pulse"
+              class="w-4 h-4 sm:w-5 sm:h-5 text-white"
               fill="currentColor"
               viewBox="0 0 24 24"
             >
@@ -293,7 +297,7 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
             <svg
               *ngIf="isZoomed"
               xmlns="http://www.w3.org/2000/svg"
-              class="w-4 h-4 sm:w-5 sm:h-5 text-amber-300"
+              class="w-4 h-4 sm:w-5 sm:h-5 text-white"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -311,7 +315,7 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
           <button
             type="button"
             (click)="closeLightbox()"
-            class="p-2 sm:p-2.5 rounded-full bg-white/10 hover:bg-[#A12F0C] active:scale-90 transition-all text-white"
+            class="p-2 sm:p-2.5 rounded-full bg-white/10 hover:bg-white/25 active:scale-90 transition-all text-white"
             title="Đóng xem ảnh (Phím Esc hoặc nút đóng)"
             aria-label="Đóng"
           >
@@ -350,7 +354,7 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
         <button
           type="button"
           (click)="prevImage()"
-          class="absolute left-2 sm:left-4 md:left-6 z-40 p-2.5 sm:p-3.5 rounded-full bg-black/40 hover:bg-[#A12F0C] backdrop-blur-md text-white border border-white/15 transition-all active:scale-90 shadow-xl flex items-center justify-center cursor-pointer"
+          class="absolute left-2 sm:left-4 md:left-6 z-40 p-2.5 sm:p-3.5 rounded-full bg-black/40 hover:bg-white/25 backdrop-blur-md text-white border border-white/15 transition-all active:scale-90 shadow-xl flex items-center justify-center cursor-pointer"
           title="Ảnh trước (Phím mũi tên trái hoặc Vuốt sang phải)"
           aria-label="Ảnh trước"
         >
@@ -420,7 +424,7 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
         <button
           type="button"
           (click)="nextImage()"
-          class="absolute right-2 sm:right-4 md:right-6 z-40 p-2.5 sm:p-3.5 rounded-full bg-black/40 hover:bg-[#A12F0C] backdrop-blur-md text-white border border-white/15 transition-all active:scale-90 shadow-xl flex items-center justify-center cursor-pointer"
+          class="absolute right-2 sm:right-4 md:right-6 z-40 p-2.5 sm:p-3.5 rounded-full bg-black/40 hover:bg-white/25 backdrop-blur-md text-white border border-white/15 transition-all active:scale-90 shadow-xl flex items-center justify-center cursor-pointer"
           title="Ảnh tiếp theo (Phím mũi tên phải hoặc Vuốt sang trái)"
           aria-label="Ảnh tiếp theo"
         >
@@ -455,9 +459,9 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
             [id]="'lightbox-thumb-' + idx"
             type="button"
             (click)="selectImage(idx)"
-            class="relative w-12 h-14 sm:w-16 sm:h-18 rounded-lg sm:rounded-xl overflow-hidden shrink-0 border-2 transition-all duration-300 active:scale-95 cursor-pointer focus:outline-none"
+            class="relative w-12 h-14 sm:w-16 sm:h-18 rounded-lg sm:rounded-xl overflow-hidden shrink-0 border-2 transition-all duration-300 active:scale-[0.97] cursor-pointer focus:outline-none"
             [ngClass]="{
-              'border-[#A12F0C] ring-2 ring-[#A12F0C]/60 scale-105 opacity-100 shadow-lg':
+              'border-white scale-105 opacity-100 shadow-lg':
                 currentIndex === idx,
               'border-transparent opacity-40 hover:opacity-80 scale-95':
                 currentIndex !== idx,

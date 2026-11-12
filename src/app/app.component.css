@@ -4,94 +4,48 @@
   overflow-x: hidden;
 }
 
+/* Gợi ý còn nội dung bên dưới: một viên kính nhỏ ở đáy, không phủ màu lên nội dung */
 .scroll-content-hint {
-  position: fixed !important;
+  position: fixed;
   inset-inline: 0;
-  bottom: 0 !important;
+  bottom: calc(0.875rem + env(safe-area-inset-bottom));
   z-index: 9970;
-  width: auto;
-  height: calc(7rem + env(safe-area-inset-bottom));
-  color: #a12f0c;
+  display: flex;
+  justify-content: center;
   pointer-events: none;
+  animation: scrollHintIn 420ms cubic-bezier(0.32, 0.72, 0, 1) both;
 }
 
-.scroll-content-hint::before,
-.scroll-content-hint::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+.scroll-content-chip {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
 }
 
-.scroll-content-hint::before {
-  display: none;
-}
-
-.scroll-content-hint::after {
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    to top,
-    rgba(161, 47, 12, 0.5) 0%,
-    rgba(244, 219, 206, 0.3) 28%,
-    rgba(244, 219, 206, 0.1) 60%,
-    transparent 100%
-  );
-  transform: none;
-  animation: scrollHintLedCast 1.65s ease-in-out infinite;
-}
-
-.scroll-content-icon {
-  position: absolute;
-  left: 50%;
-  bottom: calc(0.45rem + env(safe-area-inset-bottom));
-  z-index: 1;
-  width: 1.35rem;
-  height: 1.35rem;
+.scroll-content-chip svg {
+  width: 1.125rem;
+  height: 1.125rem;
   fill: none;
   stroke: currentColor;
+  stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 1.65;
-  transform: translateX(-50%);
-  animation: scrollHintArrow 1.65s ease-in-out infinite;
+  animation: scrollHintArrow 1.8s ease-in-out infinite;
 }
 
-/* Some mobile/tablet webviews report a zero safe-area inset even when the
-   device gesture bar is visible. Keep the hint clear of that system area. */
-@media (max-width: 1023px) {
-  .scroll-content-hint {
-    bottom: 0 !important;
-  }
+@keyframes scrollHintIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.9); }
+  to { opacity: 1; transform: none; }
 }
 
 @keyframes scrollHintArrow {
-  0%, 100% {
-    opacity: 0.68;
-    transform: translate(-50%, -0.22rem);
-  }
-  50% {
-    opacity: 1;
-    transform: translate(-50%, 0.18rem);
-  }
-}
-
-@keyframes scrollHintLedGlow {
-  0%, 100% { opacity: 0.55; }
-  50% { opacity: 1; }
-}
-
-@keyframes scrollHintLedCast {
-  0%, 100% { opacity: 0.68; }
-  50% { opacity: 1; }
+  0%, 100% { transform: translateY(-1.5px); }
+  50% { transform: translateY(2px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .scroll-content-hint::before,
-  .scroll-content-hint::after,
-  .scroll-content-icon {
-    animation: none;
-  }
+  .scroll-content-hint,
+  .scroll-content-chip svg { animation: none; }
 }
