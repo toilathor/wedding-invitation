@@ -73,7 +73,7 @@ export const WEDDING_DATA: WeddingData = {
         picture: "assets/images/couple/timeline_1.webp",
       },
       {
-        day: "17",
+        day: "07",
         month: "09",
         year: "2025",
         title: "Cầu hôn",
@@ -82,7 +82,7 @@ export const WEDDING_DATA: WeddingData = {
         picture: "assets/images/couple/timeline_2.webp",
       },
       {
-        day: "22",
+        day: "14",
         month: "03",
         year: "2026",
         title: "Dạm ngõ",
