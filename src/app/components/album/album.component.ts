@@ -38,7 +38,7 @@ import { PageViewService } from "../../services/pageview.service";
           class="group relative aspect-[3/4] md:aspect-[4/5] max-h-none md:max-h-[32vh] rounded-xl sm:rounded-2xl md:rounded-[20px] overflow-hidden shadow-sm hover:shadow-2xl cursor-pointer transition-all duration-300 bg-stone-100 mx-auto w-full"
         >
           <img
-            [src]="img"
+            [src]="thumbOf(img)"
             [alt]="'Ảnh cưới ' + (idx + 1)"
             class="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
             loading="lazy"
@@ -107,7 +107,7 @@ import { PageViewService } from "../../services/pageview.service";
               [style.transition-delay]="showAll ? i * 40 + 'ms' : '0ms'"
             >
               <img
-                [src]="img"
+                [src]="thumbOf(img)"
                 [alt]="'Ảnh cưới ' + (initialCount + i + 1)"
                 class="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
                 loading="lazy"
@@ -443,7 +443,7 @@ import { PageViewService } from "../../services/pageview.service";
           class="flex items-center justify-start md:justify-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar py-1 px-1 scroll-smooth"
         >
           <button
-            *ngFor="let thumb of data.albums; let idx = index"
+            *ngFor="let full of data.albums; let idx = index"
             [id]="'lightbox-thumb-' + idx"
             type="button"
             (click)="selectImage(idx)"
@@ -456,7 +456,7 @@ import { PageViewService } from "../../services/pageview.service";
             }"
           >
             <img
-              [src]="thumb"
+              [src]="thumbOf(full)"
               [alt]="'Thumbnail ' + (idx + 1)"
               class="w-full h-full object-cover"
               loading="lazy"
@@ -499,6 +499,11 @@ export class AlbumComponent implements OnDestroy {
     overflow: "",
     htmlOverflow: "",
   };
+
+  /** Bản thu nhỏ (640px) cho lưới và dải hình nhỏ; bản đầy đủ chỉ tải khi mở lightbox. */
+  thumbOf(src: string): string {
+    return src.replace("/gallery/", "/gallery/thumbs/");
+  }
 
   get initialAlbums(): string[] {
     return this.data?.albums
