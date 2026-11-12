@@ -80,14 +80,38 @@ if ! curl -fsS "http://127.0.0.1:$APP_PORT/" >/dev/null 2>&1; then
   exit 1
 fi
 
-if ! curl -fsS "$public_url/" >/dev/null 2>&1; then
+# Tunnel mới tạo thường cần vài giây để DNS lan tới máy này, nên thử lại thay vì báo lỗi ngay.
+public_ready=""
+for _ in {1..30}; do
+  if curl -fsS "$public_url/" >/dev/null 2>&1; then
+    public_ready="yes"
+    break
+  fi
+  sleep 2
+done
+
+if [[ -z "$public_ready" ]]; then
   echo "Public URL chưa phản hồi. Log Cloudflare: $cloudflared_log" >&2
   exit 1
 fi
 
+print_qr() {
+  local url="$1"
+  if node -e "require('qrcode-terminal')" >/dev/null 2>&1; then
+    node -e "require('qrcode-terminal').generate(process.argv[1], { small: true })" "$url"
+  elif command -v qrencode >/dev/null; then
+    qrencode -t ANSIUTF8 "$url"
+  else
+    echo "(Chưa có thư viện QR. Chạy: npm install  — rồi chạy lại để quét bằng điện thoại)"
+  fi
+}
+
 echo "[4/4] Preview public đã sẵn sàng"
 echo "Local : http://127.0.0.1:$APP_PORT"
 echo "Public: $public_url"
+echo
+echo "Quét QR bằng camera điện thoại để mở:"
+print_qr "$public_url"
 echo "Nhấn Ctrl+C để dừng"
 
 wait "$angular_pid"
