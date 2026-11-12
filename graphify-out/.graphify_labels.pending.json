@@ -16,9 +16,15 @@
   "14": "QuickMenuComponent",
   "15": "InvitationComponent",
   "16": "tsconfig.app.json",
-  "17": "BankGiftComponent",
+  "17": "Component",
   "18": "preview-public.sh",
   "19": "environment.example.ts",
   "20": "tailwind.config.js",
-  "21": "postcss.config.js"
+  "21": "postcss.config.js",
+  "22": "CoverComponent",
+  "23": "Injectable",
+  "24": "HostListener",
+  "25": "Output",
+  "26": "Input",
+  "27": "ViewChild"
 }
