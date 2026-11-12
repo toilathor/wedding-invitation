@@ -21,13 +21,13 @@ import { ToastService } from "../../services/toast.service";
     >
       <!-- Top Left Floral Decor -->
       <img
-        src="/assets/images/templates/sangtrong/decor.png"
+        src="assets/images/templates/sangtrong/decor.png"
         alt="Floral Decor Top Left"
         class="absolute top-0 left-0 w-[140px] md:w-[210px] lg:w-[260px] xl:w-[320px] h-auto pointer-events-none opacity-80"
       />
       <!-- Bottom Right Floral Decor -->
       <img
-        src="/assets/images/templates/sangtrong/flower-decor-bottom.png"
+        src="assets/images/templates/sangtrong/flower-decor-bottom.png"
         alt="Floral Decor Bottom Right"
         class="absolute bottom-0 right-0 w-[140px] md:w-[210px] lg:w-[260px] xl:w-[320px] h-auto pointer-events-none opacity-80"
       />
@@ -45,7 +45,7 @@ import { ToastService } from "../../services/toast.service";
           >
             <div class="relative group">
               <img
-                src="/assets/images/templates/sangtrong/love-ladder.png"
+                src="assets/images/templates/sangtrong/love-ladder.png"
                 alt="LOVE Ladder Decoration"
                 class="w-[170px] sm:w-[210px] md:w-[280px] lg:w-[340px] xl:w-[380px] max-h-[200px] sm:max-h-[250px] md:max-h-[460px] lg:max-h-[520px] h-auto object-contain mx-auto drop-shadow-sm transition-transform duration-700 ease-out group-hover:scale-105 select-none pointer-events-none"
               />

@@ -20,7 +20,8 @@ service cloud.firestore {
                     && request.resource.data.deviceId is string
                     && request.resource.data.deviceId.size() >= 8
                     && request.resource.data.deviceId.size() <= 80
-                    && request.resource.data.createdAt is timestamp;
+                    // Bắt buộc là giờ máy chủ: không giả giờ để ghim lời chúc lên đầu hay lùi về quá khứ.
+                    && request.resource.data.createdAt == request.time;
                     
       // Khóa sửa hoặc xóa đối với khách vãng lai
       allow update, delete: if false;
@@ -33,20 +34,38 @@ service cloud.firestore {
     }
 
     // Quy tắc cho Xác nhận tham dự (RSVP)
+    // Document ID = số điện thoại. Chứa thông tin cá nhân nên KHÔNG cho client đọc/liệt kê:
+    // chỉ chủ trang xem qua Firebase Console / Admin SDK.
     match /rsvps/{phone} {
-      // Cho phép đọc thông tin RSVP
-      allow read: if true;
+      function validRsvp() {
+        let d = request.resource.data;
+        return d.keys().hasOnly([
+                 'name', 'phone', 'isAttending', 'attendParty', 'attendGroom',
+                 'attendBride', 'guestsCount', 'note', 'deviceId', 'createdAt'
+               ])
+               && d.keys().hasAll(['name', 'phone', 'isAttending', 'deviceId', 'createdAt'])
+               && d.name is string && d.name.size() > 0 && d.name.size() <= 160
+               && d.phone is string && d.phone == phone && phone.matches('^0[35789][0-9]{8}$')
+               && d.isAttending is bool
+               && (!('attendParty' in d) || d.attendParty is bool)
+               && (!('attendGroom' in d) || d.attendGroom is bool)
+               && (!('attendBride' in d) || d.attendBride is bool)
+               && (!('guestsCount' in d) || (d.guestsCount is int && d.guestsCount >= 0 && d.guestsCount <= 20))
+               && (!('note' in d) || (d.note is string && d.note.size() <= 1000))
+               && d.deviceId is string && d.deviceId.size() >= 8 && d.deviceId.size() <= 80
+               && d.createdAt == request.time;
+      }
 
-      // Cho phép tạo mới hoặc cập nhật thông tin xác nhận tham dự
-      allow create, update: if request.resource.data.name is string
-                            && request.resource.data.name.size() > 0
-                            && request.resource.data.name.size() <= 160
-                            && request.resource.data.phone is string
-                            && request.resource.data.phone.size() >= 10
-                            && request.resource.data.phone.size() <= 15
-                            && request.resource.data.isAttending is bool;
+      // Không ai đọc được danh sách hay dò từng số điện thoại.
+      allow get, list: if false;
 
-      // Không cho phép khách xóa
+      // Gửi lần đầu.
+      allow create: if validRsvp();
+
+      // Chỉ thiết bị đã gửi bản gốc mới sửa được (deviceId nằm trong tài liệu, client khác không đọc được
+      // nên không thể ghi đè RSVP của người khác dù biết số điện thoại).
+      allow update: if validRsvp() && resource.data.deviceId == request.resource.data.deviceId;
+
       allow delete: if false;
     }
   }

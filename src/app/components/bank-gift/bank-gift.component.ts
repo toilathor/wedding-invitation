@@ -2,7 +2,6 @@ import { CommonModule } from "@angular/common";
 import { Component, Input, inject } from "@angular/core";
 import { BankData } from "../../models/wedding-data.model";
 import { PageViewService } from "../../services/pageview.service";
-import { ToastService } from "../../services/toast.service";
 
 @Component({
   selector: "app-bank-gift",
@@ -34,12 +33,12 @@ import { ToastService } from "../../services/toast.service";
       >
         <!-- Side Flora Ornaments bám sát theo baseline đáy của dải trắng này -->
         <img
-          src="/assets/images/templates/sangtrong/9.png"
+          src="assets/images/templates/sangtrong/9.png"
           alt="Decor Left"
           class="absolute bottom-0 -left-2 md:w-[160px] lg:w-[210px] xl:w-[250px] h-auto hidden md:block pointer-events-none z-20"
         />
         <img
-          src="/assets/images/templates/sangtrong/8.png"
+          src="assets/images/templates/sangtrong/8.png"
           alt="Decor Right"
           class="absolute bottom-0 -right-2 md:w-[160px] lg:w-[210px] xl:w-[250px] h-auto hidden md:block pointer-events-none z-20"
         />
@@ -70,32 +69,6 @@ import { ToastService } from "../../services/toast.service";
                   >
                     {{ data.nameGroom }}
                   </p>
-                  <div class="flex items-center justify-end gap-1.5">
-                    <button
-                      type="button"
-                      (click)="copyToClipboard(data.bankNumberGroom, 'chú rể')"
-                      class="text-[#A12F0C] hover:text-[#7A2207] p-0.5"
-                      title="Sao chép STK"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="w-3.5 h-3.5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                        />
-                      </svg>
-                    </button>
-                    <p class="font-prata font-medium text-stone-700 text-xs">
-                      {{ data.bankNumberGroom }}
-                    </p>
-                  </div>
                 </div>
                 <div
                   class="flex-shrink-0 cursor-pointer"
@@ -161,32 +134,6 @@ import { ToastService } from "../../services/toast.service";
                   >
                     {{ data.nameBride }}
                   </p>
-                  <div class="flex items-center justify-start gap-1.5">
-                    <p class="font-prata font-medium text-stone-700 text-xs">
-                      {{ data.bankNumberBride }}
-                    </p>
-                    <button
-                      type="button"
-                      (click)="copyToClipboard(data.bankNumberBride, 'cô dâu')"
-                      class="text-[#A12F0C] hover:text-[#7A2207] p-0.5 cursor-pointer"
-                      title="Sao chép STK"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="w-3.5 h-3.5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                        />
-                      </svg>
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
@@ -226,32 +173,6 @@ import { ToastService } from "../../services/toast.service";
                     >
                       {{ data.nameGroom }}
                     </p>
-                    <div class="flex items-center gap-1.5 pt-0.5">
-                      <p class="font-prata font-medium text-stone-700 text-xs">
-                        {{ data.bankNumberGroom }}
-                      </p>
-                      <button
-                        type="button"
-                        (click)="copyToClipboard(data.bankNumberGroom, 'chú rể')"
-                        class="text-[#A12F0C] hover:text-[#7A2207] p-1 rounded-md bg-white border border-[#F4DBCE] shadow-2xs active:scale-90 transition-transform cursor-pointer"
-                        title="Sao chép STK"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="w-3.5 h-3.5"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                          />
-                        </svg>
-                      </button>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -287,32 +208,6 @@ import { ToastService } from "../../services/toast.service";
                     >
                       {{ data.nameBride }}
                     </p>
-                    <div class="flex items-center gap-1.5 pt-0.5">
-                      <p class="font-prata font-medium text-stone-700 text-xs">
-                        {{ data.bankNumberBride }}
-                      </p>
-                      <button
-                        type="button"
-                        (click)="copyToClipboard(data.bankNumberBride, 'cô dâu')"
-                        class="text-[#A12F0C] hover:text-[#7A2207] p-1 rounded-md bg-white border border-[#F4DBCE] shadow-2xs active:scale-90 transition-transform cursor-pointer"
-                        title="Sao chép STK"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="w-3.5 h-3.5"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                          />
-                        </svg>
-                      </button>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -384,7 +279,6 @@ import { ToastService } from "../../services/toast.service";
 })
 export class BankGiftComponent {
   @Input({ required: true }) data!: BankData;
-  toastService = inject(ToastService);
   private pageViewService = inject(PageViewService);
 
   selectedQr: string | null = null;
@@ -397,36 +291,5 @@ export class BankGiftComponent {
   closeQrModal() {
     this.selectedQr = null;
     this.pageViewService.setLocked(false);
-  }
-
-  copyToClipboard(accountNumber: string, target: string) {
-    if (navigator.clipboard) {
-      navigator.clipboard
-        .writeText(accountNumber)
-        .then(() => {
-          this.toastService.show(
-            `Đã sao chép số tài khoản ${target}: ${accountNumber}`,
-            "success",
-          );
-        })
-        .catch(() => {
-          this.fallbackCopy(accountNumber, target);
-        });
-    } else {
-      this.fallbackCopy(accountNumber, target);
-    }
-  }
-
-  private fallbackCopy(text: string, target: string) {
-    const input = document.createElement("input");
-    input.value = text;
-    document.body.appendChild(input);
-    input.select();
-    document.execCommand("copy");
-    document.body.removeChild(input);
-    this.toastService.show(
-      `Đã sao chép số tài khoản ${target}: ${text}`,
-      "success",
-    );
   }
 }

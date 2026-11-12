@@ -5,7 +5,7 @@
 /* Local Fonts from thiepcuoi.cloud */
 @font-face {
   font-family: "PinyonScript";
-  src: url("/assets/fonts/Pinyon_Script/PinyonScript-Regular.ttf") format("truetype");
+  src: url("assets/fonts/Pinyon_Script/PinyonScript-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -13,7 +13,7 @@
 
 @font-face {
   font-family: "Birthstone";
-  src: url("/assets/fonts/Birthstone/Birthstone-Regular.ttf") format("truetype");
+  src: url("assets/fonts/Birthstone/Birthstone-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -21,7 +21,7 @@
 
 @font-face {
   font-family: "Prata";
-  src: url("/assets/fonts/Prata/Prata-Regular.ttf") format("truetype");
+  src: url("assets/fonts/Prata/Prata-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -29,7 +29,7 @@
 
 @font-face {
   font-family: "PlayfairDisplay";
-  src: url("/assets/fonts/Playfair_Display/PlayfairDisplay-Regular.ttf") format("truetype");
+  src: url("assets/fonts/Playfair_Display/PlayfairDisplay-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -37,7 +37,7 @@
 
 @font-face {
   font-family: "BeVietnamPro";
-  src: url("/assets/fonts/Be_Vietnam_Pro/BeVietnamPro-Regular.ttf") format("truetype");
+  src: url("assets/fonts/Be_Vietnam_Pro/BeVietnamPro-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -45,7 +45,7 @@
 
 @font-face {
   font-family: "Phudu";
-  src: url("/assets/fonts/Phudu/Phudu-Regular.ttf") format("truetype");
+  src: url("assets/fonts/Phudu/Phudu-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -53,7 +53,7 @@
 
 @font-face {
   font-family: "Phudu";
-  src: url("/assets/fonts/Phudu/Phudu-Light.ttf") format("truetype");
+  src: url("assets/fonts/Phudu/Phudu-Light.ttf") format("truetype");
   font-weight: 300;
   font-style: normal;
   font-display: swap;
@@ -61,7 +61,7 @@
 
 @font-face {
   font-family: "Phudu";
-  src: url("/assets/fonts/Phudu/Phudu-Bold.ttf") format("truetype");
+  src: url("assets/fonts/Phudu/Phudu-Bold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -69,7 +69,7 @@
 
 @font-face {
   font-family: "Corinthia";
-  src: url("/assets/fonts/Corinthia/Corinthia-Regular.ttf") format("truetype");
+  src: url("assets/fonts/Corinthia/Corinthia-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -77,7 +77,7 @@
 
 @font-face {
   font-family: "Charmonman";
-  src: url("/assets/fonts/Charmonman/Charmonman-Regular.ttf") format("truetype");
+  src: url("assets/fonts/Charmonman/Charmonman-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -85,7 +85,7 @@
 
 @font-face {
   font-family: "MuliDisplayVN";
-  src: url("/assets/fonts/MuliDisplayVN/MuliDisplayVN-Regular.ttf") format("truetype");
+  src: url("assets/fonts/MuliDisplayVN/MuliDisplayVN-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -219,18 +219,28 @@ body.lightbox-open #page-album {
   z-index: 999999 !important;
 }
 
-@keyframes lightboxSlideFromRight {
-  from { transform: translate3d(7%, 0, 0) scale(0.99); }
-  to { transform: translate3d(0, 0, 0) scale(1); }
-}
 
-@keyframes lightboxSlideFromLeft {
-  from { transform: translate3d(-7%, 0, 0) scale(0.99); }
-  to { transform: translate3d(0, 0, 0) scale(1); }
-}
+/* ===== Lightbox: chuyển ảnh kiểu đẩy từ hai bên (dùng cho cả tự động trình chiếu, nút, phím, vuốt) =====
+   Ảnh mới trượt vào từ mép; ảnh cũ trượt ra chậm hơn (thị sai) và mờ dần — chỉ dùng transform/opacity. */
+@keyframes lbInFromRight { from { transform: translate3d(100vw, 0, 0) scale(.96); opacity: .4; } to { transform: translate3d(0, 0, 0) scale(1); opacity: 1; } }
+@keyframes lbInFromLeft  { from { transform: translate3d(-100vw, 0, 0) scale(.96); opacity: .4; } to { transform: translate3d(0, 0, 0) scale(1); opacity: 1; } }
+@keyframes lbOutToLeft   { from { transform: translate3d(0, 0, 0) scale(1); opacity: 1; } to { transform: translate3d(-42vw, 0, 0) scale(.94); opacity: 0; } }
+@keyframes lbOutToRight  { from { transform: translate3d(0, 0, 0) scale(1); opacity: 1; } to { transform: translate3d(42vw, 0, 0) scale(.94); opacity: 0; } }
+.lightbox-slide-next { animation: lbInFromRight 640ms cubic-bezier(0.32, 0.72, 0, 1) both; }
+.lightbox-slide-prev { animation: lbInFromLeft 640ms cubic-bezier(0.32, 0.72, 0, 1) both; }
+.lb-out-next { animation: lbOutToLeft 640ms cubic-bezier(0.32, 0.72, 0, 1) forwards; pointer-events: none; }
+.lb-out-prev { animation: lbOutToRight 640ms cubic-bezier(0.32, 0.72, 0, 1) forwards; pointer-events: none; }
 
-.lightbox-slide-next { animation: lightboxSlideFromRight 380ms cubic-bezier(0.22, 0.61, 0.36, 1); }
-.lightbox-slide-prev { animation: lightboxSlideFromLeft 380ms cubic-bezier(0.22, 0.61, 0.36, 1); }
+@media (prefers-reduced-motion: reduce) {
+  .lightbox-slide-next, .lightbox-slide-prev { animation: lbFade 200ms ease both; }
+  .lb-out-next, .lb-out-prev { animation: lbFadeOut 200ms ease forwards; }
+}
+@keyframes lbFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lbFadeOut { from { opacity: 1; } to { opacity: 0; } }
+
+@keyframes lbProgress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.slideshow-progress { transform-origin: 0 50%; animation: lbProgress var(--sl-dur, 4.8s) linear both; }
+
 
 @media (min-width: 768px) {
   .pageview-indicator {

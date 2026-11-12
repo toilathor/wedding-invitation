@@ -69,7 +69,7 @@ import { IntroData } from '../../models/wedding-data.model';
             </div>
             <!-- Flower Decor Groom, anchored to the photo frame. -->
             <img
-              src="/assets/images/templates/sangtrong/4.png"
+              src="assets/images/templates/sangtrong/4.png"
               alt="Flower Decor Groom"
               class="w-[80px] sm:w-[110px] md:w-[120px] lg:w-[150px] xl:w-[190px] h-auto absolute -bottom-6 sm:-bottom-8 md:-bottom-10 lg:-bottom-12 xl:-bottom-14 -left-4 sm:-left-5 md:-left-6 lg:-left-8 xl:-left-10 z-10 pointer-events-none"
             />
@@ -100,7 +100,7 @@ import { IntroData } from '../../models/wedding-data.model';
             </div>
             <!-- Flower Decor Bride, anchored to the photo frame. -->
             <img
-              src="/assets/images/templates/sangtrong/5.png"
+              src="assets/images/templates/sangtrong/5.png"
               alt="Flower Decor Bride"
               class="w-[80px] sm:w-[110px] md:w-[120px] lg:w-[150px] xl:w-[190px] h-auto absolute -bottom-6 sm:-bottom-8 md:-bottom-10 lg:-bottom-12 xl:-bottom-14 -right-4 sm:-right-5 md:-right-6 lg:-right-8 xl:-right-10 z-10 pointer-events-none"
             />

@@ -93,7 +93,7 @@ import { BannerData } from "../../models/wedding-data.model";
     >
       <!-- Top Left Floral Decor (Firmly glued to very top left of page) -->
       <img
-        src="/assets/images/templates/sangtrong/7.png"
+        src="assets/images/templates/sangtrong/7.png"
         alt="Floral Decor Top Left"
         class="absolute top-0 left-0 w-[140px] sm:w-[200px] md:w-[240px] lg:w-[300px] xl:w-[400px] h-auto pointer-events-none z-10 opacity-85 sm:opacity-95"
       />
@@ -188,7 +188,7 @@ import { BannerData } from "../../models/wedding-data.model";
 
               <!-- Bottom Right Flower Decor - Attached directly to photo corner -->
               <img
-                src="/assets/images/templates/sangtrong/img/04.png"
+                src="assets/images/templates/sangtrong/img/04.png"
                 alt="Decor Bottom Right"
                 class="absolute -bottom-4 -right-6 sm:-bottom-6 sm:-right-8 md:-bottom-5 md:-right-7 lg:-bottom-8 lg:-right-10 xl:-bottom-10 xl:-right-14 z-40 w-[85px] sm:w-[120px] md:w-[125px] lg:w-[180px] xl:w-[260px] h-auto pointer-events-none"
               />

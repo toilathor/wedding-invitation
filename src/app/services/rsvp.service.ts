@@ -1,9 +1,11 @@
 import { Injectable } from "@angular/core";
-import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../core/firebase.config";
 import { RSVPFormData } from "../models/wedding-data.model";
 
-const DEVICE_ID_KEY = "wedding_guestbook_device_id";
+// Khoá bí mật RIÊNG cho RSVP. Không dùng chung với deviceId của sổ lưu bút (deviceId đó nằm công khai
+// trong từng lời chúc), vì Firestore rules dùng giá trị này để xác định ai được sửa lại RSVP của mình.
+const DEVICE_ID_KEY = "wedding_rsvp_secret";
 
 export interface PhoneValidationResult {
   isValid: boolean;
@@ -121,18 +123,21 @@ export class RsvpService {
   private initDeviceId(): string {
     try {
       let id = localStorage.getItem(DEVICE_ID_KEY);
-      if (!id) {
-        id =
-          "dev_" +
-          Math.random().toString(36).substring(2, 11) +
-          "_" +
-          Date.now().toString(36);
+      if (!id || id.length < 8) {
+        id = this.randomSecret();
         localStorage.setItem(DEVICE_ID_KEY, id);
       }
       return id;
     } catch {
-      return "dev_" + Math.random().toString(36).substring(2, 11);
+      return this.randomSecret();
     }
+  }
+
+  /** 128 bit ngẫu nhiên từ bộ sinh số an toàn của trình duyệt (không dùng Math.random). */
+  private randomSecret(): string {
+    const bytes = new Uint8Array(16);
+    crypto.getRandomValues(bytes);
+    return "rsvp_" + Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
   }
 
   /**
@@ -140,26 +145,6 @@ export class RsvpService {
    */
   validatePhone(phone: string): PhoneValidationResult {
     return validateAndNormalizePhone(phone);
-  }
-
-  /**
-   * Lấy thông tin RSVP theo số điện thoại
-   */
-  async getRsvpByPhone(phone: string): Promise<RSVPFormData | null> {
-    const validation = this.validatePhone(phone);
-    if (!validation.isValid) return null;
-
-    try {
-      const rsvpDocRef = doc(db, "rsvps", validation.normalizedKey);
-      const snapshot = await getDoc(rsvpDocRef);
-      if (snapshot.exists()) {
-        return snapshot.data() as RSVPFormData;
-      }
-      return null;
-    } catch (error) {
-      console.error("Lỗi khi lấy thông tin RSVP theo SĐT:", error);
-      return null;
-    }
   }
 
   /**
@@ -204,9 +189,17 @@ export class RsvpService {
       return { success: true };
     } catch (error: any) {
       console.error("Lỗi khi lưu RSVP lên Firestore:", error);
+      // Rules chỉ cho thiết bị đã gửi lần đầu sửa lại; thiết bị khác dùng cùng số sẽ bị từ chối.
+      if (error?.code === "permission-denied") {
+        return {
+          success: false,
+          error:
+            "Số điện thoại này đã được xác nhận từ một thiết bị khác. Nếu cần đổi thông tin, vui lòng nhắn trực tiếp cho cô dâu chú rể nhé.",
+        };
+      }
       return {
         success: false,
-        error: error?.message || "Đã có lỗi xảy ra khi gửi xác nhận.",
+        error: "Đã có lỗi xảy ra khi gửi xác nhận. Vui lòng thử lại sau.",
       };
     }
   }

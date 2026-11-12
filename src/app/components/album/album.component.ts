@@ -4,6 +4,7 @@ import {
   ElementRef,
   HostListener,
   Input,
+  NgZone,
   OnDestroy,
   ViewChild,
   inject,
@@ -41,6 +42,9 @@ import { PageViewService } from "../../services/pageview.service";
             [alt]="'Ảnh cưới ' + (idx + 1)"
             class="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
             loading="lazy"
+            draggable="false"
+            (contextmenu)="$event.preventDefault()"
+            style="-webkit-touch-callout: none; -webkit-user-drag: none;"
           />
 
           <!-- Hover Overlay -->
@@ -107,6 +111,9 @@ import { PageViewService } from "../../services/pageview.service";
                 [alt]="'Ảnh cưới ' + (initialCount + i + 1)"
                 class="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
                 loading="lazy"
+                draggable="false"
+                (contextmenu)="$event.preventDefault()"
+                style="-webkit-touch-callout: none; -webkit-user-drag: none;"
               />
 
               <!-- Hover Overlay -->
@@ -185,7 +192,17 @@ import { PageViewService } from "../../services/pageview.service";
       aria-modal="true"
       aria-label="Xem ảnh cưới"
       (click)="closeLightbox()"
+      (contextmenu)="$event.preventDefault()"
     >
+      <!-- Thanh tiến trình trình chiếu -->
+      <div *ngIf="isSlideshow" class="absolute top-0 left-0 right-0 h-[3px] z-[60] bg-white/10 pointer-events-none" style="margin-top: env(safe-area-inset-top);">
+        <div
+          *ngFor="let idx of [currentIndex]"
+          class="slideshow-progress h-full w-full bg-gradient-to-r from-[#F4DBCE] to-[#D4AF37]"
+          [style.--sl-dur]="slideshowMs + 'ms'"
+        ></div>
+      </div>
+
       <!-- Top Navigation & Control Bar -->
       <div
         class="w-full flex items-center justify-between px-3 sm:px-6 py-3 sm:py-4 text-white z-50 bg-gradient-to-b from-black/80 via-black/40 to-transparent"
@@ -209,7 +226,7 @@ import { PageViewService } from "../../services/pageview.service";
           </span>
         </div>
 
-        <!-- Right: Action Buttons (Slideshow, Zoom, Download, Close) -->
+        <!-- Right: Action Buttons (Slideshow, Zoom, Close) -->
         <div class="flex items-center gap-1.5 sm:gap-2">
           <!-- Slideshow Toggle -->
           <button
@@ -250,7 +267,7 @@ import { PageViewService } from "../../services/pageview.service";
             (click)="toggleZoom()"
             class="p-2 sm:p-2.5 rounded-full bg-white/10 hover:bg-white/20 active:scale-90 transition-all text-white"
             [title]="
-              isZoomed ? 'Thu nhỏ ảnh (Phím -)' : 'Phóng to ảnh (Phím +)'
+              isZoomed ? 'Thu nhỏ ảnh (Phím 0 hoặc -)' : 'Phóng to ảnh (Phím +, bấm đúp hoặc chụm hai ngón)'
             "
             aria-label="Phóng to / Thu nhỏ"
           >
@@ -286,31 +303,6 @@ import { PageViewService } from "../../services/pageview.service";
             </svg>
           </button>
 
-          <!-- Download Photo Button -->
-          <a
-            [href]="data.albums[currentIndex]"
-            [download]="'wedding_photo_' + (currentIndex + 1) + '.webp'"
-            target="_blank"
-            class="p-2 sm:p-2.5 rounded-full bg-white/10 hover:bg-white/20 active:scale-90 transition-all text-white"
-            title="Tải ảnh về máy"
-            aria-label="Tải ảnh về máy"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-4 h-4 sm:w-5 sm:h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-              />
-            </svg>
-          </a>
-
           <!-- Close Modal Button -->
           <button
             type="button"
@@ -339,11 +331,16 @@ import { PageViewService } from "../../services/pageview.service";
 
       <!-- Main Photo Viewing Stage with Touch Gestures -->
       <div
+        #stage
         class="relative w-full flex-1 flex items-center justify-center overflow-hidden px-2 sm:px-14 md:px-20 touch-none"
+        [class.cursor-grab]="isZoomed"
         (click)="$event.stopPropagation()"
-        (touchstart)="onTouchStart($event)"
-        (touchmove)="onTouchMove($event)"
-        (touchend)="onTouchEnd($event)"
+        (pointerdown)="onPointerDown($event)"
+        (pointermove)="onPointerMove($event)"
+        (pointerup)="onPointerUp($event)"
+        (pointercancel)="onPointerUp($event)"
+        (wheel)="onWheel($event)"
+        (dblclick)="onDblClick($event)"
       >
         <!-- Floating Left Arrow -->
         <button
@@ -369,24 +366,47 @@ import { PageViewService } from "../../services/pageview.service";
           </svg>
         </button>
 
-        <!-- Centered Main Image Container -->
+        <!-- Centered Main Image Container (transform do bộ cử chỉ điều khiển trực tiếp) -->
         <div
-          class="relative max-w-full max-h-full flex items-center justify-center select-none transition-transform duration-300 ease-out"
-          [style.transform]="isZoomed ? 'scale(1.45)' : 'scale(1)'"
-          [class.cursor-zoom-out]="isZoomed"
-          [class.cursor-zoom-in]="!isZoomed"
-          (click)="toggleZoom()"
-          (dblclick)="toggleZoom()"
+          #zoomEl
+          class="relative max-w-full max-h-full flex items-center justify-center select-none"
+          style="will-change: transform; touch-action: none; -webkit-touch-callout: none;"
         >
+          <!-- Ảnh đang rời đi: trượt ra chậm hơn ảnh mới và mờ dần -->
           <img
-            [src]="data.albums[currentIndex]"
-            [alt]="'Ảnh cưới ' + (currentIndex + 1)"
+            *ngIf="outgoingSrc"
+            [src]="outgoingSrc"
+            alt=""
+            aria-hidden="true"
+            class="absolute inset-0 m-auto max-w-[92vw] sm:max-w-[85vw] md:max-w-5xl max-h-[64vh] sm:max-h-[70vh] md:max-h-[74vh] w-auto h-auto object-contain rounded-xl sm:rounded-2xl md:rounded-3xl shadow-2xl"
+            [ngClass]="outgoingDir === 'next' ? 'lb-out-next' : 'lb-out-prev'"
+            draggable="false"
+          />
+          <!-- *ngFor với một phần tử: tạo lại thẻ mỗi khi đổi ảnh để hiệu ứng chạy lại từ đầu -->
+          <img
+            *ngFor="let idx of [currentIndex]"
+            [src]="data.albums[idx]"
+            [alt]="'Ảnh cưới ' + (idx + 1)"
             class="max-w-[92vw] sm:max-w-[85vw] md:max-w-5xl max-h-[64vh] sm:max-h-[70vh] md:max-h-[74vh] w-auto h-auto object-contain rounded-xl sm:rounded-2xl md:rounded-3xl shadow-2xl"
             [class.lightbox-slide-next]="changing && slideDirection === 'next'"
             [class.lightbox-slide-prev]="changing && slideDirection === 'prev'"
             draggable="false"
+            style="-webkit-user-drag: none; -webkit-touch-callout: none;"
           />
         </div>
+
+        <!-- Mức phóng đại hiện tại + đặt lại -->
+        <button
+          #zoomBadge
+          type="button"
+          (click)="resetZoom(true)"
+          class="absolute bottom-3 left-1/2 -translate-x-1/2 z-40 px-3 py-1.5 rounded-full bg-black/55 backdrop-blur-md border border-white/15 text-white text-xs font-prata tracking-wider transition-opacity duration-200"
+          [class.opacity-0]="!isZoomed"
+          [class.pointer-events-none]="!isZoomed"
+          aria-label="Đặt lại mức phóng to"
+        >
+          <span #zoomLabel>100%</span> · Đặt lại
+        </button>
 
         <!-- Floating Right Arrow -->
         <button
@@ -440,6 +460,8 @@ import { PageViewService } from "../../services/pageview.service";
               [alt]="'Thumbnail ' + (idx + 1)"
               class="w-full h-full object-cover"
               loading="lazy"
+              draggable="false"
+              style="-webkit-touch-callout: none; -webkit-user-drag: none;"
             />
           </button>
         </div>
@@ -450,6 +472,11 @@ import { PageViewService } from "../../services/pageview.service";
 export class AlbumComponent implements OnDestroy {
   @Input({ required: true }) data!: AlbumData;
   @ViewChild("thumbnailStrip") thumbnailStrip?: ElementRef<HTMLDivElement>;
+  @ViewChild("stage") stageRef?: ElementRef<HTMLDivElement>;
+  @ViewChild("zoomEl") zoomElRef?: ElementRef<HTMLDivElement>;
+  @ViewChild("zoomLabel") zoomLabelRef?: ElementRef<HTMLSpanElement>;
+
+  private zone = inject(NgZone);
 
   private pageViewService = inject(PageViewService);
 
@@ -461,15 +488,13 @@ export class AlbumComponent implements OnDestroy {
   isZoomed = false;
   changing = false;
   slideDirection: "next" | "prev" = "next";
-  private slideshowTimer: any;
+  readonly slideshowMs = 4000;
+  outgoingSrc: string | null = null;
+  outgoingDir: "next" | "prev" = "next";
+  private outgoingTimer: ReturnType<typeof setTimeout> | null = null;
+  private slideshowTimer: ReturnType<typeof setTimeout> | null = null;
   private changeTimer: ReturnType<typeof setTimeout> | null = null;
 
-  // Touch Swipe coordinates
-  private touchStartX = 0;
-  private touchStartY = 0;
-  private touchEndX = 0;
-  private touchEndY = 0;
-  private lastTapTime = 0;
   private previousBodyStyles = {
     overflow: "",
     htmlOverflow: "",
@@ -491,8 +516,8 @@ export class AlbumComponent implements OnDestroy {
 
   openLightbox(index: number) {
     this.currentIndex = index;
-    this.isZoomed = false;
     this.lightboxOpen = true;
+    this.zs = 1; this.ztx = 0; this.zty = 0; this.isZoomed = false;
     this.pageViewService.setLocked(true);
     this.lockBodyScroll();
     this.preloadAdjacentImages();
@@ -501,6 +526,8 @@ export class AlbumComponent implements OnDestroy {
 
   closeLightbox() {
     this.lightboxOpen = false;
+    this.outgoingSrc = null;
+    this.cancelAnim();
     this.isZoomed = false;
     this.stopSlideshow();
     this.pageViewService.setLocked(false);
@@ -511,7 +538,7 @@ export class AlbumComponent implements OnDestroy {
     if (this.currentIndex === index) return;
     this.triggerChange(index > this.currentIndex ? "next" : "prev", () => {
       this.currentIndex = index;
-      this.isZoomed = false;
+      this.resetZoom(false);
       this.preloadAdjacentImages();
       this.scrollThumbIntoView();
     });
@@ -520,7 +547,7 @@ export class AlbumComponent implements OnDestroy {
   nextImage() {
     this.triggerChange("next", () => {
       this.currentIndex = (this.currentIndex + 1) % this.data.albums.length;
-      this.isZoomed = false;
+      this.resetZoom(false);
       this.preloadAdjacentImages();
       this.scrollThumbIntoView();
     });
@@ -531,14 +558,15 @@ export class AlbumComponent implements OnDestroy {
       this.currentIndex =
         (this.currentIndex - 1 + this.data.albums.length) %
         this.data.albums.length;
-      this.isZoomed = false;
+      this.resetZoom(false);
       this.preloadAdjacentImages();
       this.scrollThumbIntoView();
     });
   }
 
   toggleZoom() {
-    this.isZoomed = !this.isZoomed;
+    if (this.zs > 1.05) this.animateTo(1, 0, 0);
+    else this.zoomAt(this.centerPoint(), this.ZOOM_DOUBLE_TAP);
   }
 
   toggleSlideshow() {
@@ -551,28 +579,44 @@ export class AlbumComponent implements OnDestroy {
 
   private startSlideshow() {
     this.isSlideshow = true;
-    this.slideshowTimer = setInterval(() => {
-      this.nextImage();
-    }, 3000);
+    this.resetZoom(false);
+    this.scheduleNext();
   }
 
   private stopSlideshow() {
     this.isSlideshow = false;
     if (this.slideshowTimer) {
-      clearInterval(this.slideshowTimer);
+      clearTimeout(this.slideshowTimer);
       this.slideshowTimer = null;
     }
+  }
+
+  /** Hẹn ảnh kế tiếp. Dùng setTimeout nối tiếp để thanh tiến trình và Ken Burns luôn khớp, kể cả khi người dùng chuyển ảnh tay. */
+  private scheduleNext() {
+    if (this.slideshowTimer) clearTimeout(this.slideshowTimer);
+    this.slideshowTimer = setTimeout(() => {
+      if (this.isSlideshow) this.nextImage();
+    }, this.slideshowMs);
   }
 
   private triggerChange(direction: "next" | "prev", action: () => void) {
     if (this.changeTimer) clearTimeout(this.changeTimer);
     this.slideDirection = direction;
     this.changing = true;
+    const leaving = this.currentIndex;
     action();
+    if (this.currentIndex !== leaving) {
+      // Ảnh cũ ở lại và trượt ra phía đối diện trong lúc ảnh mới trượt vào
+      this.outgoingDir = direction;
+      this.outgoingSrc = this.data.albums[leaving];
+      if (this.outgoingTimer) clearTimeout(this.outgoingTimer);
+      this.outgoingTimer = setTimeout(() => (this.outgoingSrc = null), 680);
+      if (this.isSlideshow) this.scheduleNext();
+    }
     this.changeTimer = setTimeout(() => {
       this.changing = false;
       this.changeTimer = null;
-    }, 380);
+    }, 680);
   }
 
   private scrollThumbIntoView() {
@@ -623,52 +667,280 @@ export class AlbumComponent implements OnDestroy {
     img2.src = this.data.albums[prevIdx];
   }
 
-  // Touch Swipe Handlers (Swipe left/right to change photo)
-  onTouchStart(e: TouchEvent) {
-    e.stopPropagation();
-    if (e.touches.length === 1) {
-      this.touchStartX = e.touches[0].clientX;
-      this.touchStartY = e.touches[0].clientY;
-      this.touchEndX = e.touches[0].clientX;
-      this.touchEndY = e.touches[0].clientY;
+  // ===== Zoom & pan: cử chỉ chụm / kéo / bấm đúp / cuộn, lò xo + quán tính =====
+  private readonly ZOOM_MAX = 5;
+  private readonly ZOOM_DOUBLE_TAP = 2.6;
 
-      // Double-tap detection
-      const now = Date.now();
-      if (now - this.lastTapTime < 300) {
-        this.toggleZoom();
-      }
-      this.lastTapTime = now;
+  // Trạng thái biến đổi hiện tại của ảnh (tx, ty tính từ tâm khung; zs là tỉ lệ)
+  private zs = 1;
+  private ztx = 0;
+  private zty = 0;
+  private zvs = 0;
+  private zvx = 0;
+  private zvy = 0;
+  private zTarget = { s: 1, x: 0, y: 0 };
+  private zRaf: number | null = null;
+  private zLast = 0;
+
+  private pointers = new Map<number, { x: number; y: number }>();
+  private pinch: { dist: number; s: number } | null = null;
+  private history: { t: number; x: number; y: number }[] = [];
+  private gestureStart = { x: 0, y: 0, t: 0, moved: false, onImg: false };
+  private lastTap = { t: 0, x: 0, y: 0 };
+
+  private stageRect() {
+    return this.stageRef!.nativeElement.getBoundingClientRect();
+  }
+
+  private centerPoint() {
+    const r = this.stageRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+  }
+
+  /** Giới hạn kéo ảnh: khi ảnh phóng lớn hơn khung thì được kéo tới mép, không hơn. */
+  private bounds(s: number) {
+    const stage = this.stageRect();
+    const el = this.zoomElRef!.nativeElement;
+    return {
+      x: Math.max(0, (el.offsetWidth * s - stage.width) / 2),
+      y: Math.max(0, (el.offsetHeight * s - stage.height) / 2),
+    };
+  }
+
+  private clamp(v: number, lo: number, hi: number) {
+    return Math.min(hi, Math.max(lo, v));
+  }
+
+  private apply() {
+    const el = this.zoomElRef?.nativeElement;
+    if (!el) return;
+    el.style.transform = `translate3d(${this.ztx}px, ${this.zty}px, 0) scale(${this.zs})`;
+    const label = this.zoomLabelRef?.nativeElement;
+    if (label) label.textContent = Math.round(this.zs * 100) + "%";
+    const zoomed = this.zs > 1.02;
+    if (zoomed !== this.isZoomed) {
+      this.zone.run(() => {
+        this.isZoomed = zoomed;
+        if (zoomed && this.isSlideshow) this.stopSlideshow(); // đang phóng để ngắm thì đừng tự chuyển ảnh
+      });
     }
   }
 
-  onTouchMove(e: TouchEvent) {
+  /** Phóng/thu quanh điểm màn hình q sao cho điểm ảnh dưới q đứng yên. */
+  private setScaleAt(q: { x: number; y: number }, next: number) {
+    const c = this.centerPoint();
+    const ratio = next / this.zs;
+    this.ztx = q.x - c.x - ratio * (q.x - c.x - this.ztx);
+    this.zty = q.y - c.y - ratio * (q.y - c.y - this.zty);
+    this.zs = next;
+  }
+
+  /** Mục tiêu (s, tx, ty) cho một lần phóng tại q, đã kẹp trong giới hạn. */
+  private zoomAt(q: { x: number; y: number }, targetScale: number) {
+    const c = this.centerPoint();
+    const s = this.clamp(targetScale, 1, this.ZOOM_MAX);
+    const ratio = s / this.zs;
+    let x = q.x - c.x - ratio * (q.x - c.x - this.ztx);
+    let y = q.y - c.y - ratio * (q.y - c.y - this.zty);
+    const b = this.bounds(s);
+    x = this.clamp(x, -b.x, b.x);
+    y = this.clamp(y, -b.y, b.y);
+    this.animateTo(s, x, y);
+  }
+
+  resetZoom(animated: boolean) {
+    if (!this.zoomElRef) { this.zs = 1; this.ztx = 0; this.zty = 0; this.isZoomed = false; return; }
+    if (animated && this.zs !== 1) this.animateTo(1, 0, 0);
+    else { this.cancelAnim(); this.zs = 1; this.ztx = 0; this.zty = 0; this.apply(); }
+  }
+
+  // ----- Lò xo (critically damped, response ≈ 0.45s), mang theo vận tốc -----
+  private animateTo(s: number, x: number, y: number, v = { x: 0, y: 0, s: 0 }) {
+    this.zTarget = { s, x, y };
+    this.zvx = v.x; this.zvy = v.y; this.zvs = v.s;
+    if (this.zRaf !== null) return;
+    this.zLast = performance.now();
+    const omega = (2 * Math.PI) / 0.45;
+    const tick = (now: number) => {
+      const dt = Math.min(0.032, (now - this.zLast) / 1000);
+      this.zLast = now;
+      const n = 4, h = dt / n;
+      for (let i = 0; i < n; i++) {
+        this.zvx += (omega * omega * (this.zTarget.x - this.ztx) - 2 * omega * this.zvx) * h;
+        this.zvy += (omega * omega * (this.zTarget.y - this.zty) - 2 * omega * this.zvy) * h;
+        this.zvs += (omega * omega * (this.zTarget.s - this.zs) - 1.9 * omega * this.zvs) * h;
+        this.ztx += this.zvx * h; this.zty += this.zvy * h; this.zs += this.zvs * h;
+      }
+      this.apply();
+      const done =
+        Math.abs(this.zTarget.x - this.ztx) < 0.3 && Math.abs(this.zTarget.y - this.zty) < 0.3 &&
+        Math.abs(this.zTarget.s - this.zs) < 0.002 &&
+        Math.abs(this.zvx) < 2 && Math.abs(this.zvy) < 2 && Math.abs(this.zvs) < 0.02;
+      if (done) {
+        this.ztx = this.zTarget.x; this.zty = this.zTarget.y; this.zs = this.zTarget.s;
+        this.zRaf = null;
+        this.apply();
+        return;
+      }
+      this.zRaf = requestAnimationFrame(tick);
+    };
+    this.zone.runOutsideAngular(() => (this.zRaf = requestAnimationFrame(tick)));
+  }
+
+  private cancelAnim() {
+    if (this.zRaf !== null) cancelAnimationFrame(this.zRaf);
+    this.zRaf = null;
+  }
+
+  // ----- Cử chỉ -----
+  onPointerDown(e: PointerEvent) {
+    if ((e.target as HTMLElement).closest("button")) return; // nút mũi tên / đặt lại
+    this.cancelAnim(); // nắm giữ ảnh đang trượt: dừng ngay tại chỗ
+    try { (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); } catch { /* bỏ qua */ }
+    this.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (this.pointers.size === 1) {
+      this.history = [{ t: e.timeStamp, x: e.clientX, y: e.clientY }];
+      this.gestureStart = {
+        x: e.clientX, y: e.clientY, t: e.timeStamp, moved: false,
+        onImg: (e.target as HTMLElement).tagName === "IMG",
+      };
+    } else if (this.pointers.size === 2) {
+      const [a, b] = [...this.pointers.values()];
+      this.pinch = { dist: Math.hypot(a.x - b.x, a.y - b.y) || 1, s: this.zs };
+      this.gestureStart.moved = true;
+    }
+  }
+
+  onPointerMove(e: PointerEvent) {
+    const prev = this.pointers.get(e.pointerId);
+    if (!prev) return;
+    const cur = { x: e.clientX, y: e.clientY };
+    this.pointers.set(e.pointerId, cur);
+
+    if (this.pointers.size >= 2 && this.pinch) {
+      const [a, b] = [...this.pointers.values()];
+      const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+      const ratio = (Math.hypot(a.x - b.x, a.y - b.y) || 1) / this.pinch.dist;
+      let target = this.pinch.s * ratio;
+      // Vượt giới hạn thì cản dần như dây cao su
+      if (target < 1) target = 1 - (1 - target) * 0.45;
+      if (target > this.ZOOM_MAX) target = this.ZOOM_MAX + (target - this.ZOOM_MAX) * 0.3;
+      const prevMid = { x: (prev.x + [...this.pointers.entries()].find(([id]) => id !== e.pointerId)![1].x) / 2,
+                        y: (prev.y + [...this.pointers.entries()].find(([id]) => id !== e.pointerId)![1].y) / 2 };
+      this.ztx += mid.x - prevMid.x; this.zty += mid.y - prevMid.y; // kéo theo trung điểm hai ngón
+      this.setScaleAt(mid, target);
+      this.apply();
+      return;
+    }
+
+    if (this.pointers.size === 1) {
+      const dx = cur.x - prev.x, dy = cur.y - prev.y;
+      if (Math.hypot(cur.x - this.gestureStart.x, cur.y - this.gestureStart.y) > 6) this.gestureStart.moved = true;
+      this.history.push({ t: e.timeStamp, x: cur.x, y: cur.y });
+      if (this.history.length > 8) this.history.shift();
+      if (this.zs > 1.02) {
+        // Kéo 1:1; vượt mép thì chỉ đi theo ~35% (cản dần)
+        const b = this.bounds(this.zs);
+        this.ztx += Math.abs(this.ztx) > b.x && Math.sign(dx) === Math.sign(this.ztx) ? dx * 0.35 : dx;
+        this.zty += Math.abs(this.zty) > b.y && Math.sign(dy) === Math.sign(this.zty) ? dy * 0.35 : dy;
+        this.apply();
+      }
+    }
+  }
+
+  onPointerUp(e: PointerEvent) {
+    if (!this.pointers.has(e.pointerId)) return;
+    const wasPinch = this.pointers.size >= 2;
+    this.pointers.delete(e.pointerId);
+
+    if (wasPinch) {
+      this.pinch = null;
+      if (this.pointers.size === 1) {
+        // Còn một ngón: tiếp tục kéo từ vị trí hiện tại
+        const rest = [...this.pointers.values()][0];
+        this.history = [{ t: e.timeStamp, x: rest.x, y: rest.y }];
+        this.settle();
+      } else {
+        this.settle();
+      }
+      return;
+    }
+
+    if (this.pointers.size > 0) return;
+    const g = this.gestureStart;
+
+    // Chạm đúp (cảm ứng) → phóng/thu tại điểm chạm
+    if (!g.moved && e.pointerType !== "mouse" && g.onImg) {
+      const near = Math.hypot(e.clientX - this.lastTap.x, e.clientY - this.lastTap.y) < 30;
+      if (e.timeStamp - this.lastTap.t < 300 && near) {
+        this.lastTap.t = 0;
+        this.zs > 1.05 ? this.animateTo(1, 0, 0) : this.zoomAt({ x: e.clientX, y: e.clientY }, this.ZOOM_DOUBLE_TAP);
+        return;
+      }
+      this.lastTap = { t: e.timeStamp, x: e.clientX, y: e.clientY };
+    }
+
+    if (this.zs > 1.02) {
+      // Thả tay: quán tính theo vận tốc, dừng ở mép
+      const recent = this.history.filter((m) => e.timeStamp - m.t <= 100);
+      let vx = 0, vy = 0;
+      if (recent.length >= 2) {
+        const f = recent[0], l = recent[recent.length - 1];
+        const dt = Math.max(16, l.t - f.t) / 1000;
+        vx = (l.x - f.x) / dt; vy = (l.y - f.y) / dt;
+      }
+      this.settle(vx, vy);
+      return;
+    }
+    this.settle();
+
+    // Vuốt ngang khi chưa phóng → chuyển ảnh
+    if (e.pointerType !== "mouse" && g.moved) {
+      const dx = e.clientX - g.x, dy = e.clientY - g.y;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+        dx < 0 ? this.nextImage() : this.prevImage();
+      }
+    }
+  }
+
+  /** Đưa (s, tx, ty) về vùng hợp lệ, cộng thêm quán tính nếu có. */
+  private settle(vx = 0, vy = 0) {
+    const s = this.clamp(this.zs, 1, this.ZOOM_MAX);
+    if (s <= 1.02) { this.animateTo(1, 0, 0, { x: 0, y: 0, s: this.zvs }); return; }
+    const b = this.bounds(s);
+    const px = this.ztx + vx * 0.499 * 0.5; // chiếu động lượng (giảm nửa để không văng quá xa)
+    const py = this.zty + vy * 0.499 * 0.5;
+    this.animateTo(s, this.clamp(px, -b.x, b.x), this.clamp(py, -b.y, b.y), { x: vx, y: vy, s: 0 });
+  }
+
+  onDblClick(e: MouseEvent) {
+    // Chuột: bấm đúp để phóng/thu (cảm ứng đã xử lý ở trên)
+    if ((e as PointerEvent).pointerType === "touch") return;
+    if ((e.target as HTMLElement).closest("button")) return;
+    // Sau setPointerCapture, sự kiện dblclick bị gán về khung (stage) chứ không phải thẻ <img>,
+    // nên kiểm tra theo toạ độ: chỉ phản ứng khi bấm đúp lên vùng ảnh.
+    const box = this.zoomElRef?.nativeElement.getBoundingClientRect();
+    if (!box || e.clientX < box.left || e.clientX > box.right || e.clientY < box.top || e.clientY > box.bottom) return;
+    this.zs > 1.05 ? this.animateTo(1, 0, 0) : this.zoomAt({ x: e.clientX, y: e.clientY }, this.ZOOM_DOUBLE_TAP);
+  }
+
+  onWheel(e: WheelEvent) {
     e.preventDefault();
     e.stopPropagation();
-    if (e.touches.length === 1) {
-      this.touchEndX = e.touches[0].clientX;
-      this.touchEndY = e.touches[0].clientY;
-    }
-  }
-
-  onTouchEnd(e?: TouchEvent) {
-    e?.stopPropagation();
-    const deltaX = this.touchStartX - this.touchEndX;
-    const deltaY = this.touchStartY - this.touchEndY;
-    const swipeThreshold = 40;
-
-    // If zoomed, don't trigger swipe navigation
-    if (this.isZoomed) return;
-
-    // Horizontal swipe for next / prev
-    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-      if (deltaX > swipeThreshold) {
-        // Swiped Left -> Next Image
-        this.nextImage();
-      } else if (deltaX < -swipeThreshold) {
-        // Swiped Right -> Previous Image
-        this.prevImage();
-      }
-    }
+    if (e.ctrlKey || e.metaKey) {
+      // Chụm trên touchpad / Ctrl + lăn: phóng tại con trỏ
+      const next = this.clamp(this.zs * Math.exp(-e.deltaY * 0.012), 1, this.ZOOM_MAX);
+      this.cancelAnim();
+      this.setScaleAt({ x: e.clientX, y: e.clientY }, next);
+    } else if (this.zs > 1.02) {
+      this.cancelAnim();
+      this.ztx -= e.deltaX; this.zty -= e.deltaY; // hai ngón trượt = kéo ảnh
+    } else return;
+    const b = this.bounds(this.zs);
+    this.ztx = this.clamp(this.ztx, -b.x, b.x);
+    this.zty = this.clamp(this.zty, -b.y, b.y);
+    if (this.zs <= 1.02) { this.zs = 1; this.ztx = 0; this.zty = 0; }
+    this.apply();
   }
 
   @HostListener("window:keydown", ["$event"])
@@ -688,8 +960,13 @@ export class AlbumComponent implements OnDestroy {
       event.preventDefault();
       this.prevImage();
     }
-    if (event.key === "+" || event.key === "=") this.isZoomed = true;
-    if (event.key === "-" || event.key === "_") this.isZoomed = false;
+    if (event.key === "+" || event.key === "=") this.zoomAt(this.centerPoint(), Math.min(this.ZOOM_MAX, this.zs * 1.5));
+    if (event.key === "-" || event.key === "_") {
+      const next = this.zs / 1.5;
+      if (next <= 1.05) this.animateTo(1, 0, 0);
+      else this.zoomAt(this.centerPoint(), next);
+    }
+    if (event.key === "0") this.resetZoom(true);
     if (event.key === " " || event.code === "Space") {
       event.preventDefault();
       this.toggleSlideshow();
@@ -699,6 +976,8 @@ export class AlbumComponent implements OnDestroy {
   ngOnDestroy() {
     this.stopSlideshow();
     if (this.changeTimer) clearTimeout(this.changeTimer);
+    this.cancelAnim();
+    if (this.outgoingTimer) clearTimeout(this.outgoingTimer);
     this.pageViewService.setLocked(false);
     if (this.lightboxOpen) this.restoreBodyScroll();
     else document.body.classList.remove("lightbox-open");

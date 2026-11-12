@@ -42,7 +42,7 @@ import { TimelineData } from '../../models/wedding-data.model';
               <!-- Overlay Flower Decor -->
               <div class="absolute -top-12 left-0 right-0 flex justify-center items-center pointer-events-none z-20">
                 <img
-                  src="/assets/images/templates/sangtrong/1.png"
+                  src="assets/images/templates/sangtrong/1.png"
                   alt="Milestone Decor"
                   class="w-[130px] md:w-[140px] h-auto object-contain"
                 />

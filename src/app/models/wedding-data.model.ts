@@ -87,11 +87,9 @@ export interface GuestMessage {
 export interface BankData {
   nameGroom: string;
   bankNameGroom: string;
-  bankNumberGroom: string;
   imageBankGroom: string;
   nameBride: string;
   bankNameBride: string;
-  bankNumberBride: string;
   imageBankBride: string;
   description: string;
   coverImage: string;

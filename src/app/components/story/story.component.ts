@@ -86,7 +86,7 @@ import { StoryData } from "../../models/wedding-data.model";
 
           <!-- Flower Decor Ornament -->
           <img
-            src="/assets/images/templates/sangtrong/6.png"
+            src="assets/images/templates/sangtrong/6.png"
             alt="Decor Flower"
             class="z-30 absolute -bottom-4 right-0 sm:-bottom-6 sm:-right-2 md:-bottom-8 md:-right-4 lg:-right-6 xl:-right-[40px] w-[90px] sm:w-[120px] md:w-[160px] lg:w-[190px] xl:w-[240px] h-auto pointer-events-none"
           />

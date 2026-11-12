@@ -27,7 +27,7 @@ import { BannerComponent } from "../banner/banner.component";
     <div #root class="cover" role="dialog" aria-label="Mở thiệp cưới">
       <!-- Cùng hoa trang trí với banner để lúc chuyển cảnh liền mạch -->
       <img
-        src="/assets/images/templates/sangtrong/7.png"
+        src="assets/images/templates/sangtrong/7.png"
         alt=""
         class="absolute top-0 left-0 w-[140px] sm:w-[200px] md:w-[240px] lg:w-[300px] xl:w-[400px] h-auto pointer-events-none opacity-85 sm:opacity-95"
       />
@@ -323,7 +323,7 @@ export class CoverComponent implements AfterViewInit, OnDestroy {
   onPointerDown(e: PointerEvent) {
     if (this.done) return;
     if (this.committed) { this.skip(); return; }
-    (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+    try { (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); } catch { /* pointer không còn hợp lệ: bỏ qua */ }
     this.dragging = false;
     this.startY = e.clientY;
     this.samples = [{ t: e.timeStamp, y: e.clientY }];

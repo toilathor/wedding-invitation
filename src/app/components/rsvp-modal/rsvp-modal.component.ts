@@ -30,7 +30,7 @@ interface GuestOption {
 
         <!-- Top Right Flower Ornament -->
         <img
-          src="/assets/images/templates/sangtrong/img/04.png"
+          src="assets/images/templates/sangtrong/img/04.png"
           alt="Decor Flower"
           class="absolute -top-6 -right-6 w-[120px] md:w-[150px] opacity-80 pointer-events-none z-10"
         />
