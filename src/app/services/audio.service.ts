@@ -9,7 +9,6 @@ export class AudioService {
   isPlaying = signal<boolean>(false);
   currentTrackIndex = signal<number>(0);
   private playlist: string[] = [];
-  private userInteracted = false;
   private pausedByVisibility = false;
 
   constructor() {
@@ -54,35 +53,11 @@ export class AudioService {
 
     this.audio = new Audio(this.playlist[this.currentTrackIndex()]);
     this.audio.preload = 'auto';
-    this.audio.autoplay = true;
 
     this.audio.addEventListener('play', () => this.isPlaying.set(true));
     this.audio.addEventListener('pause', () => this.isPlaying.set(false));
     this.audio.addEventListener('ended', () => this.nextTrack());
-
-    // 1. Thử phát nhạc ngay lập tức (Autoplay)
-    this.audio.play()
-      .then(() => {
-        this.isPlaying.set(true);
-        this.userInteracted = true;
-      })
-      .catch(() => {
-        // Trình duyệt chặn autoplay khi chưa có tương tác -> Lắng nghe cử chỉ đầu tiên
-        const handleFirstGesture = () => {
-          if (this.userInteracted) return;
-          this.userInteracted = true;
-          if (this.audio && !this.isPlaying()) {
-            this.audio.play()
-              .then(() => this.isPlaying.set(true))
-              .catch(() => undefined);
-          }
-          this.cleanupGestureListeners(handleFirstGesture);
-        };
-
-        document.addEventListener('click', handleFirstGesture, { once: true, passive: true });
-        document.addEventListener('touchstart', handleFirstGesture, { once: true, passive: true });
-        document.addEventListener('keydown', handleFirstGesture, { once: true, passive: true });
-      });
+    // Không tự phát: nhạc chỉ bật khi khách mở thiệp (cover gọi play()) hoặc bấm nút nhạc.
   }
 
   nextTrack() {
@@ -105,14 +80,7 @@ export class AudioService {
     }
   }
 
-  private cleanupGestureListeners(handler: () => void) {
-    document.removeEventListener('click', handler);
-    document.removeEventListener('touchstart', handler);
-    document.removeEventListener('keydown', handler);
-  }
-
   toggle() {
-    this.userInteracted = true;
     if (!this.audio) return;
     if (this.isPlaying()) {
       this.audio.pause();
@@ -124,7 +92,6 @@ export class AudioService {
   }
 
   play() {
-    this.userInteracted = true;
     if (this.audio && !this.isPlaying()) {
       this.audio.play().catch(() => undefined);
     }

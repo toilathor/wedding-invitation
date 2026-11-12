@@ -50,7 +50,6 @@ export interface MilestoneItem {
   title: string;
   content: string;
   picture: string;
-  imagePosition?: string;
 }
 
 export interface TimelineData {

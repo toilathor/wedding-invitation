@@ -2,6 +2,18 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Admin = có tài liệu admins/{uid} (tạo tay trong Firebase Console; client không ghi được).
+    // Không để email nào trong repo (repo này public).
+    function isAdmin() {
+      return request.auth != null
+          && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    match /admins/{uid} {
+      allow get: if request.auth != null && request.auth.uid == uid;
+      allow list, write: if false;
+    }
+
     // Quy tắc cho Sổ lưu bút (Wishes)
     match /wishes/{wishId} {
       // Cho phép mọi khách xem lời chúc
@@ -24,13 +36,14 @@ service cloud.firestore {
                     && request.resource.data.createdAt == request.time;
                     
       // Khóa sửa hoặc xóa đối với khách vãng lai
-      allow update, delete: if false;
+      // Admin ẩn/hiện lời chúc (hidden, hiddenAt) và xoá.
+      allow update, delete: if isAdmin();
     }
 
     // Cấu hình moderation chỉ được public đọc để che từ khóa trên thiệp.
     match /settings/moderation {
       allow read: if true;
-      allow write: if false;
+      allow write: if isAdmin();
     }
 
     // Quy tắc cho Xác nhận tham dự (RSVP)
@@ -57,7 +70,8 @@ service cloud.firestore {
       }
 
       // Không ai đọc được danh sách hay dò từng số điện thoại.
-      allow get, list: if false;
+      // Chỉ admin đọc được (trang quản trị).
+      allow get, list: if isAdmin();
 
       // Gửi lần đầu.
       allow create: if validRsvp();
@@ -68,5 +82,22 @@ service cloud.firestore {
 
       allow delete: if false;
     }
+
+    // Link ngắn ?g=MÃ: thiệp chỉ đọc được TỪNG khách theo mã (ID tài liệu = mã), không liệt kê được danh sách.
+    // Lưu ý: mọi trường của khách (kể cả ghi chú) đọc được bởi ai biết mã.
+    match /guests/{code} {
+      allow get: if code.matches('^[A-Z]{3}[0-9]{3,6}$') || isAdmin();
+      allow list, write: if isAdmin();
+    }
+
+    // Xưng hô tuỳ chỉnh: thiệp cần đọc từng cái (theo ID) để dựng lời xưng hô.
+    match /honorifics/{id} {
+      allow get: if true;
+      allow list, write: if isAdmin();
+    }
+
+    // Dữ liệu quản trị khác: chỉ admin.
+    match /guestGroups/{id} { allow read, write: if isAdmin(); }
+    match /settings/guestConfig { allow read, write: if isAdmin(); }
   }
 }

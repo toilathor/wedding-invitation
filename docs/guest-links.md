@@ -16,6 +16,12 @@ https://toilathor.github.io/wedding-invite/?n=Nam&x=1&p=người thương
 | `x` | **Mã gộp tối đa 3 ký tự** `[nhóm xưng hô][gia đình][tự xưng]` | Có |
 | `p` | **Người phụ** đi cùng khách chính, nhập tự do như tên: `người thương`, `Mai`, `chị Lan`, `❤️`... | Không |
 
+## Link ngắn `?g=`
+
+`https://toilathor.github.io/wedding-invite/?g=RBB007`. Mã do admin (dự án wedding-awesome) cấp theo quy tắc
+`[bên R/D][nhóm 2 chữ][số 3 chữ số]`; thiệp tra thẳng tài liệu `guests/{mã}` (ID tài liệu = mã khách) trong Firestore, dựng lại `n/x/p` rồi xử lý như link dài. Mọi trường của khách (kể cả ghi chú) đọc được bởi ai biết mã.
+Mã không tra được thì hiện dạng chung. Link dài `?n=&x=&p=` vẫn dùng được.
+
 ## Mã gộp `x`
 
 Ba ký tự ghép liền. Có thể bỏ bớt ký tự **cuối**: `2` = `200`, `21` = `210`. Không được bỏ ký tự ở giữa:

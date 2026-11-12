@@ -71,7 +71,6 @@ export const WEDDING_DATA: WeddingData = {
         content:
           "Một cuộc gặp gỡ tình cờ, mở đầu cho hành trình yêu thương kéo dài đến hôm nay. Không ai ngờ rằng khoảnh khắc ấy lại trở thành điểm khởi đầu cho câu chuyện hạnh phúc của chúng mình.",
         picture: "assets/images/couple/timeline_1.webp",
-        imagePosition: "50% 20%",
       },
       {
         day: "17",
@@ -81,7 +80,6 @@ export const WEDDING_DATA: WeddingData = {
         content:
           "Một chiếc nhẫn, một lời ngỏ và một câu trả lời đồng ý. Từ khoảnh khắc ấy, chúng mình quyết định cùng nhau bước tiếp trên hành trình trọn đời.",
         picture: "assets/images/couple/timeline_2.webp",
-        imagePosition: "50% 22%",
       },
       {
         day: "22",
@@ -91,7 +89,6 @@ export const WEDDING_DATA: WeddingData = {
         content:
           "Ngày hai gia đình chính thức gặp gỡ và cùng chia sẻ niềm vui về chuyện trăm năm. Đây là cột mốc ý nghĩa, đánh dấu sự gắn kết và chúc phúc cho hành trình của chúng mình.",
         picture: "assets/images/couple/timeline_3.webp",
-        imagePosition: "50% 18%",
       },
     ],
   },

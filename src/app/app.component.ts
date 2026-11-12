@@ -2,6 +2,7 @@ import { CommonModule } from "@angular/common";
 import {
   AfterViewInit,
   Component,
+  computed,
   ElementRef,
   HostListener,
   inject,
@@ -58,7 +59,10 @@ export interface PageInfo {
 export class AppComponent implements AfterViewInit, OnDestroy {
   guestService = inject(GuestService);
   /** Dữ liệu thiệp đã thay token xưng hô ({you}, {we}...) theo khách của link; không có link cá nhân thì giữ nguyên văn như cũ. */
-  weddingData = this.guestService.personalize(WEDDING_DATA);
+  private weddingData$ = computed(() => this.guestService.personalize(WEDDING_DATA));
+  get weddingData() {
+    return this.weddingData$();
+  }
   pageViewService = inject(PageViewService);
   audioService = inject(AudioService);
   isRsvpOpen = false;

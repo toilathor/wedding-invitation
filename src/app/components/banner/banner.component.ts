@@ -109,12 +109,6 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
         >
           <!-- Title & Names Block shifted noticeably higher -->
           <div class="banner-names-block mb-16 sm:mb-20 md:mb-32 lg:mb-40 xl:mb-48 flex flex-col items-center">
-            <p
-                class="banner-kicker text-xs sm:text-base md:text-lg lg:text-2xl font-prata uppercase tracking-[0.25em] text-stone-800 mb-3 sm:mb-5 md:mb-6 lg:mb-8"
-            >
-              {{ data.title }}
-            </p>
-
             <!-- Couple Names: Short Name -->
             <div class="select-none">
               <h1
@@ -194,7 +188,7 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
               <img
                 src="assets/images/templates/sangtrong/img/04.png"
                 alt="Decor Bottom Right"
-                class="absolute -bottom-4 -right-6 sm:-bottom-6 sm:-right-8 md:-bottom-5 md:-right-7 lg:-bottom-8 lg:-right-10 xl:-bottom-10 xl:-right-14 z-40 w-[85px] sm:w-[120px] md:w-[125px] lg:w-[180px] xl:w-[260px] h-auto pointer-events-none"
+                class="translate-x-[20%] translate-y-[30%] absolute -bottom-4 -right-6 sm:-bottom-6 sm:-right-8 md:-bottom-5 md:-right-7 lg:-bottom-8 lg:-right-10 xl:-bottom-10 xl:-right-14 z-40 w-[85px] sm:w-[120px] md:w-[125px] lg:w-[180px] xl:w-[260px] h-auto pointer-events-none"
               />
             </div>
           </div>

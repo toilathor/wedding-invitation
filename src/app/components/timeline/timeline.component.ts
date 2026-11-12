@@ -35,8 +35,7 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
                 appImgFade
                 [src]="item.picture"
                 [alt]="item.title"
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                [style.object-position]="item.imagePosition || '50% 20%'"
+                class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
               />
             </div>
 
