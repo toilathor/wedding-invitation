@@ -2,6 +2,7 @@ import { CommonModule } from "@angular/common";
 import {
   Component,
   HostListener,
+  effect,
   inject,
 } from "@angular/core";
 import { FormsModule } from "@angular/forms";
@@ -10,6 +11,8 @@ import { GuestMessage } from "../../models/wedding-data.model";
 import { GuestbookService } from "../../services/guestbook.service";
 import { ToastService } from "../../services/toast.service";
 import { GuestService } from "../../services/guest.service";
+import { ReplyService } from "../../services/reply.service";
+import { WISH_TEMPLATES } from "../../core/wish-templates";
 import { PersonalizePipe } from "../../shared/personalize.pipe";
 import { IconComponent } from "../../shared/icon.component";
 
@@ -250,23 +253,27 @@ export class GuestbookComponent {
   guestbookService = inject(GuestbookService);
   toastService = inject(ToastService);
   guestService = inject(GuestService);
+  private replyService = inject(ReplyService);
+
+  constructor() {
+    // Lời chúc khách chọn ở màn cảm ơn sau RSVP: điền sẵn để khách sửa rồi gửi
+    effect(() => {
+      const wish = this.replyService.pendingWish();
+      if (!wish) return;
+      if (!this.name.trim() && wish.name) this.name = wish.name.toUpperCase();
+      if (wish.text) this.content = wish.text;
+      this.replyService.pendingWish.set(null);
+    });
+  }
 
   name = "";
   content = "";
   isSubmitting = false;
   isSuggestionsOpen = false;
 
-  private readonly wishTemplates: string[] = [
-    "Chúc mừng hạnh phúc! Chúc {couple} trăm năm hòa hợp, vẹn tròn yêu thương! 💕",
-    "Chúc mừng ngày trọng đại! Hạnh phúc bền lâu, trọn vẹn và an yên nhé! 🌸",
-    "Chúc {couple} bên nhau đầu bạc răng long, sớm đón thiên thần nhỏ đáng yêu! 👶",
-    "Trăm năm tình viên mãn, bạc đầu nghĩa phu thê! Chúc {couple} mãi ngọt ngào! 🥂",
-    "Mừng ngày chung đôi! Chúc tổ ấm nhỏ luôn ngập tràn tiếng cười và hạnh phúc! 💐",
-  ];
-
   /** Gợi ý lời chúc, gọi hai bạn theo xưng hô của khách ({couple}). */
   get wishSuggestions(): string[] {
-    return this.wishTemplates.map((t) => this.guestService.fmt(t));
+    return WISH_TEMPLATES.map((t) => this.guestService.fmt(t.text));
   }
 
   @HostListener("document:click")

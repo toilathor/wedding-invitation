@@ -14,7 +14,7 @@
   "12": "GuestbookComponent",
   "13": "AudioService",
   "14": "QuickMenuComponent",
-  "15": "wedding-invitation",
+  "15": "ReplyCardComponent",
   "16": "tsconfig.app.json",
   "17": "guestbook.service.ts",
   "18": "preview-public.sh",
@@ -25,9 +25,16 @@
   "23": "Injectable",
   "24": "gen-decor.mjs",
   "25": "Component",
-  "26": "HostListener",
+  "26": "dependencies",
   "27": "BankGiftComponent",
   "28": "Input",
+  "29": "scripts",
+  "30": "main.ts",
+  "31": "@angular/animations@^19.1.0",
+  "32": "HostListener",
   "33": "Output",
-  "34": "ViewChild"
+  "34": "ViewChild",
+  "35": "Input",
+  "36": "@angular/platform-browser-dynamic@^19.1.0",
+  "37": "Component"
 }

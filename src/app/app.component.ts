@@ -19,6 +19,7 @@ import { IntroductionComponent } from "./components/introduction/introduction.co
 import { InvitationComponent } from "./components/invitation/invitation.component";
 import { MusicPlayerComponent } from "./components/music-player/music-player.component";
 import { QuickMenuComponent } from "./components/quick-menu/quick-menu.component";
+import { ReplyCardComponent } from "./components/reply-card/reply-card.component";
 import { RsvpModalComponent } from "./components/rsvp-modal/rsvp-modal.component";
 import { StoryComponent } from "./components/story/story.component";
 import { TimelineComponent } from "./components/timeline/timeline.component";
@@ -27,6 +28,7 @@ import { WEDDING_DATA } from "./core/wedding-data";
 import { AudioService } from "./services/audio.service";
 import { GuestService } from "./services/guest.service";
 import { PageViewService } from "./services/pageview.service";
+import { ReplyService } from "./services/reply.service";
 
 export interface PageInfo {
   id: string;
@@ -52,6 +54,7 @@ export interface PageInfo {
     RsvpModalComponent,
     ToastComponent,
     QuickMenuComponent,
+    ReplyCardComponent,
   ],
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"],
@@ -65,7 +68,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
   pageViewService = inject(PageViewService);
   audioService = inject(AudioService);
+  private replyService = inject(ReplyService);
   isRsvpOpen = false;
+  /** Lựa chọn điền sẵn khi mở modal từ thẻ hồi âm (null = mặc định). */
+  rsvpPreset: boolean | null = null;
   isCoverVisible = true;
   private previousBodyOverflow = "";
 
@@ -102,7 +108,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     if (typeof window !== "undefined") window.scrollTo(0, 0);
   }
 
-  openRsvp() {
+  openRsvp(preset: boolean | null = null) {
+    this.rsvpPreset = preset;
     this.isRsvpOpen = true;
     this.pageViewService.setLocked(true);
     if (typeof document !== "undefined") {
@@ -117,6 +124,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     if (typeof document !== "undefined") {
       document.body.style.overflow = this.previousBodyOverflow;
     }
+  }
+
+  /** Khách chọn một lời chúc ở màn cảm ơn sau RSVP: đóng modal, điền sẵn vào sổ lưu bút và cuộn tới đó. */
+  onRsvpWish(wish: { name: string; text: string }) {
+    this.closeRsvp();
+    this.replyService.pendingWish.set(wish);
+    this.pageViewService.goToPage(7);
   }
 
   goToPage(index: number) {

@@ -3,11 +3,13 @@ import { GuestService } from "../../services/guest.service";
 import { Component, HostListener, Input, inject } from "@angular/core";
 import { WeddingEventItem } from "../../models/wedding-data.model";
 import { IconComponent } from "../../shared/icon.component";
+import { ReplyService } from "../../services/reply.service";
+import { PersonalizePipe } from "../../shared/personalize.pipe";
 
 @Component({
   selector: "app-events",
   standalone: true,
-  imports: [CommonModule, IconComponent],
+  imports: [CommonModule, IconComponent, PersonalizePipe],
   styles: [`
     :host {
       display: block;
@@ -33,6 +35,10 @@ import { IconComponent } from "../../shared/icon.component";
         <header class="section-head reveal">
           <p class="eyebrow">Ngày chung đôi</p>
           <h2 class="script-title">Sự kiện cưới</h2>
+          <p *ngIf="replyService.rsvp() as r" class="desc mt-2 text-[0.9375rem] text-garden-700 inline-flex items-center gap-1.5">
+            <app-icon name="check-circle" class="w-4 h-4 shrink-0"></app-icon>
+            <span>{{ (r === 'yes' ? 'Cảm ơn {you} đã xác nhận tham dự. Hẹn gặp {you} {nhe}!' : 'Cảm ơn {you} đã hồi âm và gửi lời chúc.') | personalize }}</span>
+          </p>
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 max-w-md md:max-w-none mx-auto">
@@ -119,6 +125,7 @@ import { IconComponent } from "../../shared/icon.component";
 })
 export class EventsComponent {
   guestService = inject(GuestService);
+  replyService = inject(ReplyService);
   @Input({ required: true }) events!: WeddingEventItem[];
 
   openCalendarIndex: number | null = null;

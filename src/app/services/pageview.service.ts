@@ -10,7 +10,8 @@ export class PageViewService {
   currentPageIndex = signal<number>(0);
   totalPages = signal<number>(0);
 
-  private isLocked = false;
+  /** Có lớp phủ đang mở (phong bì, modal RSVP, lightbox, QR): khoá phím điều hướng và ẩn các gợi ý nổi. */
+  readonly locked = signal(false);
 
   init(container: HTMLElement, sections: HTMLElement[]) {
     this.container = container;
@@ -57,7 +58,7 @@ export class PageViewService {
   }
 
   setLocked(locked: boolean) {
-    this.isLocked = locked;
+    this.locked.set(locked);
   }
 
   getCurrentPageIndex(): number {
@@ -110,7 +111,7 @@ export class PageViewService {
 
   // --- Keyboard Handler ---
   handleKeyDown(event: KeyboardEvent) {
-    if (this.isLocked) return;
+    if (this.locked()) return;
 
     // Ignore when focused in input/textarea
     const target = event.target as HTMLElement;

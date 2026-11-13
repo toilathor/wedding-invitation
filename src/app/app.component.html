@@ -107,6 +107,9 @@
   <!-- Floating Quick Actions Menu (Bottom-Right) -->
   <app-quick-menu (onOpenRsvp)="openRsvp()"></app-quick-menu>
 
+  <!-- Thẻ hồi âm: gợi ý xác nhận tham dự sau khi khách xem phần Sự kiện -->
+  <app-reply-card (reply)="openRsvp($event)"></app-reply-card>
+
   <!-- RSVP Modal -->
-  <app-rsvp-modal *ngIf="isRsvpOpen" (onClose)="closeRsvp()"></app-rsvp-modal>
+  <app-rsvp-modal *ngIf="isRsvpOpen" [attending]="rsvpPreset" (onClose)="closeRsvp()" (wish)="onRsvpWish($event)"></app-rsvp-modal>
 </div>
