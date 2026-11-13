@@ -17,7 +17,7 @@ export const WEDDING_DATA: WeddingData = {
   banner: <BannerData>{
     groom: "Quang Thọ",
     bride: "Thúy Hiền",
-    title: "Chúng MÌNH cưới",
+    title: "{We} cưới",
     day: "28",
     month: "11",
     year: "2026",
@@ -35,7 +35,7 @@ export const WEDDING_DATA: WeddingData = {
     location: "Thiết Trụ, Mễ Sở, Hưng Yên",
     subDescription: "Sự hiện diện của {you} là niềm vinh dự của {we}!",
     descriptionHtml:
-      "Hành trình yêu thương của {we} sẽ càng ý nghĩa hơn khi có sự chứng kiến và chúc phúc từ những người thân yêu.<br>Cảm ơn {you} đã dành thời gian để cùng {we} lưu giữ khoảnh khắc đặc biệt này. 💍✨",
+      "Hành trình yêu thương của {we} sẽ càng ý nghĩa hơn khi có sự chứng kiến và chúc phúc từ {youPl}. Cảm ơn {you} đã dành thời gian để cùng {we} lưu giữ khoảnh khắc đặc biệt này. 💍",
     countdownDate: "2026-11-28T06:30:00.000Z", // 13:30 UTC+7 (28/11/2026)
   },
 
@@ -54,9 +54,9 @@ export const WEDDING_DATA: WeddingData = {
   },
 
   story: <StoryData>{
-    title: "Chuyện chúng mình",
+    title: "Chuyện {we}",
     contentHtml:
-      "Mỗi câu chuyện tình yêu đều có một khởi đầu riêng. Hành trình của chúng mình được viết lên từ những lần gặp gỡ, những nụ cười, sự đồng hành và những quyết định quan trọng của cuộc đời. Mời bạn cùng nhìn lại những cột mốc đáng nhớ trên chặng đường yêu thương ấy. ❤️",
+      "Mỗi câu chuyện tình yêu đều có một khởi đầu riêng. Hành trình của {we} được viết lên từ những lần gặp gỡ, những nụ cười, sự đồng hành và những quyết định quan trọng của cuộc đời. Mời {you} cùng nhìn lại những cột mốc đáng nhớ trên chặng đường yêu thương ấy. ❤️",
     image: "assets/images/couple/story.webp",
   },
 
@@ -69,7 +69,7 @@ export const WEDDING_DATA: WeddingData = {
         year: "2023",
         title: "Lần đầu gặp nhau",
         content:
-          "Một cuộc gặp gỡ tình cờ, mở đầu cho hành trình yêu thương kéo dài đến hôm nay. Không ai ngờ rằng khoảnh khắc ấy lại trở thành điểm khởi đầu cho câu chuyện hạnh phúc của chúng mình.",
+          "Một cuộc gặp gỡ tình cờ, mở đầu cho hành trình yêu thương kéo dài đến hôm nay. Không ai ngờ rằng khoảnh khắc ấy lại trở thành điểm khởi đầu cho câu chuyện hạnh phúc của {we}.",
         picture: "assets/images/couple/timeline_1.webp",
       },
       {
@@ -78,7 +78,7 @@ export const WEDDING_DATA: WeddingData = {
         year: "2025",
         title: "Cầu hôn",
         content:
-          "Một chiếc nhẫn, một lời ngỏ và một câu trả lời đồng ý. Từ khoảnh khắc ấy, chúng mình quyết định cùng nhau bước tiếp trên hành trình trọn đời.",
+          "Một chiếc nhẫn, một lời ngỏ và một câu trả lời đồng ý. Từ khoảnh khắc ấy, {we} quyết định cùng nhau bước tiếp trên hành trình trọn đời.",
         picture: "assets/images/couple/timeline_2.webp",
       },
       {
@@ -87,7 +87,7 @@ export const WEDDING_DATA: WeddingData = {
         year: "2026",
         title: "Dạm ngõ",
         content:
-          "Ngày hai gia đình chính thức gặp gỡ và cùng chia sẻ niềm vui về chuyện trăm năm. Đây là cột mốc ý nghĩa, đánh dấu sự gắn kết và chúc phúc cho hành trình của chúng mình.",
+          "Ngày hai gia đình chính thức gặp gỡ và cùng chia sẻ niềm vui về chuyện trăm năm. Đây là cột mốc ý nghĩa, đánh dấu sự gắn kết và chúc phúc cho hành trình của {we}.",
         picture: "assets/images/couple/timeline_3.webp",
       },
     ],
@@ -142,33 +142,6 @@ export const WEDDING_DATA: WeddingData = {
       "assets/images/gallery/album_14.webp",
       "assets/images/gallery/album_15.webp",
       "assets/images/gallery/album_16.webp",
-      "assets/images/gallery/album_17.webp",
-      "assets/images/gallery/album_18.webp",
-      "assets/images/gallery/album_19.webp",
-      "assets/images/gallery/album_20.webp",
-      "assets/images/gallery/album_21.webp",
-      "assets/images/gallery/album_22.webp",
-      "assets/images/gallery/album_23.webp",
-      "assets/images/gallery/album_24.webp",
-      "assets/images/gallery/album_25.webp",
-      "assets/images/gallery/album_26.webp",
-      "assets/images/gallery/album_27.webp",
-      "assets/images/gallery/album_28.webp",
-      "assets/images/gallery/album_29.webp",
-      "assets/images/gallery/album_30.webp",
-      "assets/images/gallery/album_31.webp",
-      "assets/images/gallery/album_32.webp",
-      "assets/images/gallery/album_33.webp",
-      "assets/images/gallery/album_34.webp",
-      "assets/images/gallery/album_35.webp",
-      "assets/images/gallery/album_36.webp",
-      "assets/images/gallery/album_37.webp",
-      "assets/images/gallery/album_38.webp",
-      "assets/images/gallery/album_39.webp",
-      "assets/images/gallery/album_40.webp",
-      "assets/images/gallery/album_41.webp",
-      "assets/images/gallery/album_42.webp",
-      "assets/images/gallery/album_43.webp",
     ],
   },
 

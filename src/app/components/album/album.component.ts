@@ -37,9 +37,23 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
       <!-- Gallery Grid: Initial Photos (4 on Mobile, 8 on Desktop when collapsed) -->
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3 md:gap-4">
         <div
-          *ngFor="let img of initialAlbums; let idx = index"
+          *ngFor="let img of data.albums; let idx = index"
           (click)="openLightbox(idx)"
-          [ngClass]="idx >= 4 ? (showAll ? 'block' : 'hidden md:block') : 'block'"
+          [ngClass]="
+            idx >= initialCount
+              ? showAll
+                ? 'block animate-photo-expand'
+                : 'hidden'
+              : idx >= 6
+                ? showAll
+                  ? 'block'
+                  : 'hidden lg:block'
+                : idx >= 4
+                  ? showAll
+                    ? 'block'
+                    : 'hidden md:block'
+                  : 'block'
+          "
           class="group relative album-tile aspect-[3/4] rounded-[20px] md:rounded-[24px] overflow-hidden cursor-pointer bg-garden-50 w-full"
         >
           <img
@@ -81,78 +95,6 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"
                   />
                 </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Expandable / Collapsible Container with Silky Smooth Transition -->
-      <div
-        *ngIf="extraAlbums.length > 0"
-        class="grid transition-all duration-600 ease-in-out overflow-hidden"
-        [ngStyle]="{
-          'grid-template-rows': showAll ? '1fr' : '0fr',
-          opacity: showAll ? '1' : '0',
-          'margin-top': showAll ? '0.625rem' : '0px',
-        }"
-      >
-        <div class="overflow-hidden min-h-0">
-          <div
-            class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3 md:gap-4"
-          >
-            <div
-              *ngFor="let img of extraAlbums; let i = index"
-              (click)="openLightbox(initialCount + i)"
-              class="group relative album-tile aspect-[3/4] rounded-[20px] md:rounded-[24px] overflow-hidden cursor-pointer bg-garden-50"
-              [style.transform]="
-                showAll
-                  ? 'translateY(0) scale(1)'
-                  : 'translateY(-15px) scale(0.96)'
-              "
-              [style.transition-delay]="showAll ? i * 40 + 'ms' : '0ms'"
-            >
-              <img
-                appImgFade
-                [src]="thumbOf(img)"
-                [alt]="'Ảnh cưới ' + (initialCount + i + 1)"
-                class="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
-                loading="lazy"
-                draggable="false"
-                (contextmenu)="$event.preventDefault()"
-                style="-webkit-touch-callout: none; -webkit-user-drag: none;"
-              />
-
-              <!-- Hover Overlay -->
-              <div
-                class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3 sm:p-4 md:p-6 pointer-events-none"
-              >
-                <div
-                  class="flex items-center justify-between text-white transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"
-                >
-                  <span
-                    class="text-[11px] sm:text-xs md:text-sm font-medium"
-                    >Xem ảnh</span
-                  >
-                  <div
-                    class="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-[#2F4A38] shadow-lg"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="w-3.5 h-3.5 md:w-5 md:h-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"
-                      />
-                    </svg>
-                  </div>
-                </div>
               </div>
             </div>
           </div>

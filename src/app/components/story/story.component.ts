@@ -8,12 +8,12 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
   standalone: true,
   imports: [CommonModule, ImgFadeDirective],
   template: `
-    <section class="section bg-ivory">
+    <section class="section decor decor-tl bg-ivory">
       <div class="section-inner">
         <header class="section-head reveal">
           <p class="eyebrow">Love story</p>
           <h2 class="script-title">{{ data.title }}</h2>
-          <div class="lead mt-2" [innerHTML]="data.contentHtml"></div>
+          <div class="lead mt-2 text-justify" [innerHTML]="data.contentHtml"></div>
         </header>
 
         <!-- Ảnh giữ nguyên tỉ lệ gốc để không cắt mất dòng chữ in sẵn trên ảnh -->

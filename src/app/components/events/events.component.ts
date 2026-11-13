@@ -15,7 +15,7 @@ import { WeddingEventItem } from "../../models/wedding-data.model";
     }
   `],
   template: `
-    <section class="section bg-ivory">
+    <section class="section decor decor-tr-bl bg-ivory">
       <div class="section-inner">
         <header class="section-head reveal">
           <p class="eyebrow">Ngày chung đôi</p>

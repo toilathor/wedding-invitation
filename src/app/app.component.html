@@ -57,13 +57,18 @@
     <app-bank-gift [data]="weddingData.bank"></app-bank-gift>
 
     <!-- Footer -->
-    <footer class="bg-garden-900 text-white text-center px-6 pt-16 pb-28 sm:pt-20 sm:pb-24">
+    <footer class="decor decor-bl-br decor-on-dark bg-garden-900 text-white text-center px-6 pt-16 pb-28 sm:pt-20 sm:pb-24">
+      <div class="head-ornament mx-auto w-[7.5rem]" aria-hidden="true"></div>
       <p class="eyebrow !text-white/60">Thank you</p>
       <h3 class="font-pinyon text-5xl sm:text-6xl leading-[1.1] mt-3">
-        Quang Thọ &amp; Thúy Hiền
+        <!-- Đủ rộng: một dòng. Hẹp hơn: ba dòng (Quang Thọ / & / Thúy Hiền) -->
+        <span class="hidden min-[520px]:block whitespace-nowrap">Quang Thọ &amp; Thúy Hiền</span>
+        <span class="min-[520px]:hidden block whitespace-nowrap">Quang Thọ</span>
+        <span class="min-[520px]:hidden block">&amp;</span>
+        <span class="min-[520px]:hidden block whitespace-nowrap">Thúy Hiền</span>
       </h3>
       <p class="mt-4 font-prata text-sm tracking-[0.3em] text-white/75 tabular-nums">28 · 11 · 2026</p>
-      <p class="mt-10 text-xs text-white/40">Thiệp cưới số · Made with love</p>
+      <p class="mt-10 text-xs text-white/40">Made with love</p>
     </footer>
   </div>
 
@@ -87,7 +92,12 @@
   aria-label="Còn nội dung bên dưới"
   >
     <span class="scroll-content-chip glass-dark">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+      <svg class="scroll-content-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg>
+      <svg class="scroll-content-mouse" viewBox="0 0 24 24" aria-hidden="true">
+        <rect x="6.5" y="2.5" width="11" height="19" rx="5.5" />
+        <path class="mouse-wheel" d="M12 6v4" />
+        <path class="mouse-chev" d="M9.5 17l2.5 2.5 2.5-2.5" />
+      </svg>
     </span>
   </div>
 

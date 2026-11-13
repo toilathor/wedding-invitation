@@ -17,7 +17,7 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
     .gift-qr { transition: transform 220ms var(--ease-out); }
   `],
   template: `
-    <section id="bank-gift-section" class="section bg-ivory">
+    <section id="bank-gift-section" class="section decor decor-tl-br bg-ivory">
       <div class="section-inner">
         <header class="section-head reveal">
           <p class="eyebrow">Gửi trao yêu thương</p>

@@ -6,6 +6,33 @@ import { RsvpService } from '../../services/rsvp.service';
 import { GuestService } from '../../services/guest.service';
 import { PersonalizePipe } from '../../shared/personalize.pipe';
 import confetti from 'canvas-confetti';
+import { WEDDING_DATA } from '../../core/wedding-data';
+import { WeddingEventItem } from '../../models/wedding-data.model';
+
+type AttendKey = 'attendParty' | 'attendGroom' | 'attendBride';
+
+/** Khớp sự kiện trong WEDDING_DATA.events với trường RSVP tương ứng (theo tiêu đề). */
+const ATTEND_KEY_BY_TITLE: Record<string, AttendKey> = {
+  'tiệc cưới': 'attendParty',
+  'lễ nhà trai': 'attendGroom',
+  'lễ nhà gái': 'attendBride',
+};
+
+const WEEKDAYS = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+
+function toEventOption(ev: WeddingEventItem) {
+  const key = ATTEND_KEY_BY_TITLE[ev.title.trim().toLocaleLowerCase('vi')];
+  if (!key) return null;
+  const lower = ev.title.trim().toLocaleLowerCase('vi');
+  const d = new Date(ev.dateTime);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return {
+    key,
+    title: lower.charAt(0).toLocaleUpperCase('vi') + lower.slice(1),
+    when: `${ev.displayTime}, ${WEEKDAYS[d.getDay()]} - ${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`,
+    address: ev.address,
+  };
+}
 
 interface GuestOption {
   value: number;
@@ -52,7 +79,7 @@ interface GuestOption {
               Xác nhận tham dự
             </h3>
             <p class="text-garden-900/65 text-[0.875rem] leading-relaxed mt-2 max-w-xs mx-auto">
-              {{ 'Sự hiện diện của {you} là niềm vinh hạnh to lớn của Quang Thọ & Thúy Hiền' | personalize }}
+              {{ 'Sự hiện diện của {you} là niềm vinh hạnh to lớn của cô dâu & chú rể' | personalize }}
             </p>
           </div>
 
@@ -146,50 +173,23 @@ interface GuestOption {
                     {{ 'Sự kiện {you} sẽ tham dự' | personalize }}
                   </label>
                   <div class="grid grid-cols-1 gap-2">
-                    <label
-                      (click)="attendParty = !attendParty"
-                      class="flex items-center justify-between px-4 py-3 rounded-[16px] bg-white transition-shadow duration-200 cursor-pointer select-none"
-                      [ngClass]="attendParty ? 'shadow-[inset_0_0_0_1.5px_#2F4A38]' : 'shadow-[inset_0_0_0_1px_rgba(23,36,27,0.1)]'">
-                      <div>
-                        <p class="text-[0.9375rem] font-medium text-garden-900">Tiệc cưới</p>
-                        <p class="text-[0.8125rem] text-garden-900/55">10:30, Thứ Bảy - 28/11/2026</p>
-                      </div>
-                      <div class="w-[22px] h-[22px] rounded-full flex items-center justify-center transition-colors duration-200" [ngClass]="attendParty ? 'bg-garden-700' : 'bg-white shadow-[inset_0_0_0_1.5px_rgba(23,36,27,0.22)]'">
-                        <svg *ngIf="attendParty" xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-white" viewBox="0 0 20 20" fill="currentColor">
-                          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                        </svg>
-                      </div>
-                    </label>
-
-                    <label
-                      (click)="attendGroom = !attendGroom"
-                      class="flex items-center justify-between px-4 py-3 rounded-[16px] bg-white transition-shadow duration-200 cursor-pointer select-none"
-                      [ngClass]="attendGroom ? 'shadow-[inset_0_0_0_1.5px_#2F4A38]' : 'shadow-[inset_0_0_0_1px_rgba(23,36,27,0.1)]'">
-                      <div>
-                        <p class="text-[0.9375rem] font-medium text-garden-900">Lễ nhà trai</p>
-                        <p class="text-[0.8125rem] text-garden-900/55">09:00, 28/11/2026 - Mỹ Hòa</p>
-                      </div>
-                      <div class="w-[22px] h-[22px] rounded-full flex items-center justify-center transition-colors duration-200" [ngClass]="attendGroom ? 'bg-garden-700' : 'bg-white shadow-[inset_0_0_0_1.5px_rgba(23,36,27,0.22)]'">
-                        <svg *ngIf="attendGroom" xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-white" viewBox="0 0 20 20" fill="currentColor">
-                          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                        </svg>
-                      </div>
-                    </label>
-
-                    <label
-                      (click)="attendBride = !attendBride"
-                      class="flex items-center justify-between px-4 py-3 rounded-[16px] bg-white transition-shadow duration-200 cursor-pointer select-none"
-                      [ngClass]="attendBride ? 'shadow-[inset_0_0_0_1.5px_#2F4A38]' : 'shadow-[inset_0_0_0_1px_rgba(23,36,27,0.1)]'">
-                      <div>
-                        <p class="text-[0.9375rem] font-medium text-garden-900">Lễ nhà gái</p>
-                        <p class="text-[0.8125rem] text-garden-900/55">07:00, 28/11/2026 - La Tháp</p>
-                      </div>
-                      <div class="w-[22px] h-[22px] rounded-full flex items-center justify-center transition-colors duration-200" [ngClass]="attendBride ? 'bg-garden-700' : 'bg-white shadow-[inset_0_0_0_1.5px_rgba(23,36,27,0.22)]'">
-                        <svg *ngIf="attendBride" xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-white" viewBox="0 0 20 20" fill="currentColor">
-                          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                        </svg>
-                      </div>
-                    </label>
+                    @for (ev of eventOptions; track ev.key) {
+                      <label
+                        (click)="toggleEvent(ev.key)"
+                        class="flex items-center justify-between gap-3 px-4 py-3 rounded-[16px] bg-white transition-shadow duration-200 cursor-pointer select-none"
+                        [ngClass]="this[ev.key] ? 'shadow-[inset_0_0_0_1.5px_#2F4A38]' : 'shadow-[inset_0_0_0_1px_rgba(23,36,27,0.1)]'">
+                        <div class="min-w-0">
+                          <p class="text-[0.9375rem] font-medium text-garden-900">{{ ev.title }}</p>
+                          <p class="text-[0.8125rem] text-garden-900/55">{{ ev.when }}</p>
+                          <p class="text-[0.8125rem] text-garden-900/55">{{ ev.address }}</p>
+                        </div>
+                        <div class="shrink-0 w-[22px] h-[22px] rounded-full flex items-center justify-center transition-colors duration-200" [ngClass]="this[ev.key] ? 'bg-garden-700' : 'bg-white shadow-[inset_0_0_0_1.5px_rgba(23,36,27,0.22)]'">
+                          <svg *ngIf="this[ev.key]" xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                          </svg>
+                        </div>
+                      </label>
+                    }
                   </div>
                 </div>
 
@@ -322,6 +322,14 @@ export class RsvpModalComponent {
   attendParty = true;
   attendGroom = false;
   attendBride = false;
+
+  readonly eventOptions = WEDDING_DATA.events
+    .map(toEventOption)
+    .filter((o): o is NonNullable<ReturnType<typeof toEventOption>> => !!o);
+
+  toggleEvent(key: AttendKey) {
+    this[key] = !this[key];
+  }
   selectedGuestCount = 1;
   isDropdownOpen = false;
   guestDropdownStyle: Record<string, string> = {};

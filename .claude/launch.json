@@ -1,0 +1,16 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "wedding",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["start", "--", "--port", "4210"],
+      "port": 4210
+    },
+    {
+      "name": "wedding-running",
+      "url": "http://localhost:4200",
+      "port": 4200
+    }
+  ]
+}

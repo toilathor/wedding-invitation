@@ -194,6 +194,13 @@
 }
 @media (max-width: 639px) { .lead { font-size: 0.9375rem; } }
 
+/* Căn hai bên; dòng cuối vẫn giữa để không bị kéo giãn */
+.lead-justify {
+  text-align: justify;
+  text-align-last: center;
+  hyphens: manual;
+}
+
 .section {
   padding: clamp(4rem, 11vw, 7.5rem) 1.25rem;
 }
@@ -211,6 +218,67 @@
   align-items: center;
   gap: 0.5rem;
 }
+
+/* =========================================================
+   HOẠ TIẾT LÁ — file SVG trong assets/images/decor dùng làm mask, nên màu lấy từ background-color
+   (đổi màu theo nền sáng/tối mà không cần thêm file). Sinh bằng script, nét mảnh, chỉ để điểm xuyết.
+========================================================= */
+/* Bông tulip nhỏ với hai nhánh lá, phía trên dòng eyebrow của mỗi đầu mục */
+.section-head::before,
+.head-ornament::before {
+  content: "";
+  display: block;
+  width: 7.5rem;
+  aspect-ratio: 9 / 2;
+  margin-bottom: 0.5rem;
+  background-color: var(--champagne);
+  -webkit-mask: url("assets/images/decor/sprig.svg") center / contain no-repeat;
+  mask: url("assets/images/decor/sprig.svg") center / contain no-repeat;
+}
+
+/* Cành lá ở góc trên, bó tulip ở góc dưới của section. Một lớp ::before phủ kín section, không tràn ra ngoài nên không cần overflow: hidden
+   (section sự kiện phải để menu lịch tràn ra được). */
+.decor { position: relative; }
+.decor > * { position: relative; }
+.decor::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-color: var(--decor-color, #b9c7ae);
+  opacity: var(--decor-opacity, 0.6);
+  --decor-size: clamp(7.5rem, 26vw, 16rem);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: var(--decor-size) auto;
+  mask-size: var(--decor-size) auto;
+}
+.decor-tl::before {
+  -webkit-mask-image: url("assets/images/decor/branch-tl.svg");
+  mask-image: url("assets/images/decor/branch-tl.svg");
+  -webkit-mask-position: left top;
+  mask-position: left top;
+}
+.decor-tr-bl::before {
+  -webkit-mask-image: url("assets/images/decor/branch-tr.svg"), url("assets/images/decor/tulips-bl.svg");
+  mask-image: url("assets/images/decor/branch-tr.svg"), url("assets/images/decor/tulips-bl.svg");
+  -webkit-mask-position: right top, left bottom;
+  mask-position: right top, left bottom;
+}
+.decor-tl-br::before {
+  -webkit-mask-image: url("assets/images/decor/branch-tl.svg"), url("assets/images/decor/tulips-br.svg");
+  mask-image: url("assets/images/decor/branch-tl.svg"), url("assets/images/decor/tulips-br.svg");
+  -webkit-mask-position: left top, right bottom;
+  mask-position: left top, right bottom;
+}
+.decor-bl-br::before {
+  -webkit-mask-image: url("assets/images/decor/tulips-bl.svg"), url("assets/images/decor/tulips-br.svg");
+  mask-image: url("assets/images/decor/tulips-bl.svg"), url("assets/images/decor/tulips-br.svg");
+  -webkit-mask-position: left bottom, right bottom;
+  mask-position: left bottom, right bottom;
+}
+/* Trên nền tối (footer): lá trắng thật mờ */
+.decor-on-dark { --decor-color: #fff; --decor-opacity: 0.14; }
 
 .card {
   background: var(--surface);

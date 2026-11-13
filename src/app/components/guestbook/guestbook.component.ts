@@ -28,13 +28,23 @@ import { PersonalizePipe } from "../../shared/personalize.pipe";
       <div class="section-inner">
         <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start">
           <!-- Cột trái: tiêu đề, đứng yên khi danh sách lời chúc cuộn -->
-          <header class="md:col-span-5 md:sticky md:top-24 flex flex-col items-center md:items-start text-center md:text-left gap-2 reveal">
+          <header class="head-ornament md:col-span-5 md:sticky md:top-24 flex flex-col items-center md:items-start text-center md:text-left gap-2 reveal">
             <p class="eyebrow">Lời chúc</p>
             <h2 class="script-title">Sổ lưu bút</h2>
             <p class="lead mt-1 max-w-sm">
-              Gửi những lời chúc mừng và nhắn nhủ yêu thương đến Quang Thọ
-              &amp; Thúy Hiền
+              Gửi những lời chúc mừng và nhắn nhủ yêu thương đến cô dâu
+              &amp; chú rể
             </p>
+            <!-- Trang trí cho cột trái trên desktop, lấp khoảng trống bên dưới tiêu đề -->
+            <img
+              src="assets/images/decor/ladder-love.png"
+              alt=""
+              aria-hidden="true"
+              width="409"
+              height="636"
+              loading="lazy"
+              class="hidden md:block w-full max-w-[280px] mt-6 opacity-90 pointer-events-none select-none"
+            />
           </header>
 
           <div class="md:col-span-7 rounded-[28px] bg-ivory p-4 sm:p-7 reveal delay-100">
@@ -209,10 +219,13 @@ import { PersonalizePipe } from "../../shared/personalize.pipe";
             <!-- Empty state when no wishes yet -->
             <div
               *ngIf="guestbookService.messages().length === 0"
-              class="py-6 text-center text-garden-900/50 text-[0.875rem]"
+              class="flex flex-col items-center text-center gap-3 rounded-[20px] border border-dashed border-garden-900/15 bg-white/60 px-6 py-10 sm:py-12"
             >
-              Chưa có lời chúc nào. Hãy là người đầu tiên gửi lời chúc mừng đến
-              cô dâu &amp; chú rể nhé! 💕
+              <span class="flex items-center justify-center w-12 h-12 rounded-full bg-garden-700/10 text-2xl" aria-hidden="true">💌</span>
+              <p class="font-semibold text-garden-900 text-[0.9375rem]">Chưa có lời chúc nào</p>
+              <p class="text-garden-900/60 text-[0.875rem] leading-relaxed max-w-xs">
+                Hãy là người đầu tiên gửi lời chúc mừng đến cô dâu &amp; chú rể nhé!
+              </p>
             </div>
 
             <!-- 1. Fixed Pinned Latest Wish from this Device (Stays stationary, gentle warm highlight without icon/badge) -->
