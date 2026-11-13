@@ -8,7 +8,7 @@
     "preview:public": "bash scripts/preview-public.sh",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "build:pages": "ng build --base-href /wedding-invite/"
+    "build:pages": "ng build --base-href /wedding-invitation/"
   },
   "dependencies": {
     "@angular/animations": "^19.1.0",
