@@ -192,9 +192,9 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1794588928.2842097,
-    "seen": 1794588929.330706,
-    "ast_hash": "3ba8817eef606a9577e01eb901bbc66c",
+    "mtime": 1794589097.3836544,
+    "seen": 1794589113.984477,
+    "ast_hash": "f76447f1f006bdcae9b6b78bf1b1de86",
     "semantic_hash": ""
   },
   "src/app/app.component.html": {
@@ -288,9 +288,9 @@
     "semantic_hash": ""
   },
   "scripts/gen-share-images.py": {
-    "mtime": 1794588897.1282427,
-    "seen": 1794588929.330677,
-    "ast_hash": "88fe6c974652cd1d2856263435348459",
+    "mtime": 1794589097.378309,
+    "seen": 1794589113.984454,
+    "ast_hash": "9c6b0f3a1f2852a95070677df7512290",
     "semantic_hash": ""
   },
   "package-lock.json": {

@@ -30,11 +30,10 @@
   "28": "Input",
   "29": "scripts",
   "30": "main.ts",
-  "31": "@angular/compiler@^19.1.0",
+  "31": "zone.js@~0.15.0",
   "32": "HostListener",
   "33": "Output",
   "34": "ViewChild",
   "35": "Input",
-  "36": "typescript@~5.7.2",
   "37": "Component"
 }

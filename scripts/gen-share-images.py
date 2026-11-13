@@ -5,15 +5,15 @@ Chạy từ thư mục gốc của repo:  python3 scripts/gen-share-images.py
 Cần Pillow (pip install pillow).
 
 - src/assets/images/share/og_image.jpg   1200x630, cắt giữa từ OG_SOURCE
-- src/assets/images/share/favicon-32.png, favicon-180.png (apple-touch-icon)
+- src/assets/images/share/favicon-32.png, favicon-180.png (apple-touch-icon),
+  cắt vuông từ ICON_SOURCE theo ICON_BOX
 
 Đổi ảnh chia sẻ: sửa OG_SOURCE (và OG_FOCUS_Y nếu cần đẩy khung cắt lên/xuống).
 Đường dẫn ảnh được ghi trong src/index.html.
 """
-import math
 import os
 
-from PIL import Image, ImageDraw
+from PIL import Image
 
 ROOT = os.path.join(os.path.dirname(__file__), "..", "src", "assets", "images")
 OUT = os.path.join(ROOT, "share")
@@ -22,9 +22,8 @@ OG_SOURCE = os.path.join(ROOT, "gallery", "album_1.webp")
 OG_SIZE = (1200, 630)
 OG_FOCUS_Y = 0.5  # 0 = sát mép trên, 1 = sát mép dưới
 
-GREEN = (47, 74, 56)  # #2F4A38, mực xanh của phong bì
-IVORY = (246, 240, 226)
-GOLD = (201, 169, 106)
+ICON_SOURCE = os.path.join(ROOT, "couple", "banner_right.webp")
+ICON_BOX = (230, 400, 720)  # trái, trên, cạnh (px trên ảnh gốc 1221x1800): khung vuông quanh hai gương mặt
 
 
 def og_image():
@@ -43,27 +42,11 @@ def og_image():
     im.save(os.path.join(OUT, "og_image.jpg"), quality=86, optimize=True, progressive=True)
 
 
-def heart(cx, cy, size, steps=240):
-    pts = []
-    for i in range(steps):
-        t = 2 * math.pi * i / steps
-        x = 16 * math.sin(t) ** 3
-        y = 13 * math.cos(t) - 5 * math.cos(2 * t) - 2 * math.cos(3 * t) - math.cos(4 * t)
-        pts.append((cx + x * size / 32, cy - y * size / 32))
-    return pts
-
-
 def favicon(px):
-    s = 8  # vẽ lớn rồi thu nhỏ để khử răng cưa
-    n = px * s
-    im = Image.new("RGBA", (n, n), (0, 0, 0, 0))
-    d = ImageDraw.Draw(im)
-    d.rounded_rectangle((0, 0, n - 1, n - 1), radius=n * 0.22, fill=GREEN)
-    if px >= 64:  # viền vàng mảnh chỉ thấy được ở cỡ lớn
-        m = n * 0.085
-        d.rounded_rectangle((m, m, n - 1 - m, n - 1 - m), radius=n * 0.15, outline=GOLD, width=max(1, round(n * 0.012)))
-    d.polygon(heart(n / 2, n * 0.5, n * 0.56), fill=IVORY)
-    im.resize((px, px), Image.LANCZOS).save(os.path.join(OUT, f"favicon-{px}.png"), optimize=True)
+    im = Image.open(ICON_SOURCE).convert("RGB")
+    left, top, side = ICON_BOX
+    im = im.crop((left, top, left + side, top + side)).resize((px, px), Image.LANCZOS)
+    im.save(os.path.join(OUT, f"favicon-{px}.png"), optimize=True)
 
 
 if __name__ == "__main__":
