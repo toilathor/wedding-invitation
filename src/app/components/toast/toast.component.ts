@@ -1,11 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToastService } from '../../services/toast.service';
+import { IconComponent } from '../../shared/icon.component';
 
 @Component({
   selector: 'app-toast',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, IconComponent],
   template: `
     <div
       class="fixed inset-x-0 z-[999999] flex flex-col items-center gap-2 px-4 pointer-events-none"
@@ -22,9 +23,7 @@ import { ToastService } from '../../services/toast.service';
           (click)="toastService.remove(t.id)"
           aria-label="Đóng thông báo"
           class="shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-white/60 hover:text-white active:scale-90 transition">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <app-icon name="close" class="w-4 h-4" [strokeWidth]="2"></app-icon>
         </button>
       </div>
     </div>

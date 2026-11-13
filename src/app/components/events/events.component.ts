@@ -2,46 +2,59 @@ import { CommonModule } from "@angular/common";
 import { GuestService } from "../../services/guest.service";
 import { Component, HostListener, Input, inject } from "@angular/core";
 import { WeddingEventItem } from "../../models/wedding-data.model";
+import { IconComponent } from "../../shared/icon.component";
 
 @Component({
   selector: "app-events",
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, IconComponent],
   styles: [`
     :host {
       display: block;
       position: relative;
       z-index: 30;
     }
+    .ev-card { --frame-w: 72px; }
+    .ev-icon { height: 5.25rem; width: auto; filter: drop-shadow(0 8px 10px rgba(92, 78, 40, 0.18)); }
+    .ev-time {
+      margin-top: 0.5rem;
+      font-family: var(--font-serif);
+      font-size: 3.25rem;
+      line-height: 1;
+      letter-spacing: -0.01em;
+      color: var(--green);
+      font-variant-numeric: lining-nums tabular-nums;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
   `],
   template: `
-    <section class="section decor decor-tr-bl bg-ivory">
+    <section class="section decor decor-bloom-vine paper">
       <div class="section-inner">
         <header class="section-head reveal">
           <p class="eyebrow">Ngày chung đôi</p>
           <h2 class="script-title">Sự kiện cưới</h2>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 max-w-md md:max-w-none mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6 max-w-md md:max-w-none mx-auto">
           <article
             *ngFor="let item of events; let idx = index"
             [ngClass]="'reveal delay-' + idx * 100"
             [style.z-index]="openCalendarIndex === idx ? 50 : 20 - idx"
-            class="card relative flex flex-col p-6 sm:p-7"
+            class="ev-card stationery stationery-framed flex flex-col items-center text-center px-8 pt-9 pb-10"
           >
-            <p class="eyebrow">{{ item.title }}</p>
+            <img [src]="item.icon" alt="" class="ev-icon" loading="lazy" />
+            <p class="eyebrow mt-4">{{ item.title }}</p>
 
-            <p class="mt-3 font-prata text-garden-700 text-5xl leading-none tabular-nums tracking-[-0.01em]">
-              {{ item.displayTime }}
-            </p>
-            <p class="mt-3 text-[0.9375rem] font-medium text-garden-900 tabular-nums">
+            <p class="ev-time">{{ item.displayTime }}</p>
+            <div class="orn-rule w-36 my-4" aria-hidden="true"><span class="foil-orn orn-hy w-[1.125rem]"></span></div>
+            <p class="font-prata text-[0.9375rem] tracking-[0.18em] text-garden-900 tabular-nums">
               {{ getEventDay(item) }} · {{ getEventMonth(item) }} · {{ getEventYear(item) }}
             </p>
-            <p class="mt-1 text-[0.9375rem] leading-relaxed text-garden-900/70 first-letter:uppercase">
+            <p class="desc mt-2 text-[0.9375rem] text-garden-900/75 first-letter:uppercase" style="text-wrap: balance;">
               {{ item.address }}
             </p>
 
-            <div class="relative flex flex-wrap gap-2 mt-6 pt-1 md:mt-auto md:pt-6">
+            <div class="relative flex flex-wrap justify-center gap-2 mt-6 pt-1 md:mt-auto md:pt-6">
               <a
                 [href]="item.link"
                 target="_blank"
@@ -59,17 +72,12 @@ import { WeddingEventItem } from "../../models/wedding-data.model";
                 title="Thêm sự kiện vào Google / Apple Calendar"
               >
                 <span>Thêm vào lịch</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
+                <app-icon
+                  name="chevron-down"
                   class="w-3 h-3 transition-transform duration-300 ease-apple"
                   [class.rotate-180]="openCalendarIndex === idx"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  stroke-width="2.5"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
+                  [strokeWidth]="2.5"
+                ></app-icon>
               </button>
 
               <!-- Menu mọc ra từ chính nút "Thêm vào lịch" -->
@@ -77,8 +85,8 @@ import { WeddingEventItem } from "../../models/wedding-data.model";
                 *ngIf="openCalendarIndex === idx"
                 (click)="$event.stopPropagation()"
                 role="menu"
-                class="glass materialize absolute top-full left-0 mt-2 w-60 max-w-[85vw] rounded-[20px] p-1.5 z-[9999]"
-                style="transform-origin: 40% 0;"
+                class="glass materialize absolute top-full inset-x-0 mx-auto mt-2 w-60 max-w-[85vw] rounded-[20px] p-1.5 z-[9999] text-left"
+                style="transform-origin: 60% 0;"
               >
                 <a
                   [href]="getGoogleCalendarUrl(item)"
@@ -88,9 +96,7 @@ import { WeddingEventItem } from "../../models/wedding-data.model";
                   (click)="openCalendarIndex = null"
                   class="flex items-center gap-3 px-3.5 py-3 rounded-[14px] text-[0.9375rem] font-medium text-garden-900 hover:bg-garden-900/[0.06] active:bg-garden-900/10 transition-colors"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-[1.125rem] h-[1.125rem] text-garden-700" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z" />
-                  </svg>
+                  <app-icon name="calendar" class="w-[1.125rem] h-[1.125rem] text-garden-700"></app-icon>
                   <span>Google Calendar</span>
                 </a>
 
@@ -100,9 +106,7 @@ import { WeddingEventItem } from "../../models/wedding-data.model";
                   (click)="downloadIcs(item)"
                   class="w-full flex items-center gap-3 px-3.5 py-3 rounded-[14px] text-left text-[0.9375rem] font-medium text-garden-900 hover:bg-garden-900/[0.06] active:bg-garden-900/10 transition-colors cursor-pointer"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-[1.125rem] h-[1.125rem] text-garden-700" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.62-.75 1.04-1.8 0.92-2.85-.9.04-1.99.6-2.63 1.35-.57.65-1.06 1.72-0.93 2.74 1.01.08 2.03-.5 2.64-1.24z" />
-                  </svg>
+                  <app-icon name="download" class="w-[1.125rem] h-[1.125rem] text-garden-700"></app-icon>
                   <span>Apple Calendar (.ics)</span>
                 </button>
               </div>

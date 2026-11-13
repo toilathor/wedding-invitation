@@ -60,21 +60,21 @@ import { DEFAULT_GUEST, Guest } from "../../core/guest-rules";
             <!-- Mặt sau phong bì -->
             <svg class="layer env-part back" viewBox="0 0 340 230" aria-hidden="true">
               <rect width="340" height="230" rx="10" fill="#C5D1B8" />
-              <rect width="340" height="230" rx="10" filter="url(#cv-paper)" opacity=".5" />
+              <rect class="relief" width="340" height="230" rx="10" fill="url(#cv-relief)" />
             </svg>
 
             <!-- Thiệp = phần đầu trang thu nhỏ -->
             <div #card class="card">
               <div #cardInner class="card-inner">
                 <div #cardShadow class="card-shadow"></div>
-                <app-banner [data]="data"></app-banner>
+                <div #cardClip class="card-clip"><app-banner [data]="data"></app-banner></div>
               </div>
             </div>
 
             <!-- Mặt trước phong bì -->
             <svg class="layer env-part front" viewBox="0 0 340 230" aria-hidden="true">
               <rect width="340" height="230" rx="10" fill="url(#cv-paper-front)" />
-              <rect width="340" height="230" rx="10" filter="url(#cv-paper)" opacity=".55" />
+              <rect class="relief" width="340" height="230" rx="10" fill="url(#cv-relief)" />
               <path d="M10 0 H330 Q340 0 340 10 V12 H0 V10 Q0 0 10 0 Z" fill="url(#cv-throat)" />
               <text x="206" y="172" text-anchor="middle" font-family="Prata, PlayfairDisplay, serif" font-size="13" letter-spacing="6" fill="#2F4A38">THIỆP MỜI</text>
               <text x="34" y="205" font-family="BeVietnamPro, sans-serif" font-size="6.6" letter-spacing=".6" fill="#17241B" opacity=".85">TRÂN TRỌNG KÍNH MỜI:</text>
@@ -89,28 +89,25 @@ import { DEFAULT_GUEST, Guest } from "../../core/guest-rules";
               <svg class="layer face" viewBox="0 0 340 230" aria-hidden="true">
                 
                 <path d="M10 0 H330 Q340 0 340 10 V86 Q340 92.5 333 94 Q170 121 7 140.5 Q0 141.5 0 134 V10 Q0 0 10 0 Z" fill="url(#cv-paper-flap)" />
-                <path d="M10 0 H330 Q340 0 340 10 V86 Q340 92.5 333 94 Q170 121 7 140.5 Q0 141.5 0 134 V10 Q0 0 10 0 Z" filter="url(#cv-paper)" opacity=".5" clip-path="url(#cv-flap-clip)" />
+                <path class="relief" d="M10 0 H330 Q340 0 340 10 V86 Q340 92.5 333 94 Q170 121 7 140.5 Q0 141.5 0 134 V10 Q0 0 10 0 Z" fill="url(#cv-relief)" />
                 <path d="M7 140.5 Q170 121 333 94" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="1.1" stroke-linecap="round" />
                 <path d="M10 .6 H330" stroke="#1E3324" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round" />
-                <!-- Monogram -->
-                <ellipse cx="128" cy="78" rx="34" ry="13" fill="#2F4A38" opacity=".07" transform="rotate(-24 128 78)" />
-                <g fill="none" stroke="#2F4A38" stroke-width=".8" stroke-linecap="round" opacity=".42">
-                  <path d="M94 98 C108 82 124 72 142 67" />
-                  <path d="M98 100 C114 94 130 85 141 72 C128 74 110 84 98 100 Z" />
-                  <path d="M94 98 C104 103 120 102 132 93 C118 92 104 94 94 98 Z" />
-                  <path d="M102 88 C108 76 120 66 134 62 C124 70 112 80 102 88 Z" />
-                </g>
-                <text font-family="Prata, PlayfairDisplay, serif" font-size="6" letter-spacing="2.4" fill="#17241B" opacity=".8">
+                <!-- Chữ lồng cách điệu: hai chữ cái viết tay đan vào nhau trong vòng lá, tulip trên đỉnh -->
+                <image href="assets/images/decor/crest-ink.svg" x="103" y="24" width="90" height="90" opacity=".78" />
+                <text font-family="Prata, PlayfairDisplay, serif" font-size="5.6" letter-spacing="2.6" fill="#17241B" opacity=".8">
                   <textPath href="#cv-arc" startOffset="50%" text-anchor="middle">SAVE THE DATE · {{ data.day }}.{{ data.month }}.{{ data.year }}</textPath>
                 </text>
-                <text x="140" y="80" text-anchor="middle" font-family="PlayfairDisplay, Prata, serif" font-style="italic" font-size="46" fill="#2F4A38">{{ initials[0] }}</text>
-                <text x="168" y="96" text-anchor="middle" font-family="PlayfairDisplay, Prata, serif" font-style="italic" font-size="46" fill="#2F4A38">{{ initials[1] }}</text>
+                <g font-family="PinyonScript, 'Pinyon Script', cursive" fill="#2F4A38" text-anchor="middle">
+                  <text x="137" y="81" font-size="44">{{ initials[0] }}</text>
+                  <text x="159" y="94" font-size="44">{{ initials[1] }}</text>
+                </g>
               </svg>
               <svg class="layer face inner" viewBox="0 0 340 230" aria-hidden="true">
                 <!-- Cùng một đường viền với mặt trước, lật ngang để sau khi xoay Y 180° trùng khớp -->
                 <g transform="translate(340 0) scale(-1 1)">
                   <path d="M10 0 H330 Q340 0 340 10 V86 Q340 92.5 333 94 Q170 121 7 140.5 Q0 141.5 0 134 V10 Q0 0 10 0 Z" fill="#2F4A38" />
                   <path d="M10 0 H330 Q340 0 340 10 V86 Q340 92.5 333 94 Q170 121 7 140.5 Q0 141.5 0 134 V10 Q0 0 10 0 Z" fill="url(#cv-liner)" />
+                  <path class="relief" d="M10 0 H330 Q340 0 340 10 V86 Q340 92.5 333 94 Q170 121 7 140.5 Q0 141.5 0 134 V10 Q0 0 10 0 Z" fill="url(#cv-relief)" />
                   <path d="M18 7 H322 Q331 7 331 16 V84 Q331 88 326 89 Q170 114 14 132 Q9 133 9 128 V16 Q9 7 18 7 Z" fill="none" stroke="#DCE5D3" stroke-opacity=".55" stroke-width=".8" stroke-linejoin="round" />
                 </g>
               </svg>
@@ -146,13 +143,13 @@ import { DEFAULT_GUEST, Guest } from "../../core/guest-rules";
             <path d="M8 1 L15 8 L8 15 L1 8 Z" fill="none" stroke="#DCE5D3" stroke-opacity=".22" stroke-width=".8" />
             <circle cx="8" cy="8" r="1" fill="#DCE5D3" fill-opacity=".35" />
           </pattern>
-          <filter id="cv-paper" x="0" y="0" width="100%" height="100%">
-            <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" stitchTiles="stitch" />
-            <feColorMatrix values="0 0 0 0 .12  0 0 0 0 .2  0 0 0 0 .14  0 0 0 .13 0" />
-          </filter>
+          <!-- Độ sần của giấy: ô xám trung tính có chiếu sáng, phủ kiểu soft-light lên màu phong bì (xem .relief) -->
+          <pattern id="cv-relief" width="150" height="150" patternUnits="userSpaceOnUse">
+            <image href="assets/images/decor/paper-relief.svg" width="150" height="150" />
+          </pattern>
           <filter id="cv-blur"><feGaussianBlur stdDeviation="3" /></filter>
           <clipPath id="cv-flap-clip"><path d="M10 0 H330 Q340 0 340 10 V86 Q340 92.5 333 94 Q170 121 7 140.5 Q0 141.5 0 134 V10 Q0 0 10 0 Z" /></clipPath>
-          <path id="cv-arc" d="M92 74 A64 64 0 0 1 218 74" />
+          <path id="cv-arc" d="M93 60 A56 56 0 0 1 203 60" />
         </defs>
       </svg>
     </div>
@@ -167,7 +164,8 @@ import { DEFAULT_GUEST, Guest } from "../../core/guest-rules";
       background:
         radial-gradient(ellipse at 85% 92%, rgba(220, 229, 211, .95) 0%, rgba(220, 229, 211, 0) 55%),
         radial-gradient(ellipse at 8% 60%, rgba(220, 229, 211, .6) 0%, rgba(220, 229, 211, 0) 45%),
-        #F6F4EC;
+        var(--cover-paper, none) 0 0 / 256px 256px,
+        #F5F2E8;
     }
 
     .names {
@@ -206,6 +204,8 @@ import { DEFAULT_GUEST, Guest } from "../../core/guest-rules";
 
     .envelope { position: relative; width: min(82vw, 380px); aspect-ratio: 340 / 230; perspective: 1100px; }
     .layer { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+    /* Chất giấy của phong bì: sần nhẹ, bắt sáng từ góc trên-trái */
+    .relief { mix-blend-mode: soft-light; pointer-events: none; }
     .env-shadow { position: absolute; inset: 6% 3% 0; z-index: 0; border-radius: 10px; box-shadow: 0 22px 36px rgba(30, 51, 36, .28), 0 4px 10px rgba(30, 51, 36, .18); }
     .back { z-index: 1; }
     .front { z-index: 3; }
@@ -216,8 +216,16 @@ import { DEFAULT_GUEST, Guest } from "../../core/guest-rules";
 
     /* Thiệp (banner thu nhỏ). Kích thước thật = bề rộng màn hình, thu nhỏ bằng transform */
     .card { position: absolute; left: 0; top: 0; z-index: 2; width: 100vw; transform-origin: 0 0; will-change: transform, clip-path; pointer-events: none; text-align: left; }
-    .card-inner { position: relative; background: #F6F4EC; transform-origin: 50% 30%; }
-    .card-shadow { position: absolute; inset: 0; box-shadow: 0 0 0 1px rgba(47, 74, 56, .14), 0 10px 40px rgba(30, 51, 36, .3); pointer-events: none; }
+    .card-inner { position: relative; transform-origin: 50% 30%; }
+    /* Thiệp bo góc và đổ bóng tán rộng như một tờ giấy dày; góc bo co về 0 khi thiệp phóng to khớp banner */
+    .card-clip { position: relative; overflow: hidden; background: #F6F4EC; }
+    /* Lề giấy ngà quanh ảnh khi thiệp còn ở trong phong bì, tan đi khi thiệp phóng to */
+    .card-clip::after {
+      content: ''; position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit;
+      border: var(--mat, 0px) solid #FBF9F2; opacity: var(--mat-o, 0);
+      box-shadow: inset 0 0 0 var(--mat-line, 0px) rgba(179, 151, 90, .6);
+    }
+    .card-shadow { position: absolute; inset: 0; box-shadow: 0 0 0 1px rgba(47, 74, 56, .08), 0 6px 18px rgba(30, 51, 36, .1), 0 30px 90px -10px rgba(30, 51, 36, .3); pointer-events: none; }
 
     /* Dấu sáp */
     .seal { position: absolute; z-index: 6; left: 68%; top: 47.8%; width: 21%; aspect-ratio: 1; translate: -50% -50%; will-change: transform, opacity; }
@@ -263,6 +271,7 @@ export class CoverComponent implements AfterViewInit, OnDestroy {
   @ViewChild("card", { static: true }) cardRef!: ElementRef<HTMLElement>;
   @ViewChild("cardInner", { static: true }) cardInnerRef!: ElementRef<HTMLElement>;
   @ViewChild("cardShadow", { static: true }) cardShadowRef!: ElementRef<HTMLElement>;
+  @ViewChild("cardClip", { static: true }) cardClipRef!: ElementRef<HTMLElement>;
   @ViewChild("flap", { static: true }) flapRef!: ElementRef<HTMLElement>;
   @ViewChild("seal", { static: true }) sealRef!: ElementRef<HTMLElement>;
   @ViewChild("names", { static: true }) namesRef!: ElementRef<HTMLElement>;
@@ -508,8 +517,16 @@ export class CoverComponent implements AfterViewInit, OnDestroy {
 
     // Quán tính: thiệp nghiêng nhẹ theo vận tốc, tắt dần khi về đích
     const sway = Math.min(1, r * 3) * (1 - g);
-    const rot = Math.max(-4, Math.min(4, -v * 1.8)) * sway;
+    const rot = Math.max(-2.2, Math.min(2.2, -v * 1.1)) * sway;
     this.cardInnerRef.nativeElement.style.transform = `rotate(${rot}deg)`;
+    // Góc bo ~16px trên màn hình (chia cho k vì thiệp đang bị thu nhỏ), tan dần khi về đích
+    const radius = `${(16 * (1 - g)) / k}px`;
+    const clip = this.cardClipRef.nativeElement;
+    clip.style.borderRadius = radius;
+    clip.style.setProperty("--mat", `${9 / k}px`);
+    clip.style.setProperty("--mat-line", `${1 / k}px`);
+    clip.style.setProperty("--mat-o", String(1 - this.smooth(this.seg(p, 0.7, 0.9))));
+    this.cardShadowRef.nativeElement.style.borderRadius = radius;
     // Bóng của thiệp chỉ hiện khi nó đã nhô hẳn ra ngoài; còn nằm trong túi thì không được tràn ra mép phong bì
     this.cardShadowRef.nativeElement.style.opacity = String(this.smooth(this.seg(p, 0.5, 0.74)) * (1 - g));
 

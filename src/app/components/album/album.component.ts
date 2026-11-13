@@ -12,21 +12,107 @@ import {
 import { AlbumData } from "../../models/wedding-data.model";
 import { PageViewService } from "../../services/pageview.service";
 import { ImgFadeDirective } from "../../shared/img-fade.directive";
+import { IconComponent } from "../../shared/icon.component";
 
 
 @Component({
   selector: "app-album",
   standalone: true,
-  imports: [CommonModule, ImgFadeDirective],
+  imports: [CommonModule, ImgFadeDirective, IconComponent],
   styles: [`
     .album-tile { transition: transform 260ms var(--ease-out); }
     .album-tile:active { transform: scale(0.97); transition-duration: 90ms; }
+
+    /* ---- Dải ảnh nhỏ trong lightbox, kiểu thanh tua của Photos ----
+       Một viên kính nổi; ảnh là những lát hẹp, ảnh đang xem nở rộng và tách khỏi hai bên, luôn nằm chính giữa.
+       Vuốt dải ảnh để tua: ảnh đi qua tâm là ảnh được chọn. */
+    .film-wrap {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      padding: 0.375rem 0.75rem 0.75rem;
+      z-index: 50;
+    }
+    .film {
+      width: min(100%, 34rem);
+      padding: 6px 0;
+      border-radius: 20px;
+      overflow: hidden;
+      animation: filmIn 520ms var(--ease-apple) 120ms both;
+    }
+    @keyframes filmIn {
+      from { opacity: 0; transform: translateY(14px) scale(0.96); }
+      to { opacity: 1; transform: none; }
+    }
+    .film-strip {
+      --tw: 22px;   /* lát ảnh thường */
+      --tg: 3px;    /* khe giữa các lát */
+      --aw: 46px;   /* ảnh đang xem */
+      --am: 9px;    /* khoảng tách hai bên ảnh đang xem */
+      --th: 46px;
+      display: flex;
+      align-items: center;
+      gap: var(--tg);
+      height: calc(var(--th) + 4px);
+      /* đệm nửa bề rộng mỗi bên để ảnh đầu và ảnh cuối cũng vào được chính giữa */
+      padding-inline: calc(50% - var(--tw) / 2);
+      overflow-x: auto;
+      overscroll-behavior: contain;
+      touch-action: pan-x;
+      cursor: grab;
+      -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 16%, #000 84%, transparent 100%);
+      mask-image: linear-gradient(90deg, transparent 0, #000 16%, #000 84%, transparent 100%);
+    }
+    @media (min-width: 640px) {
+      .film-strip { --tw: 28px; --tg: 4px; --aw: 62px; --am: 11px; --th: 56px; }
+    }
+    .film-thumb {
+      position: relative;
+      flex: none;
+      width: var(--tw);
+      height: var(--th);
+      padding: 0;
+      border: 0;
+      border-radius: 5px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.08);
+      opacity: 0.55;
+      cursor: pointer;
+      transition:
+        width 360ms var(--ease-apple),
+        margin 360ms var(--ease-apple),
+        border-radius 360ms var(--ease-apple),
+        opacity 200ms ease,
+        transform 160ms var(--ease-out);
+    }
+    .film-thumb img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+    .film-thumb:active { transform: scale(0.94); }
+    @media (hover: hover) { .film-thumb:hover { opacity: 0.9; } }
+    .film-thumb.is-active {
+      width: var(--aw);
+      margin-inline: var(--am);
+      border-radius: 9px;
+      opacity: 1;
+      box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.92), 0 8px 18px -6px rgba(0, 0, 0, 0.6);
+    }
+    /* Đang tua: mọi lát cùng cỡ (để vị trí không nhảy dưới ngón tay), ảnh ở tâm chỉ sáng lên và nhô cao */
+    .film-strip.is-scrubbing { cursor: grabbing; }
+    .film-strip.is-scrubbing .film-thumb {
+      transition: opacity 120ms ease, transform 160ms var(--ease-out);
+    }
+    .film-strip.is-scrubbing .film-thumb.is-active {
+      width: var(--tw);
+      margin-inline: 0;
+      border-radius: 5px;
+      transform: scaleY(1.09);
+    }
+    @media (prefers-reduced-motion: reduce) { .film { animation: none; } }
   `],
   template: `
     <!-- 1. Page Gallery Section -->
     <section
       id="wedding-album-section"
-      class="section bg-white reveal"
+      class="section paper-alt reveal"
     >
       <div class="section-inner">
       <header class="section-head">
@@ -81,20 +167,7 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
               <div
                 class="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center text-[#2F4A38] shadow-lg"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="w-3.5 h-3.5 md:w-5 md:h-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"
-                  />
-                </svg>
+                <app-icon name="zoom-in" class="w-3.5 h-3.5 md:w-5 md:h-5"></app-icon>
               </div>
             </div>
           </div>
@@ -113,21 +186,11 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
           class="btn btn-tinted"
         >
           <span>{{ showAll ? "Thu gọn album" : "Xem thêm ảnh" }}</span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
+          <app-icon
+            name="chevron-down"
             class="w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform duration-500 ease-out"
             [class.rotate-180]="showAll"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
+          ></app-icon>
         </button>
       </div>
       </div>
@@ -190,25 +253,16 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
             "
             aria-label="Tự động trình chiếu"
           >
-            <svg
+            <app-icon
               *ngIf="!isSlideshow"
-              xmlns="http://www.w3.org/2000/svg"
+              name="play"
               class="w-4 h-4 sm:w-5 sm:h-5"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <polygon points="5 3 19 12 5 21 5 3" />
-            </svg>
-            <svg
+            ></app-icon>
+            <app-icon
               *ngIf="isSlideshow"
-              xmlns="http://www.w3.org/2000/svg"
+              name="pause"
               class="w-4 h-4 sm:w-5 sm:h-5 text-white"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <rect x="6" y="4" width="4" height="16" />
-              <rect x="14" y="4" width="4" height="16" />
-            </svg>
+            ></app-icon>
           </button>
 
           <!-- Zoom Toggle -->
@@ -221,36 +275,16 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
             "
             aria-label="Phóng to / Thu nhỏ"
           >
-            <svg
+            <app-icon
               *ngIf="!isZoomed"
-              xmlns="http://www.w3.org/2000/svg"
+              name="zoom-in"
               class="w-4 h-4 sm:w-5 sm:h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"
-              />
-            </svg>
-            <svg
+            ></app-icon>
+            <app-icon
               *ngIf="isZoomed"
-              xmlns="http://www.w3.org/2000/svg"
+              name="zoom-out"
               class="w-4 h-4 sm:w-5 sm:h-5 text-white"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"
-              />
-            </svg>
+            ></app-icon>
           </button>
 
           <!-- Close Modal Button -->
@@ -261,20 +295,7 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
             title="Đóng xem ảnh (Phím Esc hoặc nút đóng)"
             aria-label="Đóng"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-4 h-4 sm:w-5 sm:h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <app-icon name="close" class="w-4 h-4 sm:w-5 sm:h-5" [strokeWidth]="2"></app-icon>
           </button>
         </div>
       </div>
@@ -300,20 +321,7 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
           title="Ảnh trước (Phím mũi tên trái hoặc Vuốt sang phải)"
           aria-label="Ảnh trước"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-5 h-5 sm:w-6 sm:h-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="2.5"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
+          <app-icon name="chevron-left" class="w-5 h-5 sm:w-6 sm:h-6" [strokeWidth]="2.5"></app-icon>
         </button>
 
         <!-- Centered Main Image Container (transform do bộ cử chỉ điều khiển trực tiếp) -->
@@ -370,55 +378,46 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
           title="Ảnh tiếp theo (Phím mũi tên phải hoặc Vuốt sang trái)"
           aria-label="Ảnh tiếp theo"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-5 h-5 sm:w-6 sm:h-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="2.5"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
+          <app-icon name="chevron-right" class="w-5 h-5 sm:w-6 sm:h-6" [strokeWidth]="2.5"></app-icon>
         </button>
       </div>
 
-      <!-- Bottom Thumbnail Carousel Strip -->
-      <div
-        class="w-full max-w-4xl py-2 sm:py-3 px-3 sm:px-6 z-50 bg-gradient-to-t from-black/80 via-black/40 to-transparent"
-        (click)="$event.stopPropagation()"
-      >
-        <div
-          #thumbnailStrip
-          class="flex items-center justify-start md:justify-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar py-1 px-1 scroll-smooth"
-        >
-          <button
-            *ngFor="let full of data.albums; let idx = index"
-            [id]="'lightbox-thumb-' + idx"
-            type="button"
-            (click)="selectImage(idx)"
-            class="relative w-12 h-14 sm:w-16 sm:h-18 rounded-lg sm:rounded-xl overflow-hidden shrink-0 border-2 transition-all duration-300 active:scale-[0.97] cursor-pointer focus:outline-none"
-            [ngClass]="{
-              'border-white scale-105 opacity-100 shadow-lg':
-                currentIndex === idx,
-              'border-transparent opacity-40 hover:opacity-80 scale-95':
-                currentIndex !== idx,
-            }"
+      <!-- Dải ảnh nhỏ: viên kính nổi, vuốt để tua -->
+      <div class="film-wrap" (click)="$event.stopPropagation()">
+        <div class="film glass-dark">
+          <div
+            #thumbnailStrip
+            class="film-strip no-scrollbar"
+            [class.is-scrubbing]="scrubbing"
+            role="listbox"
+            aria-label="Chọn ảnh"
+            (touchstart)="stripTouching = true; beginScrub()"
+            (touchend)="endStripTouch()"
+            (touchcancel)="endStripTouch()"
+            (wheel)="onStripWheel($event)"
+            (scroll)="onStripScroll()"
           >
-            <img
-              appImgFade
-              [src]="thumbOf(full)"
-              [alt]="'Thumbnail ' + (idx + 1)"
-              class="w-full h-full object-cover"
-              loading="lazy"
-              draggable="false"
-              style="-webkit-touch-callout: none; -webkit-user-drag: none;"
-            />
-          </button>
+            <button
+              *ngFor="let full of data.albums; let idx = index"
+              [id]="'lightbox-thumb-' + idx"
+              type="button"
+              role="option"
+              [attr.aria-selected]="currentIndex === idx"
+              [attr.aria-label]="'Ảnh ' + (idx + 1)"
+              (click)="selectImage(idx)"
+              class="film-thumb"
+              [class.is-active]="currentIndex === idx"
+            >
+              <img
+                appImgFade="fade"
+                [src]="thumbOf(full)"
+                alt=""
+                loading="lazy"
+                draggable="false"
+                style="-webkit-touch-callout: none; -webkit-user-drag: none;"
+              />
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -484,10 +483,17 @@ export class AlbumComponent implements OnDestroy {
     this.pageViewService.setLocked(true);
     this.lockBodyScroll();
     this.preloadAdjacentImages();
-    setTimeout(() => this.scrollThumbIntoView(), 80);
+    // Mở ra là ảnh đang xem đã nằm sẵn ở giữa dải, không cuộn từ đầu tới
+    setTimeout(() => {
+      const strip = this.thumbnailStrip?.nativeElement;
+      if (!strip) return;
+      const { step, shift } = this.filmMetrics(strip);
+      strip.scrollTo({ left: this.currentIndex * step + shift, behavior: "auto" });
+    }, 0);
   }
 
   closeLightbox() {
+    this.endScrubNow();
     this.lightboxOpen = false;
     this.outgoingSrc = null;
     this.cancelAnim();
@@ -563,6 +569,7 @@ export class AlbumComponent implements OnDestroy {
   }
 
   private triggerChange(direction: "next" | "prev", action: () => void) {
+    this.endScrubNow();
     if (this.changeTimer) clearTimeout(this.changeTimer);
     this.slideDirection = direction;
     this.changing = true;
@@ -583,16 +590,94 @@ export class AlbumComponent implements OnDestroy {
     }, 680);
   }
 
+  // ───────────── Dải ảnh nhỏ: căn giữa và tua ─────────────
+  /** true trong lúc người dùng đang vuốt dải ảnh để tua. */
+  scrubbing = false;
+  private scrubTimer: ReturnType<typeof setTimeout> | null = null;
+  /** Ngón tay còn đặt trên dải ảnh: chưa kết thúc tua dù đang đứng yên. */
+  stripTouching = false;
+
+  endStripTouch() {
+    this.stripTouching = false;
+    if (this.scrubbing) this.armScrubEnd();
+  }
+
+  /** Kích thước dải ảnh, đọc từ biến CSS để công thức khớp với cả hai cỡ màn hình. */
+  private filmMetrics(strip: HTMLElement) {
+    const cs = getComputedStyle(strip);
+    const v = (name: string) => parseFloat(cs.getPropertyValue(name)) || 0;
+    const tw = v("--tw");
+    return {
+      step: tw + v("--tg"), // khoảng cách tâm hai lát liền nhau
+      shift: v("--am") + (v("--aw") - tw) / 2, // tâm ảnh đang xem lệch thêm bấy nhiêu khi nó nở rộng
+    };
+  }
+
+  /** Đưa ảnh đang xem vào chính giữa dải. Tính bằng công thức chứ không đo, vì các lát còn đang đổi bề rộng. */
   private scrollThumbIntoView() {
     const strip = this.thumbnailStrip?.nativeElement;
-    const el = document.getElementById("lightbox-thumb-" + this.currentIndex);
-    if (!strip || !el) return;
+    if (!strip || this.scrubbing) return;
+    const { step, shift } = this.filmMetrics(strip);
+    strip.scrollTo({ left: this.currentIndex * step + shift, behavior: "smooth" });
+  }
 
-    const targetLeft = el.offsetLeft - (strip.clientWidth - el.offsetWidth) / 2;
-    strip.scrollTo({
-      left: Math.max(0, targetLeft),
-      behavior: "smooth",
-    });
+  /** Bắt đầu tua: thu ảnh đang xem về cỡ thường và bù lại độ lệch để nó đứng yên dưới ngón tay. */
+  beginScrub() {
+    const strip = this.thumbnailStrip?.nativeElement;
+    if (!strip) return;
+    if (!this.scrubbing) {
+      this.scrubbing = true;
+      if (this.isSlideshow) this.stopSlideshow();
+      const { step } = this.filmMetrics(strip);
+      strip.scrollTo({ left: this.currentIndex * step, behavior: "auto" });
+    }
+    this.armScrubEnd();
+  }
+
+  /** Lăn chuột dọc hay ngang trên dải ảnh đều tua được. */
+  onStripWheel(e: WheelEvent) {
+    const strip = this.thumbnailStrip?.nativeElement;
+    if (!strip || e.ctrlKey) return;
+    e.preventDefault();
+    e.stopPropagation();
+    this.beginScrub();
+    strip.scrollLeft += Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+  }
+
+  onStripScroll() {
+    if (!this.scrubbing) return;
+    const strip = this.thumbnailStrip?.nativeElement;
+    if (!strip) return;
+    const { step } = this.filmMetrics(strip);
+    const idx = Math.max(0, Math.min(this.data.albums.length - 1, Math.round(strip.scrollLeft / step)));
+    if (idx !== this.currentIndex) {
+      // Đổi ảnh tức thì, không chạy hiệu ứng trượt: tua nhanh mà trượt thì rối mắt
+      if (this.changeTimer) { clearTimeout(this.changeTimer); this.changeTimer = null; }
+      this.changing = false;
+      this.outgoingSrc = null;
+      this.mainLoaded = false;
+      this.currentIndex = idx;
+      this.resetZoom(false);
+    }
+    this.armScrubEnd();
+  }
+
+  /** Hết cuộn (kể cả đà trượt) một lúc thì coi như tua xong: ảnh được chọn nở ra và vào giữa. */
+  private armScrubEnd() {
+    if (this.scrubTimer) clearTimeout(this.scrubTimer);
+    this.scrubTimer = setTimeout(() => {
+      this.scrubTimer = null;
+      if (this.stripTouching) return; // còn giữ tay: chờ nhả ra
+      this.scrubbing = false;
+      this.preloadAdjacentImages();
+      this.scrollThumbIntoView();
+    }, 180);
+  }
+
+  private endScrubNow() {
+    if (this.scrubTimer) { clearTimeout(this.scrubTimer); this.scrubTimer = null; }
+    this.scrubbing = false;
+    this.stripTouching = false;
   }
 
   private lockBodyScroll() {
@@ -939,6 +1024,7 @@ export class AlbumComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.stopSlideshow();
+    if (this.scrubTimer) clearTimeout(this.scrubTimer);
     if (this.changeTimer) clearTimeout(this.changeTimer);
     this.cancelAnim();
     if (this.outgoingTimer) clearTimeout(this.outgoingTimer);

@@ -36,45 +36,45 @@
     "semantic_hash": ""
   },
   "src/app/components/album/album.component.ts": {
-    "mtime": 1794495787.6085818,
-    "seen": 1794496203.725715,
-    "ast_hash": "c5420990b6529610390807436eb8baa7",
+    "mtime": 1794543328.3177676,
+    "seen": 1794543687.132122,
+    "ast_hash": "a9347f79ede5682362fd8b772b2eb253",
     "semantic_hash": ""
   },
   "src/app/components/bank-gift/bank-gift.component.ts": {
-    "mtime": 1794497482.2905524,
-    "seen": 1794497516.5284412,
-    "ast_hash": "caf8733294cb680deb897045a2b6f149",
+    "mtime": 1794543274.5157993,
+    "seen": 1794543687.132122,
+    "ast_hash": "f1ef72d2658f859869c5cf62c911f916",
     "semantic_hash": ""
   },
   "src/app/components/banner/banner.component.ts": {
-    "mtime": 1794495617.4217987,
-    "seen": 1794496203.7257159,
-    "ast_hash": "111aae850b23a4bb5447feb2625f9e8b",
+    "mtime": 1794541741.9193475,
+    "seen": 1794541768.442375,
+    "ast_hash": "73e2e85807d6df2448dcf3754cc787c8",
     "semantic_hash": ""
   },
   "src/app/components/events/events.component.ts": {
-    "mtime": 1794497482.290442,
-    "seen": 1794497516.5284429,
-    "ast_hash": "e988e51bf9bc32b6ad4655d0cd9b6492",
+    "mtime": 1794543288.4909823,
+    "seen": 1794543687.132124,
+    "ast_hash": "5759520c270b0ac870eaaeadd919f531",
     "semantic_hash": ""
   },
   "src/app/components/guestbook/guestbook.component.ts": {
-    "mtime": 1794501465.505499,
-    "seen": 1794501468.751817,
-    "ast_hash": "e92334b7da38fc0a6d205c2af93a3c45",
+    "mtime": 1794543297.013166,
+    "seen": 1794543687.132125,
+    "ast_hash": "fd9f96e9ee688d0a9a23af3647c04d8f",
     "semantic_hash": ""
   },
   "src/app/components/introduction/introduction.component.ts": {
-    "mtime": 1794495647.233242,
-    "seen": 1794496203.725719,
-    "ast_hash": "fdb8c03e6021af958222c796e31e1fce",
+    "mtime": 1794541873.0999494,
+    "seen": 1794543687.132125,
+    "ast_hash": "28a696ef751d1f34f0a24b83fc2fff0e",
     "semantic_hash": ""
   },
   "src/app/components/invitation/invitation.component.ts": {
-    "mtime": 1794501698.8041441,
-    "seen": 1794501701.712971,
-    "ast_hash": "c24d0fb1fbe16ee7f53dfbf61610045f",
+    "mtime": 1794543054.357542,
+    "seen": 1794543687.1321259,
+    "ast_hash": "00e45536eb3aa2d0eade694f0312067a",
     "semantic_hash": ""
   },
   "src/app/components/music-player/music-player.component.ts": {
@@ -84,33 +84,33 @@
     "semantic_hash": ""
   },
   "src/app/components/quick-menu/quick-menu.component.ts": {
-    "mtime": 1794495710.7846057,
-    "seen": 1794496203.7257211,
-    "ast_hash": "6a7698a7ce3ae4bd6c70bcdee8a83a93",
+    "mtime": 1794543611.417004,
+    "seen": 1794543687.132127,
+    "ast_hash": "a73fdd2ded9a289f127da03342097ad0",
     "semantic_hash": ""
   },
   "src/app/components/rsvp-modal/rsvp-modal.component.ts": {
-    "mtime": 1794501461.1761804,
-    "seen": 1794501468.751821,
-    "ast_hash": "359b85a352a156789faa626aa4b4876c",
+    "mtime": 1794543313.1798022,
+    "seen": 1794543687.132128,
+    "ast_hash": "a61ef8791aaccb2ffc3908e8e67a34a1",
     "semantic_hash": ""
   },
   "src/app/components/story/story.component.ts": {
-    "mtime": 1794497482.2903488,
-    "seen": 1794497516.528447,
-    "ast_hash": "3e309c2c4bd4a753d900256512c640e7",
+    "mtime": 1794542953.8916235,
+    "seen": 1794543687.132128,
+    "ast_hash": "450cf3d44e7a8b02f5b99ced2e120dcd",
     "semantic_hash": ""
   },
   "src/app/components/timeline/timeline.component.ts": {
-    "mtime": 1794495647.2375386,
-    "seen": 1794496203.725722,
-    "ast_hash": "d32f293fb5099aeda496fc71de74093d",
+    "mtime": 1794543054.3577352,
+    "seen": 1794543687.132129,
+    "ast_hash": "c3a928ae48179d8a3a120e2dd5246dab",
     "semantic_hash": ""
   },
   "src/app/components/toast/toast.component.ts": {
-    "mtime": 1794495647.2393842,
-    "seen": 1794496203.7257228,
-    "ast_hash": "fafeedaee9163bda8df20815e08cd2b5",
+    "mtime": 1794543274.4686322,
+    "seen": 1794543687.132129,
+    "ast_hash": "de2ead41e346fbfb4acaefeae947a32e",
     "semantic_hash": ""
   },
   "src/app/core/firebase.config.ts": {
@@ -120,9 +120,9 @@
     "semantic_hash": ""
   },
   "src/app/core/wedding-data.ts": {
-    "mtime": 1794503232.6870844,
-    "seen": 1794503312.3896902,
-    "ast_hash": "41d911d0f6588c5d2e585f1ab0a05a2a",
+    "mtime": 1794540989.2793813,
+    "seen": 1794541337.8502731,
+    "ast_hash": "a7cb8909b43c25427fc58339e5ccdce9",
     "semantic_hash": ""
   },
   "src/app/models/wedding-data.model.ts": {
@@ -192,15 +192,15 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1794477458.4639966,
-    "seen": 1794478811.552896,
-    "ast_hash": "e36454b7d07e82aaaec64c071ba3b649",
+    "mtime": 1794543079.220822,
+    "seen": 1794543687.132141,
+    "ast_hash": "fba0d3ae5a9784d54d0c2f65850da1a8",
     "semantic_hash": ""
   },
   "src/app/app.component.html": {
-    "mtime": 1794501549.2892156,
-    "seen": 1794501701.712987,
-    "ast_hash": "2ec3d737974c814f9b3365aaa54e3545",
+    "mtime": 1794542204.4898994,
+    "seen": 1794543687.132142,
+    "ast_hash": "90150fbba584c650fa60ada92c476be6",
     "semantic_hash": ""
   },
   "src/index.html": {
@@ -210,9 +210,9 @@
     "semantic_hash": ""
   },
   "src/app/components/cover/cover.component.ts": {
-    "mtime": 1794495787.6108794,
-    "seen": 1794496203.725717,
-    "ast_hash": "35b9df1d51ed7e0b7beed70ca0f00f56",
+    "mtime": 1794542953.8918986,
+    "seen": 1794543687.132124,
+    "ast_hash": "a739a7d5fd533c749e32834f812403dd",
     "semantic_hash": ""
   },
   "src/robots.txt": {
@@ -255,6 +255,18 @@
     "mtime": 1794487224.1488833,
     "seen": 1794496203.725734,
     "ast_hash": "62db54a4778480ba3890e7b3d1eaee05",
+    "semantic_hash": ""
+  },
+  "scripts/gen-decor.mjs": {
+    "mtime": 1794543054.3572557,
+    "seen": 1794543687.132119,
+    "ast_hash": "00b14a5146b83e14332b8db86a06379d",
+    "semantic_hash": ""
+  },
+  "src/app/shared/icon.component.ts": {
+    "mtime": 1794543583.4130187,
+    "seen": 1794543687.1321359,
+    "ast_hash": "aef790f7661b3bb49f99dda9cd1858ef",
     "semantic_hash": ""
   },
   "package-lock.json": {

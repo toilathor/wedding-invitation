@@ -34,7 +34,7 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
     .hero-scrim {
       position: absolute; inset: 0; pointer-events: none;
       background:
-        linear-gradient(to top, rgba(15, 26, 19, 0.92) 0%, rgba(15, 26, 19, 0.62) 26%, rgba(15, 26, 19, 0) 56%),
+        linear-gradient(to top, rgba(15, 26, 19, 0.94) 0%, rgba(15, 26, 19, 0.66) 32%, rgba(15, 26, 19, 0) 62%),
         linear-gradient(to bottom, rgba(15, 26, 19, 0.3) 0%, rgba(15, 26, 19, 0) 18%);
     }
 
@@ -45,7 +45,7 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
       flex-direction: column;
       align-items: center;
       text-align: center;
-      padding: 0 1.25rem calc(3.25rem + env(safe-area-inset-bottom));
+      padding: 0 1.25rem calc(5.25rem + env(safe-area-inset-bottom));
     }
 
     .hero-eyebrow {
@@ -60,7 +60,7 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
       margin: 0.5rem 0 0;
       font-family: var(--font-script);
       font-weight: 400;
-      font-size: clamp(3.5rem, 17vw, 5.25rem);
+      font-size: clamp(3.25rem, 15.5vw, 5rem);
       line-height: 1.02;
       white-space: nowrap;
       text-shadow: 0 2px 24px rgba(15, 26, 19, 0.35);
@@ -68,17 +68,61 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
     .hero-names span { display: block; }
     .hero-amp { font-size: 0.62em; line-height: 0.9; opacity: 0.85; }
 
+    /* Ngày cưới kiểu thiệp in: thứ ở trên, ngày thật lớn ép nhũ ở giữa, tháng và năm kẹp giữa hai đường chỉ */
     .hero-date {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 0.875rem;
-      margin-top: 1.25rem;
+      margin-top: 1rem;
       font-family: var(--font-serif);
-      font-size: 1.125rem;
-      letter-spacing: 0.14em;
       font-variant-numeric: lining-nums tabular-nums;
     }
-    .hero-date i { width: 1px; height: 0.9em; background: rgba(255, 255, 255, 0.5); }
+    .hd-week {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      font-size: 0.6875rem;
+      letter-spacing: 0.34em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.85);
+    }
+    .hd-week::before, .hd-week::after {
+      content: "";
+      width: 4px;
+      height: 4px;
+      transform: rotate(45deg);
+      background: #e2cf96;
+    }
+    .hd-row { display: flex; align-items: center; margin-top: 0.375rem; }
+    .hd-side {
+      width: 6.75rem;
+      padding: 0.5rem 0;
+      border-block: 1px solid rgba(226, 207, 150, 0.6);
+      font-size: 0.8125rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      color: rgba(255, 255, 255, 0.92);
+    }
+    .hd-day {
+      padding: 0.12em 1.125rem;
+      font-size: clamp(4rem, 19vw, 5.25rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      /* nhũ champagne sáng trên nền ảnh tối, có một vệt sáng lướt qua chậm */
+      background: linear-gradient(105deg, #cdb46f 0%, #f6ecc8 30%, #c9ad66 48%, #fff7da 60%, #c2a45c 78%, #ead9a4 100%);
+      background-size: 220% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: #e2cf96;
+      filter: drop-shadow(0 2px 14px rgba(15, 26, 19, 0.45));
+      animation: foilSheen 7s ease-in-out infinite;
+    }
+    @keyframes foilSheen {
+      0%, 100% { background-position: 0% 0; }
+      50% { background-position: 100% 0; }
+    }
 
     @media (min-width: 900px) {
       .hero {
@@ -95,7 +139,10 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
       .hero-text { order: 1; flex: 0 1 30rem; padding: 0; }
       .hero-names { font-size: clamp(4.5rem, 7.4vw, 7.5rem); }
       .hero-eyebrow { font-size: 0.75rem; }
-      .hero-date { font-size: 1.375rem; margin-top: 1.75rem; }
+      .hero-date { margin-top: 1.75rem; }
+      .hd-day { font-size: clamp(5.25rem, 7.2vw, 7rem); padding: 0.12em 1.5rem; }
+      .hd-side { width: 8rem; font-size: 0.875rem; }
+      .hd-week { font-size: 0.75rem; }
 
       .hero-photos {
         order: 2;
@@ -142,8 +189,13 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
           <span class="hero-amp" aria-hidden="true">&amp;</span>
           <span>{{ data.bride }}</span>
         </h1>
-        <div class="hero-date" [attr.aria-label]="data.day + '/' + data.month + '/' + data.year">
-          <span>{{ data.day }}</span><i></i><span>{{ data.month }}</span><i></i><span>{{ data.year }}</span>
+        <div class="hero-date" role="text" [attr.aria-label]="weekday + ', ngày ' + data.day + ' tháng ' + data.month + ' năm ' + data.year">
+          <span class="hd-week" aria-hidden="true">{{ weekday }}</span>
+          <div class="hd-row" aria-hidden="true">
+            <span class="hd-side">Tháng {{ data.month }}</span>
+            <span class="hd-day">{{ data.day }}</span>
+            <span class="hd-side">Năm {{ data.year }}</span>
+          </div>
         </div>
       </div>
     </section>
@@ -151,4 +203,12 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
 })
 export class BannerComponent {
   @Input({ required: true }) data!: BannerData;
+
+  private static readonly WEEKDAYS = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+
+  /** Thứ trong tuần, tính từ ngày/tháng/năm của dữ liệu để không lệch khi đổi ngày. */
+  get weekday(): string {
+    const d = new Date(+this.data.year, +this.data.month - 1, +this.data.day);
+    return BannerComponent.WEEKDAYS[d.getDay()] ?? "";
+  }
 }

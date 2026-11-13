@@ -5,6 +5,7 @@ import { ToastService } from '../../services/toast.service';
 import { RsvpService } from '../../services/rsvp.service';
 import { GuestService } from '../../services/guest.service';
 import { PersonalizePipe } from '../../shared/personalize.pipe';
+import { IconComponent } from '../../shared/icon.component';
 import confetti from 'canvas-confetti';
 import { WEDDING_DATA } from '../../core/wedding-data';
 import { WeddingEventItem } from '../../models/wedding-data.model';
@@ -43,7 +44,27 @@ interface GuestOption {
 @Component({
   selector: 'app-rsvp-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, PersonalizePipe],
+  imports: [CommonModule, FormsModule, PersonalizePipe, IconComponent],
+  styles: [`
+    /* Khung dập nổi ôm cả tấm; nút đóng nằm gọn trong hõm góc trên-phải của khung */
+    .rsvp-sheet { --frame-w: 92px; }
+    .rsvp-close {
+      background: var(--card);
+      box-shadow: inset 0 0 0 1px rgba(140, 114, 56, 0.45);
+    }
+    /* vùng chạm 44px quanh nút nhỏ */
+    .rsvp-close::after { content: ""; position: absolute; inset: -7px; }
+    /* Nội dung cuộn mờ dần trước khi chạm nút gửi, thay cho đường kẻ */
+    .rsvp-foot { position: relative; }
+    .rsvp-foot::before {
+      content: "";
+      position: absolute;
+      inset: -1.25rem 2rem auto;
+      height: 1.25rem;
+      background: linear-gradient(to bottom, rgba(252, 250, 243, 0), #fcfaf3);
+      pointer-events: none;
+    }
+  `],
   template: `
     <div
       role="dialog"
@@ -54,40 +75,40 @@ interface GuestOption {
 
       <!-- Modal Card Frame with Luxury Arch Top -->
       <div
-        class="sheet-in bg-ivory rounded-[32px] max-w-lg w-full max-h-[calc(100dvh-1.5rem)] md:max-h-[min(860px,calc(100dvh-3rem))] shadow-float relative my-auto overflow-hidden text-center flex flex-col"
+        class="rsvp-sheet sheet-in stationery stationery-framed !rounded-[28px] max-w-lg w-full max-h-[calc(100dvh-1.5rem)] md:max-h-[min(860px,calc(100dvh-3rem))] relative my-auto overflow-hidden text-center flex flex-col"
         (click)="$event.stopPropagation()">
 
         <!-- Close Button -->
         <button
           type="button"
           (click)="onClose.emit()"
-          class="absolute top-4 right-4 z-20 w-9 h-9 flex items-center justify-center rounded-full bg-garden-900/[0.06] text-garden-900/60 transition-transform active:scale-90"
+          class="rsvp-close absolute top-[7px] right-[7px] z-20 w-[30px] h-[30px] flex items-center justify-center rounded-full text-garden-700 transition-transform active:scale-90"
           title="Đóng"
           aria-label="Đóng cửa sổ xác nhận tham dự">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <app-icon name="close" class="w-3.5 h-3.5" [strokeWidth]="2.5"></app-icon>
         </button>
 
-        <div class="shrink-0 px-6 md:px-8 pt-8 md:pt-10">
+        <div class="shrink-0 px-8 md:px-10 pt-9 md:pt-10">
           <!-- Header -->
-          <div class="mb-6 relative z-10">
+          <div class="mb-5 relative z-10">
+            <span class="foil-orn orn-sprig w-28 mx-auto mb-2" aria-hidden="true"></span>
             <p class="eyebrow mb-1">
               R.S.V.P
             </p>
-            <h3 id="rsvp-title" class="font-pinyonScript text-garden-700 text-[2.75rem] md:text-[3.25rem] leading-[1.1]">
+            <h3 id="rsvp-title" class="font-pinyonScript text-garden-700 text-[2.25rem] min-[400px]:text-[2.625rem] md:text-[3.25rem] leading-[1.15] whitespace-nowrap">
               Xác nhận tham dự
             </h3>
-            <p class="text-garden-900/65 text-[0.875rem] leading-relaxed mt-2 max-w-xs mx-auto">
+            <p class="desc text-garden-900/70 text-[0.9375rem] mt-2 max-w-xs mx-auto">
               {{ 'Sự hiện diện của {you} là niềm vinh hạnh to lớn của cô dâu & chú rể' | personalize }}
             </p>
+            <div class="orn-rule w-40 mx-auto mt-4" aria-hidden="true"><span class="foil-orn orn-hy w-[1.125rem]"></span></div>
           </div>
 
           <!-- Smooth Sliding Pill Toggle -->
-          <div class="relative mb-5 p-[3px] bg-garden-900/[0.07] rounded-[14px] flex select-none">
+          <div class="relative mb-5 p-[3px] bg-[rgba(140,114,56,0.13)] shadow-[inset_0_0_0_1px_rgba(140,114,56,0.2)] rounded-[14px] flex select-none">
             <!-- Sliding Indicator Highlight -->
             <div
-              class="absolute top-[3px] bottom-[3px] left-[3px] w-[calc(50%-3px)] rounded-[11px] bg-white shadow-[0_1px_3px_rgba(23,36,27,0.16)] transition-transform duration-300 ease-apple"
+              class="absolute top-[3px] bottom-[3px] left-[3px] w-[calc(50%-3px)] rounded-[11px] bg-[#fffefb] shadow-[0_1px_3px_rgba(23,36,27,0.16),inset_0_0_0_1px_rgba(140,114,56,0.35)] transition-transform duration-300 ease-apple"
               [style.transform]="isAttending ? 'translateX(0)' : 'translateX(100%)'">
             </div>
 
@@ -113,7 +134,7 @@ interface GuestOption {
         </div>
 
           <!-- Form Body -->
-          <form id="rsvp-form" (ngSubmit)="submitRsvp()" (scroll)="closeDropdown()" class="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 md:px-8 pb-4 space-y-4 text-left">
+          <form id="rsvp-form" (ngSubmit)="submitRsvp()" (scroll)="closeDropdown()" class="min-h-0 flex-1 overflow-y-auto overscroll-contain px-8 md:px-10 pb-4 space-y-4 text-left">
             <!-- Name Input -->
             <div>
               <label class="field-label">
@@ -150,9 +171,7 @@ interface GuestOption {
                 class="field h-12"
               />
               <p *ngIf="phoneError" class="text-[11px] text-red-600 font-beVietnamPro mt-1 flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                </svg>
+                <app-icon name="info" class="w-3.5 h-3.5 shrink-0"></app-icon>
                 <span>{{ phoneError }}</span>
               </p>
             </div>
@@ -177,16 +196,14 @@ interface GuestOption {
                       <label
                         (click)="toggleEvent(ev.key)"
                         class="flex items-center justify-between gap-3 px-4 py-3 rounded-[16px] bg-white transition-shadow duration-200 cursor-pointer select-none"
-                        [ngClass]="this[ev.key] ? 'shadow-[inset_0_0_0_1.5px_#2F4A38]' : 'shadow-[inset_0_0_0_1px_rgba(23,36,27,0.1)]'">
+                        [ngClass]="this[ev.key] ? 'shadow-[inset_0_0_0_1.5px_#2F4A38]' : 'shadow-[inset_0_0_0_1px_rgba(140,114,56,0.28)]'">
                         <div class="min-w-0">
-                          <p class="text-[0.9375rem] font-medium text-garden-900">{{ ev.title }}</p>
+                          <p class="font-prata text-[0.9375rem] text-garden-900">{{ ev.title }}</p>
                           <p class="text-[0.8125rem] text-garden-900/55">{{ ev.when }}</p>
                           <p class="text-[0.8125rem] text-garden-900/55">{{ ev.address }}</p>
                         </div>
                         <div class="shrink-0 w-[22px] h-[22px] rounded-full flex items-center justify-center transition-colors duration-200" [ngClass]="this[ev.key] ? 'bg-garden-700' : 'bg-white shadow-[inset_0_0_0_1.5px_rgba(23,36,27,0.22)]'">
-                          <svg *ngIf="this[ev.key]" xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-white" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                          </svg>
+                          <app-icon *ngIf="this[ev.key]" name="check" class="w-3.5 h-3.5 text-white" [strokeWidth]="3"></app-icon>
                         </div>
                       </label>
                     }
@@ -203,22 +220,17 @@ interface GuestOption {
                   <div
                     #guestDropdownTrigger
                     (click)="toggleGuestDropdown($event)"
-                    class="w-full flex items-center justify-between px-4 py-3 rounded-[16px] bg-white shadow-[inset_0_0_0_1px_rgba(23,36,27,0.1)] cursor-pointer select-none">
+                    class="w-full flex items-center justify-between px-4 py-3 rounded-[16px] bg-white shadow-[inset_0_0_0_1px_rgba(140,114,56,0.28)] cursor-pointer select-none">
                     <div>
                       <p class="text-[0.9375rem] font-medium text-garden-900">{{ selectedGuestOption.label }}</p>
                       <p class="text-[0.8125rem] text-garden-900/55">{{ selectedGuestOption.sub }}</p>
                     </div>
 
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
+                    <app-icon
+                      name="chevron-down"
                       class="w-4 h-4 text-[#2F4A38] transition-transform duration-300"
                       [class.rotate-180]="isDropdownOpen"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      stroke-width="2">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                    </svg>
+                      [strokeWidth]="2"></app-icon>
                   </div>
 
                   <!-- Custom Floating Menu -->
@@ -236,14 +248,11 @@ interface GuestOption {
                         <p class="text-[0.75rem] text-garden-900/55">{{ opt.sub }}</p>
                       </div>
 
-                      <svg
+                      <app-icon
                         *ngIf="selectedGuestCount === opt.value"
-                        xmlns="http://www.w3.org/2000/svg"
+                        name="check"
                         class="w-4 h-4 text-[#2F4A38]"
-                        viewBox="0 0 20 20"
-                        fill="currentColor">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                      </svg>
+                        [strokeWidth]="2.5"></app-icon>
                     </div>
                   </div>
                 </div>
@@ -266,15 +275,13 @@ interface GuestOption {
           </form>
 
           <!-- Sticky action area: only the form content scrolls. -->
-          <div class="shrink-0 bg-ivory px-6 md:px-8 pt-3 pb-5 md:pb-7 border-t border-garden-900/10">
+          <div class="rsvp-foot shrink-0 px-8 md:px-10 pt-3 pb-8">
             <button
               type="submit"
               form="rsvp-form"
               [disabled]="!name.trim() || !phone.trim() || isSubmitting"
               class="btn btn-primary w-full !min-h-[3.125rem] !text-base">
-              <svg *ngIf="!isSubmitting" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5c0-3.08 2.42-5.5 5.5-5.5 1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-              </svg>
+              <app-icon *ngIf="!isSubmitting" name="heart" class="w-4 h-4"></app-icon>
               <span>{{ isSubmitting ? 'Đang gửi...' : (isAttending ? 'Gửi xác nhận tham dự' : 'Gửi lời chúc mừng') }}</span>
             </button>
           </div>
@@ -295,14 +302,11 @@ interface GuestOption {
             <p class="text-[0.9375rem] font-medium">{{ opt.label }}</p>
             <p class="text-[0.75rem] text-garden-900/55">{{ opt.sub }}</p>
           </div>
-          <svg
+          <app-icon
             *ngIf="selectedGuestCount === opt.value"
-            xmlns="http://www.w3.org/2000/svg"
+            name="check"
             class="w-4 h-4 text-[#2F4A38]"
-            viewBox="0 0 20 20"
-            fill="currentColor">
-            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 010 1.414z" clip-rule="evenodd" />
-          </svg>
+            [strokeWidth]="2.5"></app-icon>
         </div>
       </div>
     </div>

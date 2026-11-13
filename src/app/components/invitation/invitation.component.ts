@@ -23,161 +23,79 @@ interface TimeLeft {
   standalone: true,
   imports: [CommonModule],
   styles: [`
-    /* ---- Thẻ mời bao ngoài ---- */
-    .invite-card {
-      --gold: #b89a62;
-      --paper: #fffdf7;
-      --notch-bg: #f6f4ec; /* trùng nền bg-ivory của section */
+    /* ---- Tấm thiệp: giấy ngà dập nổi, huy hiệu nhũ vàng, ngày cưới in mực xanh ---- */
+    .invite-card { --frame-w: 84px; }
+    @media (min-width: 640px) { .invite-card { --frame-w: 104px; } }
+    .crest {
       position: relative;
-      border-radius: 30px;
-      background:
-        radial-gradient(120% 70% at 50% 0%, rgba(184, 154, 98, 0.1), transparent 60%),
-        radial-gradient(90% 60% at 50% 100%, rgba(47, 74, 56, 0.06), transparent 70%),
-        var(--paper);
-      box-shadow:
-        0 1px 0 rgba(255, 255, 255, 0.9) inset,
-        0 2px 4px rgba(23, 36, 27, 0.04),
-        0 24px 48px -20px rgba(23, 36, 27, 0.28),
-        0 0 0 1px rgba(184, 154, 98, 0.18);
+      width: 6.75rem;
+      aspect-ratio: 1;
+      margin: 0 auto 0.75rem;
+      display: grid;
+      place-items: center;
     }
-    /* Khung kép: viền xanh mảnh + viền vàng bên trong */
-    .ic-frame {
-      position: absolute;
-      inset: 10px;
-      border: 1px solid rgba(47, 74, 56, 0.16);
-      border-radius: 22px;
-      pointer-events: none;
+    .crest i { position: absolute; inset: 0; }
+    /* Hai chữ cái viết tay đan vào nhau, chữ sau thấp hơn một chút */
+    .crest b {
+      position: relative;
+      display: flex;
+      margin-top: 0.35rem;
+      padding: 0 0.3em 0.1em;
+      font-family: var(--font-script);
+      font-weight: 400;
+      font-size: 2.6rem;
+      line-height: 1.25;
+      color: var(--green);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
     }
-    .ic-frame::after {
-      content: "";
-      position: absolute;
-      inset: 4px;
-      border: 1px solid rgba(184, 154, 98, 0.45);
-      border-radius: 18px;
+    .crest b span + span { margin-left: -0.2em; transform: translateY(0.24em); }
+    @media (min-width: 640px) {
+      .crest { width: 8rem; }
+      .crest b { font-size: 3.1rem; }
     }
-    .ic-corner {
-      position: absolute;
-      width: 14px;
-      height: 14px;
-      transform: rotate(45deg);
-      border: 1px solid var(--gold);
-      background: var(--paper);
-    }
-    .ic-corner::after {
-      content: "";
-      position: absolute;
-      inset: 3px;
-      background: var(--gold);
-      opacity: 0.55;
-    }
-    .ic-corner.tl { top: -7px; left: 22px; }
-    .ic-corner.tr { top: -7px; right: 22px; }
-    .ic-corner.bl { bottom: -7px; left: 22px; }
-    .ic-corner.br { bottom: -7px; right: 22px; }
 
-    /* Con dấu chữ lồng đè lên mép trên */
-    .ic-seal {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      width: 4.25rem;
-      height: 4.25rem;
-      transform: translate(-50%, -50%);
+    .inv-date {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.05rem;
-      border-radius: 9999px;
-      color: #f7f2e8;
-      background: radial-gradient(circle at 35% 30%, #4a6d55, #2f4a38 55%, #233a2b);
-      box-shadow:
-        0 0 0 3px var(--paper),
-        0 0 0 4px rgba(184, 154, 98, 0.6),
-        0 10px 22px -8px rgba(35, 58, 43, 0.6);
-      z-index: 1;
-    }
-    .ic-seal::before {
-      content: "";
-      position: absolute;
-      inset: 4px;
-      border-radius: 9999px;
-      border: 1px dashed rgba(217, 201, 163, 0.55);
-    }
-    .ic-seal b {
-      font-family: "PinyonScript", "Pinyon Script", cursive;
-      font-weight: 400;
-      font-size: 1.6rem;
+      gap: 0.9rem;
+      margin-top: 0.75rem;
+      font-family: var(--font-serif);
+      font-size: 2.75rem;
       line-height: 1;
+      color: var(--green);
+      font-variant-numeric: lining-nums tabular-nums;
+      /* mực in lún nhẹ xuống giấy */
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
     }
-    .ic-seal em {
-      font-style: normal;
-      font-family: "Prata", serif;
-      font-size: 0.7rem;
-      color: #d9c9a3;
-      margin: 0.35rem 0.3rem 0 0.45rem;
+    .inv-date i {
+      width: 5px;
+      height: 5px;
+      transform: rotate(45deg);
+      background: var(--gold);
     }
-    @media (min-width: 640px) {
-      .ic-seal { width: 5rem; height: 5rem; }
-      .ic-seal b { font-size: 1.9rem; }
-    }
-
-    /* Đường xé vé */
-    .ic-perf {
-      position: relative;
-      height: 1px;
-      margin-left: -1.5rem;
-      margin-right: -1.5rem;
-      background-image: linear-gradient(90deg, rgba(47, 74, 56, 0.28) 50%, transparent 50%);
-      background-size: 10px 1px;
-      background-position: 14px 0;
-      background-repeat: repeat-x;
-      background-clip: content-box;
-      padding: 0 22px;
-    }
-    @media (min-width: 640px) {
-      .ic-perf { margin-left: -3rem; margin-right: -3rem; }
-    }
-    .ic-perf::before,
-    .ic-perf::after {
-      content: "";
-      position: absolute;
-      top: 50%;
-      width: 26px;
-      height: 26px;
-      border-radius: 9999px;
-      background: var(--notch-bg);
-      box-shadow: inset 0 2px 4px rgba(23, 36, 27, 0.12);
-      z-index: 2;
-    }
-    .ic-perf::before { left: 0; transform: translate(-50%, -50%); }
-    .ic-perf::after { right: 0; transform: translate(50%, -50%); }
-    .ic-perf span {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      padding: 0 0.75rem;
-      background: var(--paper);
-      font-size: 0.625rem;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: var(--gold);
-      white-space: nowrap;
+    @media (min-width: 640px) { .inv-date { font-size: 3.75rem; gap: 1.4rem; } }
+    .inv-place {
+      margin-top: 0.875rem;
+      font-family: var(--font-serif);
+      font-size: 0.8125rem;
+      letter-spacing: 0.08em;
+      color: var(--text-2);
     }
 
     /* ---- Đồng hồ lật ---- */
     .cd-grid {
-      --w: 3.6rem;
-      --h: 4.6rem;
-      --fs: 2.15rem;
-      --r: 0.7rem;
+      --w: 3.3rem;
+      --h: 4.3rem;
+      --fs: 2rem;
+      --r: 0.6rem;
       display: flex;
       justify-content: center;
       align-items: flex-start;
       gap: 0.3rem;
     }
     @media (min-width: 640px) {
-      .cd-grid { --w: 5.5rem; --h: 6.75rem; --fs: 3.25rem; --r: 1rem; gap: 0.75rem; }
+      .cd-grid { --w: 5rem; --h: 6.25rem; --fs: 3rem; --r: 0.8rem; gap: 0.75rem; }
     }
     .cd-unit { display: flex; flex-direction: column; align-items: center; }
 
@@ -188,9 +106,10 @@ interface TimeLeft {
       perspective: 340px;
       border-radius: var(--r);
       box-shadow:
-        0 1px 0 rgba(255, 255, 255, 0.6),
-        0 14px 28px -12px rgba(35, 58, 43, 0.55),
-        0 4px 10px -4px rgba(35, 58, 43, 0.35);
+        0 0 0 1px rgba(140, 114, 56, 0.38),
+        0 0 0 3px var(--card),
+        0 0 0 4px rgba(140, 114, 56, 0.16),
+        0 12px 20px -12px rgba(35, 58, 43, 0.4);
     }
     .half {
       position: absolute;
@@ -200,7 +119,8 @@ interface TimeLeft {
       overflow: hidden;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
-      color: #f7f2e8;
+      color: var(--green);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
       font-family: var(--font-prata, "Prata", serif);
       font-size: var(--fs);
       font-variant-numeric: tabular-nums;
@@ -220,14 +140,14 @@ interface TimeLeft {
       top: 0;
       border-radius: var(--r) var(--r) 0 0;
       transform-origin: 50% 100%;
-      background: linear-gradient(180deg, #3d5f48 0%, #33513d 100%);
+      background: linear-gradient(180deg, #fffefa 0%, #f6f1e3 100%);
     }
     .top span { top: 0; }
     .bottom {
       bottom: 0;
       border-radius: 0 0 var(--r) var(--r);
       transform-origin: 50% 0;
-      background: linear-gradient(180deg, #2c4735 0%, #233a2b 100%);
+      background: linear-gradient(180deg, #f3eedf 0%, #ece6d4 100%);
     }
     .bottom span { bottom: 0; }
 
@@ -248,8 +168,8 @@ interface TimeLeft {
       inset: 0;
       pointer-events: none;
     }
-    .flap-out::after { background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.35)); animation: shade 0.32s forwards; }
-    .flap-in::after { background: linear-gradient(0deg, transparent, rgba(0, 0, 0, 0.3)); animation: unshade 0.42s 0.3s forwards; }
+    .flap-out::after { background: linear-gradient(180deg, transparent, rgba(60, 50, 20, 0.16)); animation: shade 0.32s forwards; }
+    .flap-in::after { background: linear-gradient(0deg, transparent, rgba(60, 50, 20, 0.14)); animation: unshade 0.42s 0.3s forwards; }
 
     @keyframes flapOut { from { transform: rotateX(0); } to { transform: rotateX(-90deg); } }
     @keyframes flapIn { from { transform: rotateX(90deg); } to { transform: rotateX(0); } }
@@ -264,8 +184,8 @@ interface TimeLeft {
       top: 50%;
       z-index: 3;
       height: 1px;
-      background: rgba(0, 0, 0, 0.35);
-      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+      background: rgba(140, 114, 56, 0.45);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
     }
     .hinge::before,
     .hinge::after {
@@ -275,7 +195,7 @@ interface TimeLeft {
       width: 3px;
       height: 7px;
       border-radius: 2px;
-      background: #d9c9a3;
+      background: var(--gold);
     }
     .hinge::before { left: -1px; }
     .hinge::after { right: -1px; }
@@ -285,7 +205,8 @@ interface TimeLeft {
       font-size: 0.625rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: rgba(47, 74, 56, 0.6);
+      font-family: var(--font-serif);
+      color: var(--gold-deep);
     }
     @media (min-width: 640px) { .cd-label { font-size: 0.75rem; margin-top: 0.8rem; } }
 
@@ -299,9 +220,9 @@ interface TimeLeft {
     .cd-colon i {
       width: 0.3rem;
       height: 0.3rem;
-      border-radius: 9999px;
-      background: var(--green);
-      opacity: 0.35;
+      transform: rotate(45deg);
+      background: var(--gold);
+      opacity: 0.5;
     }
     .cd-colon.tick i { animation: tick 1s steps(1) infinite; }
     @keyframes tick { 0% { opacity: 0.9; } 50% { opacity: 0.2; } }
@@ -314,7 +235,7 @@ interface TimeLeft {
     }
   `],
   template: `
-    <section class="section decor decor-tr-bl bg-ivory text-center">
+    <section class="section decor decor-tulip paper text-center">
       <div class="section-inner">
         <header class="section-head reveal">
           <p class="eyebrow">Lời mời</p>
@@ -323,28 +244,24 @@ interface TimeLeft {
         </header>
 
         <!-- Một thẻ duy nhất: khi nào, ở đâu, còn bao lâu -->
-        <div class="invite-card max-w-xl mx-auto px-6 pt-14 pb-9 sm:px-12 sm:pt-16 sm:pb-12 mt-10 reveal delay-100">
-          <!-- Khung kép + góc trang trí -->
-          <span class="ic-frame" aria-hidden="true">
-            <i class="ic-corner tl"></i><i class="ic-corner tr"></i><i class="ic-corner bl"></i><i class="ic-corner br"></i>
-          </span>
-          <!-- Con dấu chữ lồng -->
-          <span class="ic-seal" aria-hidden="true"><b>T</b><em>&amp;</em><b>H</b></span>
+        <div class="invite-card stationery stationery-framed stationery-arch max-w-xl mx-auto px-9 pt-9 pb-11 sm:px-14 sm:pt-12 sm:pb-14 mt-10 reveal delay-100">
+          <!-- Huy hiệu chữ lồng trong vòng lá, ép nhũ vàng -->
+          <div class="crest" aria-hidden="true">
+            <i class="foil-orn orn-crest"></i>
+            <b><span>T</span><span>H</span></b>
+          </div>
 
           <p class="eyebrow">{{ data.time }}</p>
 
-          <div
-            class="flex items-center justify-center gap-4 sm:gap-6 mt-3 font-prata text-garden-700 text-[2.75rem] sm:text-6xl leading-none tabular-nums"
-          >
-            <span>{{ data.day }}</span>
-            <i class="w-px self-stretch bg-garden-900/15"></i>
-            <span>{{ data.month }}</span>
-            <i class="w-px self-stretch bg-garden-900/15"></i>
-            <span>{{ data.year }}</span>
+          <div class="inv-date">
+            <span>{{ data.day }}</span><i></i><span>{{ data.month }}</span><i></i><span>{{ data.year }}</span>
           </div>
+          <p class="inv-place">{{ data.location }}</p>
 
-          <!-- Đường xé vé: nét đứt với hai vết khuyết hai bên -->
-          <div class="ic-perf my-8 sm:my-10" aria-hidden="true"><span>Còn</span></div>
+          <div class="orn-rule my-7 sm:my-9" aria-hidden="true">
+            <span class="foil-orn orn-hy w-[1.375rem]"></span>
+          </div>
+          <p class="eyebrow !text-[0.625rem] mb-4" aria-hidden="true">Đếm ngược ngày vui</p>
 
           <!-- Đếm ngược: đồng hồ lật 3D -->
           <div class="cd-grid" role="timer" aria-label="Thời gian còn lại đến ngày cưới">

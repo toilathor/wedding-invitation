@@ -8,7 +8,7 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
   standalone: true,
   imports: [CommonModule, ImgFadeDirective],
   template: `
-    <section class="section decor decor-tl bg-ivory">
+    <section class="section decor decor-leaf-vine paper">
       <div class="section-inner">
         <header class="section-head reveal">
           <p class="eyebrow">Love story</p>
@@ -17,13 +17,18 @@ import { ImgFadeDirective } from "../../shared/img-fade.directive";
         </header>
 
         <!-- Ảnh giữ nguyên tỉ lệ gốc để không cắt mất dòng chữ in sẵn trên ảnh -->
-        <div class="photo aspect-[10/7] max-w-5xl mx-auto shadow-float reveal delay-100">
-          <img
-            appImgFade
-            [src]="data.image"
-            alt="Chuyện chúng mình"
-            class="w-full h-full object-cover"
-          />
+        <!-- Ảnh lồng trong một tấm thiệp có khung, cùng kiểu với các card khác -->
+        <div class="story-card stationery stationery-framed max-w-5xl mx-auto p-10 sm:p-12 reveal delay-100">
+          <div class="well">
+            <div class="matted aspect-[10/7]">
+              <img
+                appImgFade
+                [src]="data.image"
+                alt="Chuyện chúng mình"
+                class="w-full h-full object-cover"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </section>

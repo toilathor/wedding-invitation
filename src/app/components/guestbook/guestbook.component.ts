@@ -11,11 +11,12 @@ import { GuestbookService } from "../../services/guestbook.service";
 import { ToastService } from "../../services/toast.service";
 import { GuestService } from "../../services/guest.service";
 import { PersonalizePipe } from "../../shared/personalize.pipe";
+import { IconComponent } from "../../shared/icon.component";
 
 @Component({
   selector: "app-guestbook",
   standalone: true,
-  imports: [CommonModule, FormsModule, PersonalizePipe],
+  imports: [CommonModule, FormsModule, PersonalizePipe, IconComponent],
   styles: [`
     /* Mép mờ thay cho đường kẻ cứng ở nơi danh sách cuộn */
     .wish-list {
@@ -24,7 +25,7 @@ import { PersonalizePipe } from "../../shared/personalize.pipe";
     }
   `],
   template: `
-    <section id="sangtrong-message-id" class="section bg-white">
+    <section id="sangtrong-message-id" class="section decor decor-leaf-grass paper-alt">
       <div class="section-inner">
         <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start">
           <!-- Cột trái: tiêu đề, đứng yên khi danh sách lời chúc cuộn -->
@@ -47,7 +48,7 @@ import { PersonalizePipe } from "../../shared/personalize.pipe";
             />
           </header>
 
-          <div class="md:col-span-7 rounded-[28px] bg-ivory p-4 sm:p-7 reveal delay-100">
+          <div class="md:col-span-7 stationery p-4 sm:p-7 reveal delay-100">
             <!-- Form -->
             <form
               (ngSubmit)="submitWish()"
@@ -95,17 +96,7 @@ import { PersonalizePipe } from "../../shared/personalize.pipe";
                     title="Gợi ý lời chúc mẫu"
                     aria-label="Gợi ý lời chúc mẫu"
                   >
-                    <!-- Glowing Lightbulb Icon -->
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="w-4 h-4"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                    >
-                      <path
-                        d="M12 2C7.58 2 4 5.58 4 10c0 2.62 1.27 4.96 3.23 6.43.34.25.57.64.63 1.06L8.2 20c.09.56.58 1 1.15 1h5.3c.57 0 1.06-.44 1.15-1l.34-2.51c.06-.42.29-.81.63-1.06C18.73 14.96 20 12.62 20 10c0-4.42-3.58-8-8-8zm-2 20c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-1h-4v1z"
-                      />
-                    </svg>
+                    <app-icon name="bulb" class="w-4 h-4"></app-icon>
                   </button>
 
                   <!-- Suggestions Popover Menu (Right-Aligned Above Icon Button) -->
@@ -128,20 +119,7 @@ import { PersonalizePipe } from "../../shared/personalize.pipe";
                         (click)="isSuggestionsOpen = false"
                         class="text-stone-400 hover:text-stone-700 p-0.5 cursor-pointer"
                       >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="w-3.5 h-3.5"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
+                        <app-icon name="close" class="w-3.5 h-3.5" [strokeWidth]="2"></app-icon>
                       </button>
                     </div>
 
@@ -191,17 +169,11 @@ import { PersonalizePipe } from "../../shared/personalize.pipe";
                   "
                   class="btn btn-primary"
                 >
-                  <svg
+                  <app-icon
                     *ngIf="!isSubmitting"
-                    xmlns="http://www.w3.org/2000/svg"
+                    name="heart"
                     class="w-3.5 h-3.5"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path
-                      d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                    />
-                  </svg>
+                  ></app-icon>
                   <span>{{
                     isSubmitting
                       ? "Đang gửi..."

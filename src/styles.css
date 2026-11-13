@@ -141,18 +141,25 @@
   --leaf: #5f7d63;
   --sage: #dce5d3;
   --mist: #eef2e8;
-  --paper: #f6f4ec;
+  --paper: #f5f2e8;
+  --paper-alt: #faf8f1;
+  --card: #fdfcf7;
   --surface: #ffffff;
   --champagne: #c8b273;
+  --gold: #b3975a;
+  --gold-deep: #8c7238;
+  /* Nhũ vàng ép kim: dải sáng tối xen kẽ, dùng cho chữ lớn và hoạ tiết (qua mask) */
+  --foil: linear-gradient(118deg, #7d6328 0%, #c4a862 22%, #94782f 44%, #d3bd7e 66%, #8a6f2e 86%, #b99c56 100%);
   --text-2: rgba(23, 36, 27, 0.68);
   --text-3: rgba(23, 36, 27, 0.46);
   --hairline: rgba(23, 36, 27, 0.1);
 
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "BeVietnamPro", system-ui, sans-serif;
   --font-serif: "Prata", "PlayfairDisplay", Georgia, serif;
+  --font-body-serif: "PlayfairDisplay", "Prata", Georgia, "Times New Roman", serif;
   --font-script: "PinyonScript", "Pinyon Script", cursive;
 
-  --radius-card: 28px;
+  --radius-card: 22px;
   --ease-apple: cubic-bezier(0.32, 0.72, 0, 1);
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 
@@ -186,9 +193,16 @@
   color: var(--green);
 }
 
+/* Đoạn mô tả: chữ serif cổ điển (Playfair Display) thay cho chữ không chân của hệ thống */
+.lead,
+.desc {
+  font-family: var(--font-body-serif);
+  font-feature-settings: "liga", "kern";
+}
+.desc { line-height: 1.7; text-wrap: pretty; }
 .lead {
   font-size: 1.0625rem;
-  line-height: 1.6;
+  line-height: 1.7;
   color: var(--text-2);
   text-wrap: pretty;
 }
@@ -220,23 +234,105 @@
 }
 
 /* =========================================================
-   HOẠ TIẾT LÁ — file SVG trong assets/images/decor dùng làm mask, nên màu lấy từ background-color
-   (đổi màu theo nền sáng/tối mà không cần thêm file). Sinh bằng script, nét mảnh, chỉ để điểm xuyết.
+   GIẤY & HOẠ TIẾT — thiệp cưới in dập nổi (letterpress): giấy ngà có hạt, vân chìm, chỉ nhũ vàng.
+   Các file trong assets/images/decor sinh bằng scripts/gen-decor.mjs.
+   "*-emboss.svg" là nét dập nổi dùng làm background; các file còn lại là mask, màu lấy từ background.
 ========================================================= */
-/* Bông tulip nhỏ với hai nhánh lá, phía trên dòng eyebrow của mỗi đầu mục */
+/* Nền: cả trang là một tờ giấy cotton liền (đặt trên .pageview-container), các section trong suốt nên không có đường cắt.
+   .paper-alt phủ thêm lớp giấy vân vải lanh, .paper phủ vân lưới dập chìm ở hai mép; cả hai lớp phủ đều tan dần
+   ở mép trên và mép dưới section, nên chất giấy đổi từ từ khi cuộn chứ không đổi đột ngột. */
+.pageview-container {
+  background-color: var(--paper);
+  background-image: url("assets/images/decor/paper.svg");
+  background-size: 256px 256px;
+}
+.paper,
+.paper-alt {
+  --seam: clamp(6rem, 16vw, 11rem);
+  --seam-fade: linear-gradient(180deg, transparent 0, #000 var(--seam), #000 calc(100% - var(--seam)), transparent 100%);
+  isolation: isolate;
+}
+.paper::after,
+.paper-alt::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.paper::after {
+  background: url("assets/images/decor/emboss-pattern.svg") center top / 128px 192px;
+  opacity: 0.8;
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, transparent 34%, transparent 66%, #000 100%), var(--seam-fade);
+  mask-image: linear-gradient(90deg, #000 0%, transparent 34%, transparent 66%, #000 100%), var(--seam-fade);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+.paper-alt::after {
+  background: var(--paper-alt) url("assets/images/decor/paper-linen.svg") 0 0 / 256px 256px;
+  -webkit-mask-image: var(--seam-fade);
+  mask-image: var(--seam-fade);
+}
+.section.paper, .section.paper-alt { position: relative; }
+
+/* Mặt bàn giấy phía sau phong bì (CoverComponent): url() trong style của component không trỏ được tới assets, nên truyền qua biến */
+app-cover { --cover-paper: url("assets/images/decor/paper.svg"); }
+
+/* Chữ và hoạ tiết nhũ vàng */
+.foil {
+  background: var(--foil);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--gold-deep);
+}
+.foil-orn {
+  display: block;
+  background: var(--foil);
+  -webkit-mask: var(--orn) center / contain no-repeat;
+  mask: var(--orn) center / contain no-repeat;
+}
+.orn-crest { --orn: url("assets/images/decor/crest.svg"); }
+.orn-hy { --orn: url("assets/images/decor/hy.svg"); aspect-ratio: 44 / 40; }
+.orn-sprig { --orn: url("assets/images/decor/sprig.svg"); aspect-ratio: 9 / 2; }
+
+/* Đường chỉ có chữ song hỷ (hoặc chữ) ở giữa */
+.orn-rule {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  color: var(--gold-deep);
+  font-family: var(--font-serif);
+  font-size: 0.625rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.orn-rule::before,
+.orn-rule::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(140, 114, 56, 0.55));
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+.orn-rule::after { transform: scaleX(-1); }
+
+/* Tulip giữa hai nhánh cuộn, phía trên dòng eyebrow của mỗi đầu mục */
 .section-head::before,
 .head-ornament::before {
   content: "";
   display: block;
-  width: 7.5rem;
+  width: 9.5rem;
   aspect-ratio: 9 / 2;
-  margin-bottom: 0.5rem;
-  background-color: var(--champagne);
+  margin-bottom: 0.625rem;
+  background: var(--foil);
   -webkit-mask: url("assets/images/decor/sprig.svg") center / contain no-repeat;
   mask: url("assets/images/decor/sprig.svg") center / contain no-repeat;
 }
 
-/* Cành lá ở góc trên, bó tulip ở góc dưới của section. Một lớp ::before phủ kín section, không tràn ra ngoài nên không cần overflow: hidden
+/* Cỏ cây dập nổi ở góc section, mỗi section một kiểu: tulip, cành lá, bụi cỏ, chùm hoa, dây leo.
+   Một lớp ::before phủ kín section, không tràn ra ngoài nên không cần overflow: hidden
    (section sự kiện phải để menu lịch tràn ra được). */
 .decor { position: relative; }
 .decor > * { position: relative; }
@@ -245,45 +341,146 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background-color: var(--decor-color, #b9c7ae);
-  opacity: var(--decor-opacity, 0.6);
-  --decor-size: clamp(7.5rem, 26vw, 16rem);
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: var(--decor-size) auto;
-  mask-size: var(--decor-size) auto;
+  --top-size: clamp(9.5rem, 30vw, 19rem);
+  --bottom-size: clamp(7rem, 22vw, 14rem);
+  --vine-size: clamp(4.5rem, 13vw, 8.5rem);
+  background-repeat: no-repeat;
+  /* Cỏ cây tan dần ở mép trên và mép dưới section, để không bị cắt ngang khi nền đã liền một tờ */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 3rem, #000 calc(100% - 4rem), transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 3rem, #000 calc(100% - 4rem), transparent 100%);
 }
-.decor-tl::before {
-  -webkit-mask-image: url("assets/images/decor/branch-tl.svg");
-  mask-image: url("assets/images/decor/branch-tl.svg");
-  -webkit-mask-position: left top;
-  mask-position: left top;
+/* Tờ giấy trượt lên phủ mép dưới ảnh đầu trang, và chân trang nổi lên như một tờ khác: góc bo thay cho đường cắt thẳng */
+#page-invitation {
+  position: relative;
+  z-index: 11;
+  margin-top: -1.75rem;
+  border-radius: 1.75rem 1.75rem 0 0;
+  background: var(--paper) url("assets/images/decor/paper.svg") 0 0 / 256px 256px;
+  box-shadow: 0 -18px 40px -18px rgba(15, 26, 19, 0.45);
 }
-.decor-tr-bl::before {
-  -webkit-mask-image: url("assets/images/decor/branch-tr.svg"), url("assets/images/decor/tulips-bl.svg");
-  mask-image: url("assets/images/decor/branch-tr.svg"), url("assets/images/decor/tulips-bl.svg");
-  -webkit-mask-position: right top, left bottom;
-  mask-position: right top, left bottom;
+.page-footer { border-radius: 1.75rem 1.75rem 0 0; box-shadow: 0 -18px 40px -22px rgba(15, 26, 19, 0.35); }
+/* tulip nằm vắt góc trên-phải, bó tulip góc dưới-trái */
+.decor-tulip::before {
+  background-image: url("assets/images/decor/tulip-top-tr-emboss.svg"), url("assets/images/decor/tulips-bl-emboss.svg");
+  background-position: right top, left bottom;
+  background-size: var(--top-size) auto, var(--bottom-size) auto;
 }
-.decor-tl-br::before {
-  -webkit-mask-image: url("assets/images/decor/branch-tl.svg"), url("assets/images/decor/tulips-br.svg");
-  mask-image: url("assets/images/decor/branch-tl.svg"), url("assets/images/decor/tulips-br.svg");
-  -webkit-mask-position: left top, right bottom;
-  mask-position: left top, right bottom;
+/* tulip góc trên-trái, bó tulip góc dưới-phải */
+.decor-tulip-alt::before {
+  background-image: url("assets/images/decor/tulip-top-tl-emboss.svg"), url("assets/images/decor/tulips-br-emboss.svg");
+  background-position: left top, right bottom;
+  background-size: var(--top-size) auto, var(--bottom-size) auto;
 }
-.decor-bl-br::before {
+/* chùm hoa góc trên-trái, bụi cỏ góc dưới-phải */
+.decor-bloom-grass::before {
+  background-image: url("assets/images/decor/blossom-tl-emboss.svg"), url("assets/images/decor/grass-br-emboss.svg");
+  background-position: left top, right bottom;
+  background-size: calc(var(--top-size) * 0.86) auto, var(--bottom-size) auto;
+}
+/* cành lá góc trên-phải, dây leo góc dưới-trái */
+.decor-leaf-vine::before {
+  background-image: url("assets/images/decor/leaves-tr-emboss.svg"), url("assets/images/decor/vine-bl-emboss.svg");
+  background-position: right top, left bottom;
+  background-size: var(--top-size) auto, var(--vine-size) auto;
+}
+/* chùm hoa góc trên-phải, dây leo góc dưới-trái */
+.decor-bloom-vine::before {
+  background-image: url("assets/images/decor/blossom-tr-emboss.svg"), url("assets/images/decor/vine-bl-emboss.svg");
+  background-position: right top, left bottom;
+  background-size: calc(var(--top-size) * 0.86) auto, var(--vine-size) auto;
+}
+/* cành lá góc trên-trái, bụi cỏ góc dưới-phải */
+.decor-leaf-grass::before {
+  background-image: url("assets/images/decor/leaves-tl-emboss.svg"), url("assets/images/decor/grass-br-emboss.svg");
+  background-position: left top, right bottom;
+  background-size: var(--top-size) auto, var(--bottom-size) auto;
+}
+/* bụi cỏ hai góc dưới */
+.decor-grass::before {
+  background-image: url("assets/images/decor/grass-bl-emboss.svg"), url("assets/images/decor/grass-br-emboss.svg");
+  background-position: left bottom, right bottom;
+  background-size: var(--bottom-size) auto;
+}
+/* Trên nền tối (footer): nét trắng thật mờ, dùng file mask */
+.decor-on-dark.decor-bl-br::before {
+  background: #fff;
+  opacity: 0.16;
   -webkit-mask-image: url("assets/images/decor/tulips-bl.svg"), url("assets/images/decor/tulips-br.svg");
   mask-image: url("assets/images/decor/tulips-bl.svg"), url("assets/images/decor/tulips-br.svg");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
   -webkit-mask-position: left bottom, right bottom;
   mask-position: left bottom, right bottom;
+  -webkit-mask-size: var(--bottom-size) auto;
+  mask-size: var(--bottom-size) auto;
 }
-/* Trên nền tối (footer): lá trắng thật mờ */
-.decor-on-dark { --decor-color: #fff; --decor-opacity: 0.14; }
 
-.card {
-  background: var(--surface);
+/* Tấm thiệp: giấy ngà có hạt, mép chỉ vàng, khung hai đường chỉ dập nổi với bốn góc lõm.
+   Nội dung phải cách mép ít nhất --frame-clear để không đè lên khung. */
+.card,
+.stationery {
+  position: relative;
   border-radius: var(--radius-card);
-  box-shadow: 0 1px 2px rgba(23, 36, 27, 0.04), 0 12px 32px -12px rgba(23, 36, 27, 0.14);
+  background-color: var(--card);
+  /* giấy dày: mặt sần mịn, sáng hơn ở mép trên như đang hứng đèn */
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 30%, rgba(238, 232, 214, 0.28) 100%), url("assets/images/decor/paper-card.svg");
+  background-size: 100% 100%, 256px 256px;
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 0 0 1px rgba(140, 114, 56, 0.16),
+    0 1px 2px rgba(23, 36, 27, 0.05),
+    0 22px 44px -24px rgba(23, 36, 27, 0.3);
+}
+.stationery-framed::before {
+  content: "";
+  position: absolute;
+  inset: var(--frame-inset, 9px);
+  border: var(--frame-w, 72px) solid transparent;
+  border-image: url("assets/images/decor/frame.svg") 80 / var(--frame-w, 72px) stretch;
+  pointer-events: none;
+}
+/* Khung vòm: hai vai ogee ở trên, đỉnh thẳng; dùng cho tấm thiệp chính */
+.stationery-arch::before {
+  border-width: calc(var(--frame-w, 72px) * 1.75) var(--frame-w, 72px) var(--frame-w, 72px);
+  border-image: url("assets/images/decor/frame-arch.svg") 140 80 80 80 / calc(var(--frame-w, 72px) * 1.75) var(--frame-w, 72px) var(--frame-w, 72px) stretch;
+}
+/* Ảnh lồng trong thiệp: khoét góc lõm như khung thiệp, lún nhẹ xuống giấy, màu dịu lại cho hợp giấy ngà.
+   .well là lớp bọc mang đường chỉ vàng chạy quanh, cách mép ảnh 6px; .matted là khung ảnh (đặt tỉ lệ ở đây). */
+.well { position: relative; display: grid; }
+.well::after {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border: 40px solid transparent;
+  border-image: url("assets/images/decor/photo-frame.svg") 40 / 40px stretch;
+  pointer-events: none;
+}
+.matted {
+  --notch: 18px;
+  position: relative;
+  overflow: hidden;
+  background: var(--mist);
+  -webkit-mask:
+    radial-gradient(circle var(--notch) at left top, transparent 97%, #000) left top / 51% 51% no-repeat,
+    radial-gradient(circle var(--notch) at right top, transparent 97%, #000) right top / 51% 51% no-repeat,
+    radial-gradient(circle var(--notch) at left bottom, transparent 97%, #000) left bottom / 51% 51% no-repeat,
+    radial-gradient(circle var(--notch) at right bottom, transparent 97%, #000) right bottom / 51% 51% no-repeat;
+  mask:
+    radial-gradient(circle var(--notch) at left top, transparent 97%, #000) left top / 51% 51% no-repeat,
+    radial-gradient(circle var(--notch) at right top, transparent 97%, #000) right top / 51% 51% no-repeat,
+    radial-gradient(circle var(--notch) at left bottom, transparent 97%, #000) left bottom / 51% 51% no-repeat,
+    radial-gradient(circle var(--notch) at right bottom, transparent 97%, #000) right bottom / 51% 51% no-repeat;
+}
+.matted img { filter: saturate(0.9) contrast(0.97) sepia(0.08); }
+/* phủ một lớp ngà rất mỏng và bóng trong ở mép trên-trái: ảnh như được in và ép lún vào tờ thiệp */
+.matted::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(253, 250, 240, 0.1), rgba(253, 250, 240, 0) 40%);
+  box-shadow: inset 0 2px 7px rgba(60, 50, 20, 0.28), inset 0 0 0 1px rgba(60, 50, 20, 0.1);
 }
 .photo {
   position: relative;
@@ -314,12 +511,12 @@
 }
 .btn:active { transform: scale(0.97); transition-duration: 90ms; }
 .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
-.btn-primary { background: var(--green); color: #fff; }
-.btn-tinted { background: rgba(47, 74, 56, 0.1); color: var(--green); }
+.btn-primary { background: linear-gradient(180deg, #37563f, var(--green)); color: #fbf7ea; box-shadow: inset 0 0 0 1px rgba(200, 178, 115, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 6px 14px -8px rgba(35, 58, 43, 0.6); }
+.btn-tinted { background: rgba(255, 255, 255, 0.6); color: var(--green); box-shadow: inset 0 0 0 1px rgba(140, 114, 56, 0.4); }
 .btn-sm { min-height: 2.25rem; padding: 0.5rem 1rem; font-size: 0.8125rem; }
 @media (hover: hover) {
   .btn-primary:hover:not(:disabled) { background: var(--green-deep); }
-  .btn-tinted:hover:not(:disabled) { background: rgba(47, 74, 56, 0.16); }
+  .btn-tinted:hover:not(:disabled) { background: #fff; }
 }
 
 /* Ô nhập liệu: nền trắng, viền mảnh; lấy nét bằng vòng sáng thay vì đổi kích thước */
@@ -331,7 +528,7 @@
   border-radius: 16px;
   background: var(--surface);
   color: var(--ink);
-  box-shadow: inset 0 0 0 1px var(--hairline);
+  box-shadow: inset 0 0 0 1px rgba(140, 114, 56, 0.28);
   outline: none;
   transition: box-shadow 180ms ease;
 }

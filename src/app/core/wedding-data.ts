@@ -101,7 +101,7 @@ export const WEDDING_DATA: WeddingData = {
       displayDate: "28 . 11 . 2026",
       address: "thôn Đồng Mới, Đạo Trù, Phú Thọ",
       link: "https://www.google.com/maps?q=15.8337222,108.1531111",
-      icon: "assets/images/templates/sangtrong/eventIcon1.png",
+      icon: "assets/images/decor/event-rings.webp",
     },
     {
       title: "LỄ NHÀ TRAI",
@@ -110,7 +110,7 @@ export const WEDDING_DATA: WeddingData = {
       displayDate: "28 . 11 . 2026",
       address: "thôn Thiết Trụ, Mễ Sở, Hưng Yên",
       link: "https://www.google.com/maps?q=15.8336667,108.1063056",
-      icon: "assets/images/templates/sangtrong/eventIcon2.png",
+      icon: "assets/images/decor/event-car.webp",
     },
     {
       title: "Tiệc cưới",
@@ -119,7 +119,7 @@ export const WEDDING_DATA: WeddingData = {
       displayDate: "28 . 11 . 2026",
       address: "thôn Thiết Trụ, Mễ Sở Hưng Yên",
       link: "https://www.google.com/maps?q=15.8343889,108.1074444",
-      icon: "assets/images/templates/sangtrong/eventIcon3.png",
+      icon: "assets/images/decor/event-cake.webp",
     },
   ],
 
