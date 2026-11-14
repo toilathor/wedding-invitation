@@ -100,7 +100,7 @@ export const WEDDING_DATA: WeddingData = {
       displayTime: "10:00",
       displayDate: "28 . 11 . 2026",
       address: "thôn Đồng Mới, Đạo Trù, Phú Thọ",
-      link: "https://www.google.com/maps?q=15.8337222,108.1531111",
+      link: "https://maps.app.goo.gl/c1RBqzSuTM3bn6Pe8?g_st=ic",
       icon: "assets/images/decor/event-rings.webp",
     },
     {
@@ -109,7 +109,7 @@ export const WEDDING_DATA: WeddingData = {
       displayTime: "13:00",
       displayDate: "28 . 11 . 2026",
       address: "thôn Thiết Trụ, Mễ Sở, Hưng Yên",
-      link: "https://www.google.com/maps?q=15.8336667,108.1063056",
+      link: "https://maps.app.goo.gl/LKRc1n4KY91DoiHi6?g_st=ic",
       icon: "assets/images/decor/event-car.webp",
     },
     {
@@ -118,7 +118,7 @@ export const WEDDING_DATA: WeddingData = {
       displayTime: "15:00",
       displayDate: "28 . 11 . 2026",
       address: "thôn Thiết Trụ, Mễ Sở Hưng Yên",
-      link: "https://www.google.com/maps?q=15.8343889,108.1074444",
+      link: "https://maps.app.goo.gl/LKRc1n4KY91DoiHi6?g_st=ic",
       icon: "assets/images/decor/event-cake.webp",
     },
   ],
