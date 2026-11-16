@@ -29,6 +29,7 @@ import { AudioService } from "./services/audio.service";
 import { GuestService } from "./services/guest.service";
 import { PageViewService } from "./services/pageview.service";
 import { ReplyService } from "./services/reply.service";
+import { VisitorService } from "./services/visitor.service";
 
 export interface PageInfo {
   id: string;
@@ -61,6 +62,7 @@ export interface PageInfo {
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
   guestService = inject(GuestService);
+  visitorService = inject(VisitorService);
   /** Dữ liệu thiệp đã thay token xưng hô ({you}, {we}...) theo khách của link; không có link cá nhân thì giữ nguyên văn như cũ. */
   private weddingData$ = computed(() => this.guestService.personalize(WEDDING_DATA));
   get weddingData() {

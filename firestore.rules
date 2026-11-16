@@ -99,5 +99,71 @@ service cloud.firestore {
     // Dữ liệu quản trị khác: chỉ admin.
     match /guestGroups/{id} { allow read, write: if isAdmin(); }
     match /settings/guestConfig { allow read, write: if isAdmin(); }
+
+    // Quy tắc cho Theo dõi thiết bị khách truy cập (Visitors)
+    match /visitors/{visitorId} {
+      function validVisitorData() {
+        let d = request.resource.data;
+        return d.keys().hasOnly([
+                 'visitorId', 'deviceType', 'os', 'browser', 'screen',
+                 'language', 'referrer', 'guestCode', 'guestName',
+                 'visitCount', 'firstVisit', 'lastVisit'
+               ])
+            && d.keys().hasAll([
+                 'visitorId', 'deviceType', 'os', 'browser', 'screen',
+                 'visitCount', 'firstVisit', 'lastVisit'
+               ])
+            && d.visitorId is string
+            && d.visitorId == visitorId
+            && d.visitorId.size() >= 8
+            && d.visitorId.size() <= 80
+            && d.deviceType is string
+            && d.deviceType in ['mobile', 'tablet', 'desktop', 'other']
+            && d.os is string
+            && d.os.size() >= 1
+            && d.os.size() <= 40
+            && d.browser is string
+            && d.browser.size() >= 1
+            && d.browser.size() <= 40
+            && d.screen is string
+            && d.screen.size() <= 30
+            && d.visitCount is int
+            && d.visitCount >= 1
+            && d.visitCount <= 100000
+            && d.lastVisit == request.time
+            && (!('language' in d) || (d.language is string && d.language.size() <= 20))
+            && (!('referrer' in d) || (d.referrer is string && d.referrer.size() <= 250))
+            && (!('guestCode' in d) || (d.guestCode is string && d.guestCode.size() <= 30))
+            && (!('guestName' in d) || (d.guestName is string && d.guestName.size() <= 160));
+      }
+
+      function validVisitorCreate() {
+        let d = request.resource.data;
+        return validVisitorData()
+            && d.firstVisit == request.time;
+      }
+
+      function validVisitorUpdate() {
+        let d = request.resource.data;
+        return validVisitorData()
+            && resource.data.visitorId == d.visitorId
+            && d.firstVisit == resource.data.firstVisit
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+                 'visitCount', 'lastVisit', 'screen', 'referrer', 'guestCode', 'guestName'
+               ]);
+      }
+
+      // Chỉ admin mới có quyền xem thông tin chi tiết hoặc liệt kê danh sách thiết bị.
+      allow read, list: if isAdmin();
+
+      // Thiết bị gửi thông tin lần đầu (tạo mới).
+      allow create: if validVisitorCreate();
+
+      // Thiết bị tự cập nhật số lượt truy cập và thông tin tương tác (mã khách, tên khách...).
+      allow update: if validVisitorUpdate();
+
+      // Chỉ admin mới có quyền xoá dữ liệu thiết bị.
+      allow delete: if isAdmin();
+    }
   }
 }
